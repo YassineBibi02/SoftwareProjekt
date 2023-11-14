@@ -5,6 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
+/**
+ * Interface function to interact with databank
+ *
+ * @author Yassine Bibi
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 

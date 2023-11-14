@@ -1,7 +1,7 @@
 package SWP.Cyberkraftwerk2;
 
-import SWP.Cyberkraftwerk2.Models.User;
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
+import SWP.Cyberkraftwerk2.Models.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-//@SpringBootApplication( exclude = {SecurityAutoConfiguration.class})
+/**
+ *
+ */
 @SpringBootApplication
 @RestController
 public class Cyberkraftwerk2Application {
