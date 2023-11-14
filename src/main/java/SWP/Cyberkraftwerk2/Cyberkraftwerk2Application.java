@@ -52,17 +52,5 @@ public class Cyberkraftwerk2Application {
 	}
 
 
-//	@Bean
-//	public CommandLineRunner demo(UserService userService) {
-//		return (args) -> {
-//			// Create a user and save it to the database
-//			User user = new User();
-//			user.setUsername("Admin");
-//			user.setPassword("Admin");
-//			userService.saveUser(user);
-//
-//			// You can add more users if needed
-//		};
-//	}
 
 }

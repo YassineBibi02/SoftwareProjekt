@@ -1,12 +1,15 @@
 package SWP.Cyberkraftwerk2.Security;
 
+import SWP.Cyberkraftwerk2.Databank.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -18,36 +21,16 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private UserPrincipalDetailService userPrincipalDetailService;
+
+    public SecurityConfig(UserPrincipalDetailService userPrincipalDetailService) {
+        this.userPrincipalDetailService = userPrincipalDetailService;
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService(){
-        UserDetails Admin = User
-                .withUsername("Admin")
-                .password(passwordEncoder().encode("Admin"))
-                .roles("ADMIN").authorities("ADMIN_PAGE")
-                .build();
-
-        UserDetails user = User
-                .withUsername("USER")
-                .password(passwordEncoder().encode("123"))
-                .roles("USER")
-                .build();
-
-        UserDetails superUser = User
-                .withUsername("super")
-                .password(passwordEncoder().encode("S123"))
-                .roles("SUPERUSER")
-                .build();
-
-
-        return new InMemoryUserDetailsManager(Admin,user,superUser);
-    }
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -56,9 +39,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(antMatcher("/")).permitAll()
-                        .requestMatchers(antMatcher("/Welcome")).hasAnyRole("ADMIN","SUPERUSER")
-                        .requestMatchers(antMatcher("/Admin")).hasAuthority("ADMIN_PAGE")
-                        .requestMatchers(antMatcher("/Users")).hasRole("ADMIN")
+                        .requestMatchers(antMatcher("/Welcome")).hasAnyAuthority("ADMIN_ROLE","SUPERUSER_ROLE")
+                        .requestMatchers(antMatcher("/Admin")).hasAuthority("ADMIN_ROLE")
+                        .requestMatchers(antMatcher("/Users")).hasAuthority("ADMIN_ROLE")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
@@ -67,6 +50,16 @@ public class SecurityConfig {
 
     }
 
+
+
+    @Bean
+    DaoAuthenticationProvider authenticationProvider (){
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(this.userPrincipalDetailService);
+
+        return daoAuthenticationProvider;
+    }
 
 
 }
