@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: SWP.Cyberkraftwerk2.Cyberkraftwerk2ApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.571 s - in SWP.Cyberkraftwerk2.Cyberkraftwerk2ApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.93 s - in SWP.Cyberkraftwerk2.Cyberkraftwerk2ApplicationTests
