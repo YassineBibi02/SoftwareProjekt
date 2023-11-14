@@ -27,7 +27,7 @@ public class User {
     public User[] load_all(){
         User[] Users = User[UserCount];
         for(i = 1; i <= UserCount; i++){
-            Users[i] = this.load_user(i);
+            Users[i - 1] = this.load_user(i);
         }
         return Users;
     }
