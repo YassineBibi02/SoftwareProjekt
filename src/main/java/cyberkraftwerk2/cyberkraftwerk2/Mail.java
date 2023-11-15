@@ -40,10 +40,16 @@ public class Mail {
                 {
                     actual_sendmail(MailText, RecipientEmail);
                 }
-        }
+    }
 
 
-    /*save a new mail*/
+    /**
+    * saves a new mail
+    * Mail MUST at least contain placeholder "LINK" to be valid
+    * @param text the new text
+    * @param level the new level
+    * @return true if successful, false if not
+    */
     public boolean new_mail(String text, int level){
         /*check for valid level*/
         if(level < 1 || level > 3){
@@ -99,7 +105,15 @@ public class Mail {
         return true;
     }
 
-    /*save a mail that has been edited*/
+
+    /**
+    * saves a mail to overwrite an existing mail, e.g. to change the text
+    * Mail MUST at least contain placeholder "LINK" to be valid
+    * @param text the new text
+    * @param level the new level
+    * @param mail_id the mail to overwrite
+    * @return true if successful, false if not
+    */
     public boolean save_mail(String text, int level, int mail_id){
         String text_copy = text;
         boolean valid_id = false;
@@ -168,7 +182,12 @@ public class Mail {
         return valid_id;
     }
 
-    
+
+    /**
+    * gets the text of the mail specified with mail_id
+    * @param  mail_id  the mail
+    * @return the mail text
+    */
     public String get_mail(int mail_id){
         /*count lines*/
         int total_lines = 0;
@@ -208,6 +227,12 @@ public class Mail {
         return mailtext;
     }
 
+
+    /**
+    * gets the level of the mail specified with mail_id
+    * @param  mail_id  the mail
+    * @return level of the mail
+    */
     public int get_level(int mail_id){
         String line = "";
         try{
@@ -232,6 +257,11 @@ public class Mail {
         return Integer.parseInt(level);
     }
     
+
+    /**
+    * counts the mails in the database
+    * @return number of mails in database
+    */
     public int count_mails(){
         String lastline = "";
         try{
@@ -252,6 +282,14 @@ public class Mail {
         return count;
     }
 
+
+    /**
+    * takes an array of users and sends each of them one mail per day from start date to end date
+    * @param recipients  the recipents
+    * @param start_date to keep it easy, length 3 int array with year, month, day in that order
+    * @param end_date to keep it easy, length 3 int array with year, month, day in that order
+    * @return void
+    */
     public void send_mails(User[] recipients, int[] start_date, int[] end_date){
         if(start_date.length != 3 || end_date.length != 3){
             return;
@@ -270,9 +308,9 @@ public class Mail {
         /*calculate difference in days between startdate and enddate */
         long difference = enddate.getTime() - stardate.getTime();
         long differencedays = difference / (24 * 60 * 60 * 1000);
-        Date[] dates = new Date[(int)differencedays];
+        Date[] dates = new Date[(int)differencedays + 1];
         dates[0] = stardate;
-        for(int i = 0; i < differencedays; i++){
+        for(int i = 0; i < dates.length; i++){
             /*get startdate + 1 day*/
             calendar.setTime(stardate);
             calendar.add(Calendar.DATE, i);
