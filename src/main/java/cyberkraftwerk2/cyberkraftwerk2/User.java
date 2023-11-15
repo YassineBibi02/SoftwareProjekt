@@ -47,4 +47,8 @@ public class User {
         /*update UserCount for all Users in Database*/
 
     }
+
+    public static void mail_received(int ID, int receivedmail, int newmaillevel){
+        /*change User in database*/
+    }
 }
