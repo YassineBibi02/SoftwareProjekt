@@ -1,3 +1,5 @@
+package cyberkraftwerk2.cyberkraftwerk2;
+
 public class User {
 
     public String Firstname;
@@ -25,8 +27,8 @@ public class User {
     
     /*loads all Users from Database*/
     public User[] load_all(){
-        User[] Users = User[UserCount];
-        for(i = 1; i <= UserCount; i++){
+        User[] Users = new User[UserCount];
+        for(int i = 1; i <= UserCount; i++){
             Users[i - 1] = this.load_user(i);
         }
         return Users;

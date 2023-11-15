@@ -1,3 +1,5 @@
+package cyberkraftwerk2.cyberkraftwerk2;
+
 public class Mail {
 
     private static String MAILPATH = "path";
@@ -18,7 +20,7 @@ public class Mail {
     }
 
     public int get_level(int mail_id){
-        return null;
+        return 0;
     }
     
     /*send mails*/
