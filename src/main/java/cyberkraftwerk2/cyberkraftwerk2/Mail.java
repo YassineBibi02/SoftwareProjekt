@@ -58,9 +58,59 @@ public class Mail {
         return true;
     }
 
-    
-    public void save_mail(String text, int level, int mail_id){
-
+    /*save a mail that has been edited*/
+    public boolean save_mail(String text, int level, int mail_id){
+        String line = "";
+        int total_lines = 0;
+        /*count lines*/
+        try{    
+            File list = new File(MAILPATH + "list.txt");
+            Scanner listscan = new Scanner(list);
+            while(listscan.hasNextLine()){
+                line = listscan.nextLine();
+                total_lines++;    
+                }
+            listscan.close();
+            }
+        catch(Exception e){
+            return false;
+            }
+        String newlistline = "[ID:" + String.valueOf(mail_id) + "][Level:" + String.valueOf(level) + "]";
+        /*replace line in list.txt*/
+        try{
+            /*get contents of list.txt*/
+            File list = new File(MAILPATH + "list.txt");
+            Scanner listscan = new Scanner(list);
+            String[] lines = new String[total_lines];
+            for(int i = 0; i < total_lines; i++){
+                lines[i] = listscan.nextLine();
+                if(lines[i].contains("ID:" + String.valueOf(mail_id))){
+                    lines[i] = newlistline;
+                    }
+                }
+            listscan.close();
+            /*write new list.txt*/
+            FileWriter listwriter = new FileWriter(MAILPATH + "list.txt");
+            listwriter.write(lines[0]);
+            listwriter.close();
+            FileWriter listwriter_append = new FileWriter(MAILPATH + "list.txt", true);
+            for(int i = 1; i < total_lines; i++){
+                listwriter_append.write("\n" + lines[i]);
+                }
+            listwriter_append.close();
+            }
+        catch(Exception e){
+            return false;
+            }
+        /*save new text*/
+        try{
+            FileWriter mailwriter = new FileWriter(MAILPATH + String.valueOf(mail_id) + ".txt");
+            mailwriter.write(text);
+            }
+        catch(Exception e){
+            return false;
+            }
+        return true;
     }
 
     
