@@ -15,6 +15,8 @@ public class Mail {
 
 
     private static void actual_sendmail(String mailtext, String recipient_email){
+        EmailService service = new EmailService();
+        service.sendEmail(recipient_email, "Cyberkraftwerk2", mailtext);
         /*send mail*/
     }
 
