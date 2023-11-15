@@ -157,6 +157,9 @@ public class Mail {
             Scanner mailreader = new Scanner(mail);
             for(int i = 0; i < total_lines; i++){
                 maillines[i] = mailreader.nextLine();
+                if(maillines[i].contains(TIPPATH)){
+                    maillines[i] = maillines[i].replace(TIPPATH, "LINK");
+                    }
                 }
             mailreader.close();
             }
@@ -196,7 +199,7 @@ public class Mail {
     }
     
     
-    public void send_mails(String[] recipients, String start_date, String end_date){
+    public void send_mails(User[] recipients, String start_date, String end_date){
            
     }
 
