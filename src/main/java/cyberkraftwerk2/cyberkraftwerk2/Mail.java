@@ -11,12 +11,18 @@ public class Mail {
 
     /*save a new mail*/
     public boolean new_mail(String text, int level){
+        /*check for valid level*/
+        if(level < 1 || level > 3){
+            return false;
+            }
+        /*make a copy of text*/
+        String text_copy = text;
         /*format link*/
-        if(!text.contains("LINK")){
+        if(!text_copy.contains("LINK")){
             return false;
             }
         else{
-            text.replace("LINK", TIPPATH);
+            text_copy = text_copy.replace("LINK", TIPPATH);
             }
         /*scan list.txt for last line*/    
         String lastline = "";
@@ -33,10 +39,11 @@ public class Mail {
             return false;
             }
         /*get id of new template*/
-        String lastid = lastline.substring(lastline.indexOf("[ID:") + 4, lastline.indexOf("]"));
+        String lastid = lastline.substring(lastline.indexOf("[ID:") + 4, lastline.indexOf(","));
         int newid = Integer.parseInt(lastid) + 1;
+        
         /*log new template to list.txt*/
-        String newlistline = "\n[ID:" + newid + "][Level:" + level + "]";
+        String newlistline = "\n[ID:" + newid + ",Level:" + level + "]";
         try{
             FileWriter listwriter = new FileWriter(MAILPATH + "list.txt", true);
             listwriter.write(newlistline);
@@ -49,7 +56,7 @@ public class Mail {
         /*save new template*/
         try{
             FileWriter mailwriter = new FileWriter(newmailpath);
-            mailwriter.write(text);
+            mailwriter.write(text_copy);
             mailwriter.close();
             }
         catch(Exception e){
@@ -60,14 +67,26 @@ public class Mail {
 
     /*save a mail that has been edited*/
     public boolean save_mail(String text, int level, int mail_id){
-        String line = "";
+        String text_copy = text;
+        boolean valid_id = false;
+        /*check for valid level*/
+        if(level < 1 || level > 3){
+            return false;
+            }
+        /*check for LINK and format*/
+        if(!text_copy.contains("LINK")){
+            return false;
+            }
+        else{
+            text_copy = text_copy.replace("LINK", TIPPATH);
+            }
+        /*count lines in list*/
         int total_lines = 0;
-        /*count lines*/
         try{    
             File list = new File(MAILPATH + "list.txt");
             Scanner listscan = new Scanner(list);
             while(listscan.hasNextLine()){
-                line = listscan.nextLine();
+                listscan.nextLine();
                 total_lines++;    
                 }
             listscan.close();
@@ -75,7 +94,7 @@ public class Mail {
         catch(Exception e){
             return false;
             }
-        String newlistline = "[ID:" + String.valueOf(mail_id) + "][Level:" + String.valueOf(level) + "]";
+        String newlistline = "[ID:" + String.valueOf(mail_id) + ",Level:" + String.valueOf(level) + "]";
         /*replace line in list.txt*/
         try{
             /*get contents of list.txt*/
@@ -86,6 +105,7 @@ public class Mail {
                 lines[i] = listscan.nextLine();
                 if(lines[i].contains("ID:" + String.valueOf(mail_id))){
                     lines[i] = newlistline;
+                    valid_id = true;
                     }
                 }
             listscan.close();
@@ -105,29 +125,83 @@ public class Mail {
         /*save new text*/
         try{
             FileWriter mailwriter = new FileWriter(MAILPATH + String.valueOf(mail_id) + ".txt");
-            mailwriter.write(text);
+            mailwriter.write(text_copy);
+            mailwriter.close();
             }
         catch(Exception e){
             return false;
             }
-        return true;
+        return valid_id;
     }
 
     
     public String get_mail(int mail_id){
-        return null;
+        /*count lines*/
+        int total_lines = 0;
+        try{ 
+            File list = new File(MAILPATH + String.valueOf(mail_id) + ".txt");
+            Scanner mailscan = new Scanner(list);
+            while(mailscan.hasNextLine()){
+                mailscan.nextLine();
+                total_lines++;    
+                }
+            mailscan.close();
+            }
+        catch(Exception e){
+            return null;
+            }
+        /*get contents of mail*/
+        String[] maillines = new String[total_lines];
+        try{
+            File mail = new File(MAILPATH + String.valueOf(mail_id) + ".txt");
+            Scanner mailreader = new Scanner(mail);
+            for(int i = 0; i < total_lines; i++){
+                maillines[i] = mailreader.nextLine();
+                }
+            mailreader.close();
+            }
+        catch(Exception e){
+            return null;
+            }
+        /*merge to mail*/
+        String mailtext = maillines[0];
+        for(int i = 1; i < total_lines; i++){
+            mailtext = mailtext + "\n" + maillines[i];
+            }
+        return mailtext;
     }
 
     public int get_level(int mail_id){
-        return 0;
+        String line = "";
+        try{
+            
+            File list = new File(MAILPATH + "list.txt");
+            Scanner listscan = new Scanner(list);
+            while(listscan.hasNextLine()){
+                line = listscan.nextLine();
+                if(line.contains("ID:" + String.valueOf(mail_id))){
+                    break;
+                    }
+                }
+            listscan.close();
+            }
+        catch(Exception e){
+            return 0;
+            }
+        if(!line.contains("ID:" + String.valueOf(mail_id))){
+            return 0;
+            } 
+        String level = line.substring(line.indexOf("Level:") + 6, line.length() - 1);
+        return Integer.parseInt(level);
     }
     
     
-    public void send_mails(User[] recipients, String start_date, String end_date){
+    public void send_mails(String[] recipients, String start_date, String end_date){
            
     }
 
-
+    public static void main(String[] args) throws Exception {
+    }
 
 
 }
