@@ -283,43 +283,50 @@ public class Mail {
     }
 
 
-    /**
-    * takes an array of users and sends each of them one mail per day from start date to end date
-    * @param recipients  the recipents
-    * @param start_date to keep it easy, length 3 int array with year, month, day in that order
-    * @param end_date to keep it easy, length 3 int array with year, month, day in that order
-    * @return void
-    */
-    public void send_mails(User[] recipients, int[] start_date, int[] end_date){
+    private Date[] get_days(int[] start_date, int[] end_date){
         if(start_date.length != 3 || end_date.length != 3){
-            return;
+            return null;
             }
         DateFormat formatdate = new SimpleDateFormat("yyyy/MM/dd");
-        Date stardate;
+        Date startdate;
         Date enddate;
         Calendar calendar = Calendar.getInstance();
         try{
-            stardate = formatdate.parse(String.valueOf(start_date[0]) + "/" + String.valueOf(start_date[1]) + "/" + String.valueOf(start_date[2]));
+            startdate = formatdate.parse(String.valueOf(start_date[0]) + "/" + String.valueOf(start_date[1]) + "/" + String.valueOf(start_date[2]));
             enddate = formatdate.parse(String.valueOf(end_date[0]) + "/" + String.valueOf(end_date[1]) + "/" + String.valueOf(end_date[2]));
             }
         catch(Exception e){
-            return;
+            return null;
             }
         /*calculate difference in days between startdate and enddate */
-        long difference = enddate.getTime() - stardate.getTime();
+        long difference = enddate.getTime() - startdate.getTime();
         long differencedays = difference / (24 * 60 * 60 * 1000);
         Date[] dates = new Date[(int)differencedays + 1];
-        dates[0] = stardate;
+        dates[0] = startdate;
         for(int i = 0; i < dates.length; i++){
             /*get startdate + 1 day*/
-            calendar.setTime(stardate);
+            calendar.setTime(startdate);
             calendar.add(Calendar.DATE, i);
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.MINUTE, 0);
             dates[i] = calendar.getTime();
             }
+        return dates;
+    }
+
+    /**
+    * takes an array of users and sends each of them one mail per day from start date to end date
+    * @param recipients the recipents
+    * @param start_date to keep it easy, length 3 int array with year, month, day in that order
+    * @param end_date to keep it easy, length 3 int array with year, month, day in that order
+    * @return void
+    */
+    public void send_mails(User[] recipients, int[] start_date, int[] end_date){
+        /*get days*/
+        Date[] dates = get_days(start_date, end_date);
+        /*timed send*/
         Timer sendtimer = new Timer();
-        
+        Calendar calendar = Calendar.getInstance();
         /*for each date*/
         for(int d = 0; d < dates.length; d++){
             int mailssent = 0;
@@ -330,6 +337,7 @@ public class Mail {
                 int[] possiblemails = new int[count_mails() + 1];
                 while(userlevel <= 3) {
                     boolean mailfound = false;
+                    /*get mails that match the userlevel*/
                     for (int j = 0; j < possiblemails.length; j++){
                         possiblemails[j] = 0;
                         }
@@ -339,13 +347,14 @@ public class Mail {
                             possiblemails[j] = 1;
                             }
                         }
+                    /*compare with mails user has already received*/
                     int[] mailsreceived = thisuser.MailsReceived;
                     for(int j = 1; j < mailsreceived.length; j++){
                         if(mailsreceived[j] == 1){
                             possiblemails[j] = 0;
                             }
                         }
-                    /*send one mail*/
+                    /*send first matching mail*/
                     for(int j = 1; j < possiblemails.length; j++){
                         if(possiblemails[j] == 1){
                             String mailtext = get_mail(j);
@@ -357,6 +366,7 @@ public class Mail {
                             User.mail_received(thisuser.ID, j, userlevel);
                             mailssent++;
                             mailfound = true;
+                            break;
                             }
                         }
                     if(mailfound){
