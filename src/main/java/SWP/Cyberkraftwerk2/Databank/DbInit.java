@@ -1,7 +1,12 @@
 package SWP.Cyberkraftwerk2.Databank;
 
+import SWP.Cyberkraftwerk2.Models.User;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This Class runs to initliaze the Databank settings - Will be removed later.
@@ -9,8 +14,8 @@ import org.springframework.stereotype.Service;
  * @author Yassine Bibi
  */
 @Service
-//public class DbInit implements CommandLineRunner {
-public class DbInit {
+public class DbInit implements CommandLineRunner {
+//public class DbInit {
 
 
     /**
@@ -38,7 +43,7 @@ public class DbInit {
      * @param args Arguments
      * @throws Exception Errors
      */
-    /*@Override
+    @Override
     public void run(String... args) throws Exception {
         //Delete Users from before
         this.userRepository.deleteAll();
@@ -52,5 +57,5 @@ public class DbInit {
 
         //save to Db
         this.userRepository.saveAll(userList);
-    }*/
+    }
 }
