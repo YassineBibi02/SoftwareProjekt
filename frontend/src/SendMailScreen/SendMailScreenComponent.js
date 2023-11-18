@@ -6,9 +6,7 @@ const SendMailScreenComponent = () => {
 
     return (
         <div>
-            <p>
-                Cyber Kraftwerk
-            </p>
+            <Header/>
             <UserList/>
         </div>
     );
