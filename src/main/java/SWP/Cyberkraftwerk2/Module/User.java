@@ -1,6 +1,4 @@
-package cyberkraftwerk2.cyberkraftwerk2;
-
-import com.jayway.jsonpath.internal.function.sequence.First;
+package SWP.Cyberkraftwerk2.Module;
 
 public class User {
 

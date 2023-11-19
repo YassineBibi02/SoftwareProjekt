@@ -1,13 +1,11 @@
-package cyberkraftwerk2.cyberkraftwerk2;
+package SWP.Cyberkraftwerk2.Mail;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.InternetAddress;
 
 /**
  * Class accessing the JavaMail and JakartaMail packages to send Emails

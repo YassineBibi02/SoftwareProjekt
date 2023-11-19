@@ -1,9 +1,12 @@
-package cyberkraftwerk2.cyberkraftwerk2;
+package SWP.Cyberkraftwerk2.Mail;
+
+import SWP.Cyberkraftwerk2.Module.User;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
-import java.text.*;
 
 public class Mail {
 
@@ -40,9 +43,6 @@ public class Mail {
     }
 
     /** internal instance of TimerTask to send mails
-    * @param MailText the text of the mail
-    * @param RecipientEmail the email of the recipient
-    * @param Subject the subject of the mail
     */
     private static class ActualSendmail extends TimerTask{
             public String MailText = "";
