@@ -13,6 +13,8 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SimpleSavedRequest;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @Configuration
 public class SecurityConfig {
 
@@ -20,8 +22,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/", "/index.html", "/static/**",
-                                "/*.ico", "/*.json", "/*.png", "/api/user").permitAll()
+                        .requestMatchers(antMatcher("/"), antMatcher("/index.html"), antMatcher("/static/**"),
+                                antMatcher("/*.ico"), antMatcher("/*.json"), antMatcher("/*.png"), antMatcher("/api/user")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf((csrf) -> csrf
