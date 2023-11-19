@@ -14,9 +14,9 @@ public class Mail {
 
 
 
-    private static void actual_sendmail(String mailtext, String recipient_email){
+    private static void actual_sendmail(String mailtext, String subject, String recipient_email){
         EmailService service = new EmailService();
-        service.sendEmail(recipient_email, "Cyberkraftwerk2", mailtext);
+        service.sendEmail(recipient_email, subject, mailtext);
         /*send mail*/
     }
 
@@ -31,14 +31,16 @@ public class Mail {
     private static class ActualSendmail extends TimerTask{
             public String MailText = "";
             public String RecipientEmail = "";
+            public String Subject = "";
 
-            public ActualSendmail(String mailtext, String recipient_email){
+            public ActualSendmail(String mailtext, String recipient_email, String subject){
                 MailText = mailtext;
                 RecipientEmail = recipient_email;
+                Subject = subject;
                 }
             public void run()
                 {
-                    actual_sendmail(MailText, RecipientEmail);
+                    actual_sendmail(MailText, Subject, RecipientEmail);
                 }
     }
 
@@ -48,9 +50,10 @@ public class Mail {
     * Mail MUST at least contain placeholder "LINK" to be valid
     * @param text the new text
     * @param level the new level
+    * @param subject the new subject
     * @return true if successful, false if not
     */
-    public boolean new_mail(String text, int level){
+    public boolean new_mail(String text, String subject, int level){
         /*check for valid level*/
         if(level < 1 || level > 3){
             return false;
@@ -81,7 +84,6 @@ public class Mail {
         /*get id of new template*/
         String lastid = lastline.substring(lastline.indexOf("[ID:") + 4, lastline.indexOf(","));
         int newid = Integer.parseInt(lastid) + 1;
-        
         /*log new template to list.txt*/
         String newlistline = "\n[ID:" + newid + ",Level:" + level + "]";
         try{
@@ -92,8 +94,18 @@ public class Mail {
         catch(Exception e){
             return false;
             }
-        String newmailpath = MAILPATH + String.valueOf(newid) + ".txt";
-        /*save new template*/
+        /*log new template to subjects.txt*/
+        newlistline = "\n[ID:" + newid + ",Subject:'" + subject + "']";
+        try{
+            FileWriter subjectswriter = new FileWriter(MAILPATH + "subjects.txt", true);
+            subjectswriter.write(newlistline);
+            subjectswriter.close();
+            }
+        catch(Exception e){
+            return false;
+            }     
+        /*save new template*/    
+        String newmailpath = MAILPATH + String.valueOf(newid) + ".txt";    
         try{
             FileWriter mailwriter = new FileWriter(newmailpath);
             mailwriter.write(text_copy);
@@ -114,7 +126,7 @@ public class Mail {
     * @param mail_id the mail to overwrite
     * @return true if successful, false if not
     */
-    public boolean save_mail(String text, int level, int mail_id){
+    public boolean save_mail(String text, int level, String subject, int mail_id){
         String text_copy = text;
         boolean valid_id = false;
         /*check for valid level*/
@@ -166,6 +178,48 @@ public class Mail {
                 listwriter_append.write("\n" + lines[i]);
                 }
             listwriter_append.close();
+            }
+        catch(Exception e){
+            return false;
+            }
+        /*count lines in subjects.txt*/
+        total_lines = 0;
+        try{    
+            File subjects = new File(MAILPATH + "subjcts.txt");
+            Scanner subjectsscan = new Scanner(subjects);
+            while(subjectsscan.hasNextLine()){
+                subjectsscan.nextLine();
+                total_lines++;    
+                }
+            subjectsscan.close();
+            }
+        catch(Exception e){
+            return false;
+            }
+        String newsubjectsline = "[ID:" + String.valueOf(mail_id) + ",Subject:'" + subject + "']";
+        /*replace line in subjects.txt*/
+        try{
+            /*get contents of subjects.txt*/
+            File subjects = new File(MAILPATH + "subjects.txt");
+            Scanner subjectsscan = new Scanner(subjects);
+            String[] lines = new String[total_lines];
+            for(int i = 0; i < total_lines; i++){
+                lines[i] = subjectsscan.nextLine();
+                if(lines[i].contains("ID:" + String.valueOf(mail_id))){
+                    lines[i] = newsubjectsline;
+                    valid_id = true;
+                    }
+                }
+            subjectsscan.close();
+            /*write new subjects.txt*/
+            FileWriter subjectswriter = new FileWriter(MAILPATH + "subjects.txt");
+            subjectswriter.write(lines[0]);
+            subjectswriter.close();
+            FileWriter subjectswriter_append = new FileWriter(MAILPATH + "subjects.txt", true);
+            for(int i = 1; i < total_lines; i++){
+                subjectswriter_append.write("\n" + lines[i]);
+                }
+            subjectswriter_append.close();
             }
         catch(Exception e){
             return false;
@@ -256,6 +310,31 @@ public class Mail {
         String level = line.substring(line.indexOf("Level:") + 6, line.length() - 1);
         return Integer.parseInt(level);
     }
+
+    public String get_subject(int mail_id){
+        String line = "";
+        try{
+            
+            File subjects = new File(MAILPATH + "subjects.txt");
+            Scanner subjectsscan = new Scanner(subjects);
+            while(subjectsscan.hasNextLine()){
+                line = subjectsscan.nextLine();
+                if(line.contains("ID:" + String.valueOf(mail_id))){
+                    break;
+                    }
+                }
+            subjectsscan.close();
+            }
+        catch(Exception e){
+            return null;
+            }
+        if(!line.contains("ID:" + String.valueOf(mail_id))){
+            return null;
+            } 
+        /*get only the part in line in parentheses */
+        String Subject = line.substring(line.indexOf("'") + 1, line.length() - 2);
+        return Subject;
+    }
     
 
     /**
@@ -316,7 +395,7 @@ public class Mail {
 
     /**
     * takes an array of users and sends each of them one mail per day from start date to end date
-    * @param recipients the recipents
+    * @param recipients the recipients
     * @param start_date to keep it easy, length 3 int array with year, month, day in that order
     * @param end_date to keep it easy, length 3 int array with year, month, day in that order
     * @return void
@@ -359,10 +438,11 @@ public class Mail {
                         if(possiblemails[j] == 1){
                             String mailtext = get_mail(j);
                             mailtext = format_mail(thisuser, mailtext);
+                            String subject = get_subject(j);
                             calendar.setTime(dates[d]);
                             calendar.set(Calendar.MINUTE, mailssent);
                             Date senddate = calendar.getTime();
-                            sendtimer.schedule(new ActualSendmail(mailtext, thisuser.EMail), senddate);
+                            sendtimer.schedule(new ActualSendmail(mailtext, subject ,thisuser.EMail), senddate);
                             User.mail_received(thisuser.ID, j, userlevel);
                             mailssent++;
                             mailfound = true;
