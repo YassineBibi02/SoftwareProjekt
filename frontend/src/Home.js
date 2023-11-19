@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
 import { Button, Container } from 'reactstrap';
 import { useCookies } from 'react-cookie';
+import Header from './components/Header';
 
 const Home = () => {
 
@@ -65,7 +65,7 @@ const Home = () => {
 
   return (
     <div>
-      <AppNavbar/>
+      <Header/>
       <Container fluid>
         {message}
         {button}
