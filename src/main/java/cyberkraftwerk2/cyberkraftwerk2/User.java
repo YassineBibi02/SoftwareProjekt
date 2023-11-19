@@ -1,5 +1,7 @@
 package cyberkraftwerk2.cyberkraftwerk2;
 
+import com.jayway.jsonpath.internal.function.sequence.First;
+
 public class User {
 
     public String Firstname;
@@ -14,21 +16,41 @@ public class User {
 
     public int MailLevel;
 
-    public int UserCount;
+
+    public User(String firstname, String lastname, String email, int id, int[] mailsreceived, int maillevel){
+        this.Firstname = firstname;
+        this.Lastname = lastname;
+        this.EMail = email;
+        this.ID = id;
+        this.MailsReceived = mailsreceived;
+        this.MailLevel = maillevel;
+    }
+
+    public int count_users(){
+        return 0;
+    }
 
     /*loads the User with "ID" from Database */
     public User load_user(int ID){
-        User loaduser = new User();
-
         /*load from database*/
-
+        String firstname = "test";
+        String lastname = "test";
+        String email = "test";
+        String mailsreceived_as_string = "test";
+        int maillevel = 0;
+        /*format received mails*/
+        int[] mailsreceived = new int[mailsreceived_as_string.length()];
+        for(int i = 0; i < mailsreceived_as_string.length(); i++){
+            mailsreceived[i] = Character.getNumericValue(mailsreceived_as_string.charAt(i));
+        }
+        User loaduser = new User(firstname, lastname, email, ID, mailsreceived, maillevel);
         return loaduser;
     }
     
     /*loads all Users from Database*/
     public User[] load_all(){
-        User[] Users = new User[UserCount];
-        for(int i = 1; i <= UserCount; i++){
+        User[] Users = new User[this.count_users()];
+        for(int i = 1; i <= this.count_users(); i++){
             Users[i - 1] = this.load_user(i);
         }
         return Users;
@@ -36,19 +58,21 @@ public class User {
 
     /*add new User to database, id set automatically, raise UserCount for all Users*/
     public void add_user(String firstname, String lastname, String email){
-        int defaultuser = 0;
-        int newID = this.load_user(defaultuser).ID++;
-        int[] receivedmails = null;
+        int newID = this.count_users() + 1;
+        String mailsreceived = "0";
         int newmaillevel = 1;
-        int UserCount = newID;
 
         /*save user to database*/
-
-        /*update UserCount for all Users in Database*/
 
     }
 
     public static void mail_received(int ID, int receivedmail, int newmaillevel){
         /*change User in database*/
+
+    }
+
+    public static void change_user(int ID, String firstname, String lastname, String email){
+        /*change User "ID" in database*/
+
     }
 }
