@@ -468,7 +468,7 @@ public class Mail {
                             calendar.setTime(dates[d]);
                             calendar.set(Calendar.MINUTE, mailssent);
                             Date senddate = calendar.getTime();
-                            sendtimer.schedule(new ActualSendmail(mailtext, subject ,thisuser.EMail), senddate);
+                            sendtimer.schedule(new ActualSendmail(mailtext, thisuser.EMail, subject), senddate);
                             User.mail_received(thisuser.ID, j, userlevel);
                             mailssent++;
                             mailfound = true;
