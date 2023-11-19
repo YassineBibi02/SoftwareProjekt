@@ -13,13 +13,25 @@ public class Mail {
     
 
 
-
+    /**
+    * internal method, wraps the call to EmailService for timed sending
+    * @param mailtext the text of the mail
+    * @param subject the subject of the mail
+    * @param recipient_email the email of the recipient
+    * @return void
+    */
     private static void actual_sendmail(String mailtext, String subject, String recipient_email){
         EmailService service = new EmailService();
         service.sendEmail(recipient_email, subject, mailtext);
         /*send mail*/
     }
 
+    /**
+    * internal method, formats the mail text by replacing variables with actual values
+    * @param recipient the recipient of the mail
+    * @param mailtext the text of the mail
+    * @return the formatted mail text
+    */
     private String format_mail(User recipient, String mailtext){
         String formatted_mail = mailtext;
         formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.Firstname);
@@ -27,7 +39,11 @@ public class Mail {
         return formatted_mail;
     }
 
-
+    /** internal instance of TimerTask to send mails
+    * @param MailText the text of the mail
+    * @param RecipientEmail the email of the recipient
+    * @param Subject the subject of the mail
+    */
     private static class ActualSendmail extends TimerTask{
             public String MailText = "";
             public String RecipientEmail = "";
@@ -311,6 +327,11 @@ public class Mail {
         return Integer.parseInt(level);
     }
 
+    /**
+     * gets the subject of the mail specified with mail_id
+     * @param  mail_id  the mail
+     * @return subject of the mail
+     */
     public String get_subject(int mail_id){
         String line = "";
         try{
@@ -361,7 +382,12 @@ public class Mail {
         return count;
     }
 
-
+    /**
+     * internal method, calculates the days between start_date and end_date
+     * @param  start_date  the start date as int array with year, month, day in that order
+     * @param  end_date  the end date as int array with year, month, day in that order
+     * @return array of dates between start_date and end_date, one date per day
+     */
     private Date[] get_days(int[] start_date, int[] end_date){
         if(start_date.length != 3 || end_date.length != 3){
             return null;
