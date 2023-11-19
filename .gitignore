@@ -1,4 +1,4 @@
 # Default ignored files
-/.vscode
-/.idea
-/.mvn
+#/.vscode
+#/.idea
+#/.mvn
