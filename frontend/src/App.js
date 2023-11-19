@@ -1,5 +1,6 @@
 import React from 'react';
 import SendMailScreenComponent from './SendMailScreen/SendMailScreenComponent';
+import Home from './Home';
 import Header from './components/Header';
 import ReactDOM from 'react-dom';
 import MainMenuScreenComponent from './components/MainMenuScreen/MainMenuScreenComponent';
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route exact path="/" element= { <MainMenuScreenComponent/> }/>
         <Route path="/mail" element= { <SendMailScreenComponent/> }/>
+        <Route path="/Home" element= { <Home/> }/>
         
       </Routes>       
     </Router>
