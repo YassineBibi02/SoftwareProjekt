@@ -1,24 +1,45 @@
 package SWP.Cyberkraftwerk2.Mail;
 
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 /**
  * Class accessing the JavaMail and JakartaMail packages to send Emails
  * @author Tristan Slodowski
- * @version 19.11.2023
+ * @version 20.11.2023
  */
 @Service
 public class EmailService {
     
     // default JavaMailSender to manage sending SimpleMailMessages or MimeMessages
     @Autowired
-    private JavaMailSender mailSender;  // uebernimmt die Einstellungen die in JMailSender für die Bean vorgenommen wurden?
+    private JavaMailSenderImpl mailSender;
 
+
+    public EmailService() {                                     // TODO Properties aus der application.properties auslesen koennen
+        this.mailSender = new JavaMailSenderImpl();             // Standard Implementation des JavaMailSenders; erfuellt unsere Zwecke ausreichend
+        this.mailSender.setHost("smtp.office365.com");
+        this.mailSender.setPort(587);
+        this.mailSender.setPassword("mX3LlqFnO0QwzxRIM9eSChP0lrDfALwK");
+        this.mailSender.setUsername("cyber.kraftwerk2@outlook.com");
+        this.mailSender.getJavaMailProperties().put("mail.smtp.starttls.enable", "true");
+
+        this.mailSender.getJavaMailProperties().put("mail.debug","true");       // TODO Debugging-Option: deaktivieren wenn nicht mehr benötigt!
+
+        /*
+        try {                                                   // TODO testConnection() behalten oder entfernen? (fuer debugging vllt noch hilfreich)
+            mailSender.testConnection();
+        }
+        catch (MessagingException m) {
+            System.out.println("MessagingException: " + m.toString());
+        }
+        */
+    }
     /**
      * Method to send simple txt.-like messages using Email
      * @param target String of the email address of the recipient
@@ -32,6 +53,8 @@ public class EmailService {
         message.setTo(target);                      // "simples Ausfuellen" von Feldern von SimpleMailMessage()
         message.setSubject(subject);
         message.setText(body);
+        message.setFrom("cyber.kraftwerk2@outlook.com");        // TODO Herkunftsadresse aendern je nachdem von wo am Ende gesendet werden soll
+
 
         mailSender.send(message);
     }
@@ -49,6 +72,7 @@ public class EmailService {
         message.setTo(targets);
         message.setSubject(subject);
         message.setText(body);
+        message.setFrom("cyber.kraftwerk2@outlook.com");        // TODO Herkunftsadresse aendern je nachdem von wo am Ende gesendet werden soll
 
         mailSender.send(message);
     }
@@ -65,7 +89,7 @@ public class EmailService {
     public void sendHtmlMessage(String to, String subject, String html_body) throws MessagingException {
         MimeMessage msg = mailSender.createMimeMessage();
 
-        //msg.setFrom(new InternetAddress(from));               kann weggelassen werden; könnte aber vllt dann von einigen Mailservern gefiltert werden
+        msg.setFrom(new InternetAddress("cyber.kraftwerk2@outlook.com"));   // TODO Herkunftsadresse aendern je nachdem von wo gesendet werden soll
         msg.setRecipients(MimeMessage.RecipientType.TO, to);
         msg.setSubject(subject);
 

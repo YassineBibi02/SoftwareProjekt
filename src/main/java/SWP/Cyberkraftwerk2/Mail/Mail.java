@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Mail {
 
-    private static String MAILPATH = "actualpath";
+    private static String MAILPATH = "src\\main\\resources\\mails\\"; // relativer Datenpfad zum mails-Verzeichnis
     private static String TIPPATH = "actualpath";
 
     
