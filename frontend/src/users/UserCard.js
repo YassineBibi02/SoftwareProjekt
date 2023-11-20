@@ -6,43 +6,50 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 
 
-const UserCard = () =>  {
-    
-    const CardStyle = {
-        margin: '20px',
-        marginRight: '200px',
-        padding: '20px',
-        fontSize: '1.5em',
-        display : 'flex',
-        width: '100%',  
-        height: '100%',
-        backgroundColor: 'white',
-        color: 'black',
-        borderRadius: '5px',
-        border: '3px solid orange',
-        cursor: 'pointer',
-        justifyContent: 'space-between',
-        };
-    
-        const CheckmarkStyle = {
-            size: 1000,
-        };
+const UserCard = ({ username, onSelect }) => {
+  console.log(username);
+  const CardStyle = {
+    margin: '10px',
+    padding: '3px',
+    fontSize: '0.9em',
+    display: 'flex',
+    width: '110%',
+    height: '100%',
+    backgroundColor: 'white',
+    color: 'black',
+    borderRadius: '3px',
+    border: '3px solid black',
+    justifyContent: 'space-between',
+  };
+
+  const CheckmarkStyle = {
+    size: 1000,
+  };
+
+  const name = username;
 
   return (
-    <Card style={CardStyle}>
+    <Card style={CardStyle} name={username}>
       <Card.Body>
         <Form>
-            <div key="custom-checkbox">
-                <Form.Check custom type="checkbox" id="SelectionBox" label="" style={CheckmarkStyle} size={1000}/>
-            </div>
+          <div key="custom-checkbox">
+            <Form.Check
+              custom
+              type="checkbox"
+              id="SelectionBox"
+              label=""
+              style={CheckmarkStyle}
+              size={1}
+              name={username}
+              onChange={onSelect}
+            />
+          </div>
         </Form>
-        <Card.Title>Max Mustermann</Card.Title>
-        <Card.Text>
-            Current Level: 1
-        </Card.Text>
+        <Card.Title style={{ fontSize: '1rem' }}>{username}</Card.Title>
+        <Card.Text>Current Level: 1</Card.Text>
       </Card.Body>
     </Card>
   );
-}
+};
 
 export default UserCard;
