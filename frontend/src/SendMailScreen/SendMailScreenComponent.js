@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import UserList from '../users/UserList';
 import DateSetter from './DateSetter';
@@ -7,6 +7,7 @@ import SelectedUsers from './SelectedUsers';
 
 const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
+    const [buttonText, setButtonText] = useState('');
 
     const ButtonStyle = {
         margin: '20px',
@@ -35,23 +36,43 @@ const SendMailScreenComponent = () => {
         const checkedCards = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'));
         var checkedCardNames = checkedCards.map(card => card.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('name'));
         console.log(checkedCardNames);
-        console.log()
     };
+
+    const fetchData = async () => {
+        try {
+            fetch('/test1234')
+            .then(response => response.text())
+            .then(txt => {
+              console.log('Ret', txt)   
+            })
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     return (
         <div>
-            <Header/>
+            <Header />
             <div style={DateContainerStyle}>
-                <DateSetter title={"Start Date(proto)"}/>
-                <DateSetter title={"End Date(proto)"}/>
+                <DateSetter title={"Start Date(proto)"} />
+                <DateSetter title={"End Date(proto)"} />
             </div>
             <div>
                 <UserList onUserCardSelect={handleUserSelectionChange} />
-                <SelectedUsers id="SelectedUsers" usernames={selectedUsers}/>
+                <SelectedUsers id="SelectedUsers" usernames={selectedUsers} />
             </div>
-            <Button variant="primary" size="lg" block style={ButtonStyle} onClick={SendMail}>Bestätigen</Button>
+            <Button variant="primary" size="lg" block style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
+                {buttonText}Bestätigen
+            </Button>
         </div>
     );
 };
 
 export default SendMailScreenComponent;
+
+    
+

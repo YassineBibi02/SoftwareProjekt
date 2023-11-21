@@ -7,7 +7,6 @@ import Form from "react-bootstrap/Form";
 
 
 const UserCard = ({ username, onSelect }) => {
-  console.log(username);
   const CardStyle = {
     margin: '10px',
     padding: '3px',
