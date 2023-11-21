@@ -12,8 +12,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/" element= { <LoginScreen/> }/>
-        <Route path="/menu" element= { <MainMenuScreenComponent/> }/>
+        <Route exact path="/" element= { <MainMenuScreenComponent/> }/>
+        <Route path="/login" element= { <LoginScreen/> }/>
         <Route path="/mail" element= { <SendMailScreenComponent/> }/>    
       </Routes>       
     </Router>
