@@ -8,11 +8,11 @@ import Form from "react-bootstrap/Form";
 
 const UserCard = ({ username, onSelect }) => {
   const CardStyle = {
-    margin: '10px',
+    margin: '1px',
     padding: '3px',
     fontSize: '0.9em',
     display: 'flex',
-    width: '110%',
+    width: '100%',
     height: '100%',
     backgroundColor: 'white',
     color: 'black',
