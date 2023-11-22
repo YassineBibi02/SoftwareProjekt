@@ -1,7 +1,6 @@
 import React from 'react';
 import SendMailScreenComponent from './SendMailScreen/SendMailScreenComponent';
-import Home from './Home';
-import Header from './components/Header';
+import LoginScreen  from './pages/LoginScreen';
 import ReactDOM from 'react-dom';
 import MainMenuScreenComponent from './components/MainMenuScreen/MainMenuScreenComponent';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -14,9 +13,8 @@ function App() {
     <Router>
       <Routes>
         <Route exact path="/" element= { <MainMenuScreenComponent/> }/>
-        <Route path="/mail" element= { <SendMailScreenComponent/> }/>
-        <Route path="/Home" element= { <Home/> }/>
-        
+        <Route path="/login" element= { <LoginScreen/> }/>
+        <Route path="/mail" element= { <SendMailScreenComponent/> }/>    
       </Routes>       
     </Router>
   );  
