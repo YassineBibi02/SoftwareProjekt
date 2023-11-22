@@ -33,7 +33,6 @@ const UserCard = ({ username, onSelect }) => {
         <Form>
           <div key="custom-checkbox">
             <Form.Check
-              custom
               type="checkbox"
               id="SelectionBox"
               label=""
@@ -45,7 +44,7 @@ const UserCard = ({ username, onSelect }) => {
           </div>
         </Form>
         <Card.Title style={{ fontSize: '1rem' }}>{username}</Card.Title>
-        <Card.Text>Current Level: 1</Card.Text>
+        <Card.Text>Aktuelles Level: 1</Card.Text>
       </Card.Body>
     </Card>
   );

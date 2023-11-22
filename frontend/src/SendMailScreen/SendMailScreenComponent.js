@@ -4,6 +4,7 @@ import UserList from '../users/UserList';
 import DateSetter from './DateSetter';
 import { Button } from 'react-bootstrap';
 import SelectedUsers from './SelectedUsers';
+import axios from 'axios';
 
 const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -39,6 +40,7 @@ const SendMailScreenComponent = () => {
     };
 
     const fetchData = async () => {
+        
         try {
             fetch('/test1234')
             .then(response => response.text())
@@ -48,6 +50,7 @@ const SendMailScreenComponent = () => {
         } catch (error) {
             console.error(error);
         }
+        
     };
 
     useEffect(() => {
@@ -58,14 +61,14 @@ const SendMailScreenComponent = () => {
         <div>
             <Header />
             <div style={DateContainerStyle}>
-                <DateSetter title={"Start Date(proto)"} />
-                <DateSetter title={"End Date(proto)"} />
+                <DateSetter title={"Start (proto)"} />
+                <DateSetter title={"Ende (proto)"} />
             </div>
             <div>
                 <UserList onUserCardSelect={handleUserSelectionChange} />
                 <SelectedUsers id="SelectedUsers" usernames={selectedUsers} />
             </div>
-            <Button variant="primary" size="lg" block style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
+            <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
                 {buttonText}Bestätigen
             </Button>
         </div>

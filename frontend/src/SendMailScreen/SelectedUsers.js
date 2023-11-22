@@ -7,6 +7,7 @@ const SelectedUsers = ({ usernames }) => {
         flexDirection: 'column', // Display names in a vertical list
         width: '30%',
         height: '100%',
+        maxHeight: '550px',
         backgroundColor: 'white',
         padding: '10px',
         color: 'black',
@@ -19,7 +20,7 @@ const SelectedUsers = ({ usernames }) => {
 
     return (
         <div style={ListStyle}>
-            <h1>Selected Users</h1>
+            <h1>Ausgewählt</h1>
             {usernames.map((name, index) => (
                 <p key={index}>{name}</p>
             ))}

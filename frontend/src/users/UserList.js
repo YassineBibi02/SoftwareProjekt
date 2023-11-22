@@ -21,7 +21,8 @@ const UserList = ({ onUserCardSelect }) => {
         backgroundColor: 'orange',
     };
 
-    const users = ["Max Mustermann1", "Max Mustermann2", "Max Mustermann3", "Max Mustermann4", "Max Mustermann5", "Max Mustermann6", "Max Mustermann7", "Max Mustermann8", "Max Mustermann9", "Max Mustermann10", "Max Mustermann11", "Max Mustermann12", "Max Mustermann13", "Max Mustermann14"];
+    const users = ["Max Mustermann1", "Max Mustermann2", "Max Mustermann3", "Max Mustermann4", "Max Mustermann5", "Max Mustermann6", "Max Mustermann7", "Max Mustermann8", "Max Mustermann9", "Max Mustermann10", "Max Mustermann11", "Max Mustermann12", "Max Mustermann13", "Max Mustermann14"
+, "Max Mustermann1", "Max Mustermann2", "Max Mustermann3", "Max Mustermann4", "Max Mustermann5", "Max Mustermann6", "Max Mustermann7", "Max Mustermann8", "Max Mustermann9", "Max Mustermann10", "Max Mustermann11", "Max Mustermann12", "Max Mustermann13", "Max Mustermann14"];
 
 
     return (
