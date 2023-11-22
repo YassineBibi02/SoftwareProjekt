@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const MainMenuScreenComponent = () => {
     const navigate = useNavigate();
+    const [buttonText, setButtonText] = useState('');
 
     const ButtonStyle = {
         margin: '50px',
@@ -29,11 +30,30 @@ const MainMenuScreenComponent = () => {
         backgroundColor: 'white',
     }
 
+    
+    const fetchData = async () => {        
+        try {
+            fetch('http://localhost:8080/test1234')
+            .then(response => response.text())
+            .then(txt => {
+              setButtonText(txt);
+            })
+        } catch (error) {
+            console.error(error);
+        }
+        
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+
     return (
         <div>
             <Header/>
             <div style = {Container}> 
-                <button style = {ButtonStyle} onClick={redirectToMail}>Go to Mail</button>
+                <button style = {ButtonStyle} onClick={redirectToMail}>{buttonText}</button>
             </div>
         </div>
     );

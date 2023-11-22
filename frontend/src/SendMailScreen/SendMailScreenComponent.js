@@ -42,7 +42,7 @@ const SendMailScreenComponent = () => {
     const fetchData = async () => {
         
         try {
-            fetch('/test1234')
+            fetch('http://localhost:8080/test1234')
             .then(response => response.text())
             .then(txt => {
               console.log('Ret', txt)   
@@ -54,7 +54,7 @@ const SendMailScreenComponent = () => {
     };
 
     useEffect(() => {
-        fetchData();
+        //fetchData();
     }, []);
 
     return (
