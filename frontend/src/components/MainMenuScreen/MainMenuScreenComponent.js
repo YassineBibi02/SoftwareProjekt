@@ -1,0 +1,62 @@
+import React, { useState, useEffect } from 'react';
+import Header from '../../components/Header';
+import UserList from '../../users/UserList';
+import { useNavigate } from 'react-router-dom';
+
+
+const MainMenuScreenComponent = () => {
+    const navigate = useNavigate();
+    const [buttonText, setButtonText] = useState('');
+
+    const ButtonStyle = {
+        margin: '50px',
+        padding: '20px',
+        backgroundColor: 'red',
+        color: 'white',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderRadius: '50px'
+    };    
+
+    const redirectToMail = () => {
+        navigate('/mail');
+    };
+
+    const Container = {
+        display: 'flex',
+        allignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '10px',
+        backgroundColor: 'white',
+    }
+
+    
+    const fetchData = async () => {        
+        try {
+            fetch('http://localhost:8080/test1234')
+            .then(response => response.text())
+            .then(txt => {
+              setButtonText(txt);
+            })
+        } catch (error) {
+            console.error(error);
+        }
+        
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+
+    return (
+        <div>
+            <Header/>
+            <div style = {Container}> 
+                <button style = {ButtonStyle} onClick={redirectToMail}>{buttonText}</button>
+            </div>
+        </div>
+    );
+};
+
+export default MainMenuScreenComponent;
