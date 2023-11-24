@@ -20,9 +20,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
+        http    
+                .cors().and()
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers(antMatcher("/"), antMatcher("/index.html"), antMatcher("/static/**"),
+                        .requestMatchers(antMatcher("/"), antMatcher("/sendEmail"), antMatcher("/index.html"), antMatcher("/static/**"),
                                 antMatcher("/*.ico"), antMatcher("/test1234"), antMatcher("/*.json"), antMatcher("/*.png"), antMatcher("/api/user")).permitAll()
                         .anyRequest().authenticated()
                 )

@@ -4,16 +4,21 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Class accessing the JavaMail and JakartaMail packages to send Emails
  * @author Tristan Slodowski
  * @version 20.11.2023
  */
+@Configuration
 @Service
+@RestController
 public class EmailService {
     
     // default JavaMailSender to manage sending SimpleMailMessages or MimeMessages

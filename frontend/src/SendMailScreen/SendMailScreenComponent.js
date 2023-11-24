@@ -4,6 +4,7 @@ import UserList from '../users/UserList';
 import DateSetter from './DateSetter';
 import { Button } from 'react-bootstrap';
 import SelectedUsers from './SelectedUsers';
+import axios from 'axios';
 
 const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -31,11 +32,19 @@ const SendMailScreenComponent = () => {
         setSelectedUsers(checkedCardNames);
     };
 
-    const SendMail = () => {
+    const SendMail = async () => {
+        /*
         console.log("SendMailPressed");
         const checkedCards = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'));
         var checkedCardNames = checkedCards.map(card => card.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('name'));
         console.log(checkedCardNames);
+        */
+        try {
+            await axios.get('http://localhost:8080');
+            console.log('Email sent successfully');
+        } catch (error) {
+            console.error('Error sending email:', error);
+        }
     };
 
     const fetchData = async () => {
