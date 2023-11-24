@@ -40,7 +40,7 @@ const SendMailScreenComponent = () => {
         console.log(checkedCardNames);
         */
         try {
-            await axios.get('http://localhost:8080');
+            await axios.get('http://localhost:8080/sendEmail');
             console.log('Email sent successfully');
         } catch (error) {
             console.error('Error sending email:', error);
