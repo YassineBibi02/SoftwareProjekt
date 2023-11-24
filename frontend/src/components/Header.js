@@ -5,7 +5,7 @@ const Header = () => {
         margin: '20px',
         padding: '20px',
         display : 'flex',
-        backgroundColor: 'darkorange',
+        backgroundColor: '#ec6608',
         color: 'white',
         justifyContent: 'space-between',
         alignItems: 'center',
