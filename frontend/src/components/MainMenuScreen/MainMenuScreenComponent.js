@@ -7,12 +7,17 @@ import { useNavigate } from 'react-router-dom';
 const MainMenuScreenComponent = () => {
     const navigate = useNavigate();
     const [buttonText, setButtonText] = useState('');
+    var emailButtonText = "Emails senden";
+    var schulungButtonText = "Schulungsübersicht";
+    var achievementButtonText = "Archievementsübersicht";
+
 
     const ButtonStyle = {
-        margin: '50px',
+        margin: '5px',
         padding: '20px',
-        backgroundColor: 'red',
-        color: 'white',
+        backgroundColor: 'white',
+        color: '#ec6608',
+        borderColor: '#ec6608',
         justifyContent: 'space-between',
         alignItems: 'center',
         borderRadius: '50px'
@@ -24,10 +29,14 @@ const MainMenuScreenComponent = () => {
 
     const Container = {
         display: 'flex',
+        flexDirection: 'column',
         allignItems: 'center',
         justifyContent: 'center',
         borderRadius: '10px',
         backgroundColor: 'white',
+        width: '50%',
+        padding: '20px'
+
     }
 
     
@@ -53,7 +62,9 @@ const MainMenuScreenComponent = () => {
         <div>
             <Header/>
             <div style = {Container}> 
-                <button style = {ButtonStyle} onClick={redirectToMail}>{buttonText}</button>
+                <button style = {ButtonStyle} onClick={redirectToMail}>{emailButtonText}</button>
+                <button style = {ButtonStyle} onClick={redirectToMail}>{schulungButtonText}</button>
+                <button style = {ButtonStyle} onClick={redirectToMail}>{achievementButtonText}</button>
             </div>
         </div>
     );
