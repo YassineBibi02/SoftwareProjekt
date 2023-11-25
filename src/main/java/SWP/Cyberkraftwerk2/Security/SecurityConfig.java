@@ -7,8 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SimpleSavedRequest;
@@ -23,16 +21,12 @@ public class SecurityConfig {
         http    
                 .cors().and()
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers(antMatcher("/"), antMatcher("/sendEmail"), antMatcher("/index.html"), antMatcher("/static/**"),
+                        .requestMatchers(antMatcher("/"), antMatcher("/SendEmail"), antMatcher("/index.html"), antMatcher("/static/**"),
                                 antMatcher("/*.ico"), antMatcher("/test1234"), antMatcher("/*.json"), antMatcher("/*.png"), antMatcher("/api/user")).permitAll()
                         .anyRequest().authenticated()
                 )
-                .csrf((csrf) -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        // https://stackoverflow.com/a/74521360/65681
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                )
-                .addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
+                .csrf().disable()
+//                .addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new SpaWebFilter(), BasicAuthenticationFilter.class)
                 .oauth2Login();
         return http.build();
