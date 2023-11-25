@@ -33,23 +33,24 @@ const SendMailScreenComponent = () => {
     };
 
     const SendMail = async () => {
-        /*
+        
         console.log("SendMailPressed");
         const checkedCards = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'));
         var checkedCardNames = checkedCards.map(card => card.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('name'));
         console.log(checkedCardNames);
-        */
+        
+       
+       const a = ["value1", "value2", "value3"]
         try {
-            const response = await axios.post('http://localhost:8080/SendEmail', null, {
-                params: {
-                    Subject: "subject2",
-                }
-            });
+            const response = await axios.post('http://localhost:8080/SendEmail', checkedCardNames);
             console.log('Email sent successfully');
             console.log('Response:', response.data); // Print out the returned string
         } catch (error) {
             console.error('Error sending email:', error);
         }
+
+
+        
     };
 
     const fetchData = async () => {
