@@ -22,12 +22,6 @@ public class Cyberkraftwerk2Application {
 		this.userRepository = userRepository;
 	}
 
-	/*
-	@GetMapping("/")
-	public String welcomeText (){
-		return "This should be start page dunno";
-	}
-	*/
 	@GetMapping("/test1234")
 	public String welcomeText2 (){
 		return "This is the Server";
