@@ -1,6 +1,8 @@
 package SWP.Cyberkraftwerk2.Module;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 
 @Entity
 @Table(
@@ -8,20 +10,24 @@ import jakarta.persistence.*;
 )
 public class User {
 
-    @Column(
+        @Column(
             nullable = false
-    )
-    public String firstname;
+        )
+        public String firstname;
 
-    @Column(
+        @Column(
             nullable = false
-    )
-    public String lastname;
+        )
+        public String lastname;
 
-    @Column(
+        @Column(
             nullable = false
-    )
-    public String EMail;
+        )
+        public String EMail;
+
+        // Add a default constructor for the entity
+        public User() {
+        }
 
     @Id
     @GeneratedValue(
@@ -91,5 +97,15 @@ public class User {
     public static void change_user(int ID, String firstname, String lastname, String email){
         /*change User "ID" in database*/
 
+    }
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
