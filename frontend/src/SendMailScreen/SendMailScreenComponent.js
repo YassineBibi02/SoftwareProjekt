@@ -40,12 +40,13 @@ const SendMailScreenComponent = () => {
         console.log(checkedCardNames);
         */
         try {
-            await axios.post('http://localhost:8080/SendEmail', null, {
+            const response = await axios.post('http://localhost:8080/SendEmail', null, {
                 params: {
                     Subject: "subject2",
                 }
             });
             console.log('Email sent successfully');
+            console.log('Response:', response.data); // Print out the returned string
         } catch (error) {
             console.error('Error sending email:', error);
         }
