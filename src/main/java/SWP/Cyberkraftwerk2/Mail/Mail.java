@@ -37,8 +37,8 @@ public class Mail {
     */
     private String format_mail(User recipient, String mailtext){
         String formatted_mail = mailtext;
-        formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.Firstname);
-        formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.Lastname);
+        formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.firstname);
+        formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.lastname);
         return formatted_mail;
     }
 

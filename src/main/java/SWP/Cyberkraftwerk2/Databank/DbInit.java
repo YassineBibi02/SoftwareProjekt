@@ -1,6 +1,6 @@
 package SWP.Cyberkraftwerk2.Databank;
 
-import SWP.Cyberkraftwerk2.Models.User;
+import SWP.Cyberkraftwerk2.Module.User;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
@@ -43,9 +43,9 @@ public class DbInit implements CommandLineRunner {
         this.userRepository.deleteAll();
 
         //Create Users
-        User ADMIN = new User("ADMIN");
-        User USER = new User("USER");
-        User SUPERUSER = new User("SUPERUSER");
+        User ADMIN = new User("FirstName", "LastName", "test@Gmail.com", new int[]{1, 2, 3}, 1);
+        User USER = new User("FirstName2", "LastName2", "test2@Gmail.com", new int[]{1, 2, 3}, 1);
+        User SUPERUSER = new User("FirstName2", "LastName2", "test3@Gmail.com", new int[]{1, 2, 3}, 1);
 
         List<User> userList = Arrays.asList(ADMIN,USER,SUPERUSER);
 

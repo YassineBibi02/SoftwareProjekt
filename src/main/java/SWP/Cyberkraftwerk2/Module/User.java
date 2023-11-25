@@ -1,13 +1,32 @@
 package SWP.Cyberkraftwerk2.Module;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(
+        name = "UserList"
+)
 public class User {
 
-    public String Firstname;
+    @Column(
+            nullable = false
+    )
+    public String firstname;
 
-    public String Lastname;
+    @Column(
+            nullable = false
+    )
+    public String lastname;
 
+    @Column(
+            nullable = false
+    )
     public String EMail;
 
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY
+    )
     public int ID;
 
     public int[] MailsReceived;
@@ -15,11 +34,11 @@ public class User {
     public int MailLevel;
 
 
-    public User(String firstname, String lastname, String email, int id, int[] mailsreceived, int maillevel){
-        this.Firstname = firstname;
-        this.Lastname = lastname;
+    public User(String firstname, String lastname, String email, int[] mailsreceived, int maillevel) {
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.EMail = email;
-        this.ID = id;
+
         this.MailsReceived = mailsreceived;
         this.MailLevel = maillevel;
     }
@@ -41,7 +60,7 @@ public class User {
         for(int i = 0; i < mailsreceived_as_string.length(); i++){
             mailsreceived[i] = Character.getNumericValue(mailsreceived_as_string.charAt(i));
         }
-        User loaduser = new User(firstname, lastname, email, ID, mailsreceived, maillevel);
+        User loaduser = new User(firstname, lastname, email, mailsreceived, maillevel);
         return loaduser;
     }
     
