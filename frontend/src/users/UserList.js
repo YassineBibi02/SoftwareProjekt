@@ -52,7 +52,7 @@ const UserList = ({ onUserCardSelect }) => {
                     <Row>
                         {loadedUsers.map((user, index) => (
                             <Col key={index} xs={6} sm={6} md={6} lg={2} style={{marginBottom: '5px'}}>
-                                <UserCard username={JSON.parse(user).firstname} onSelect={onUserCardSelect} />
+                                <UserCard userData={user} onSelect={onUserCardSelect} />
                             </Col>
                         ))}
                     </Row>
