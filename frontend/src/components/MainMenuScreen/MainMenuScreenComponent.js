@@ -27,6 +27,10 @@ const MainMenuScreenComponent = () => {
         navigate('/mail');
     };
 
+    const redirectToLessons = () => {
+        navigate('/lessons');
+    };
+
     const Container = {
         display: 'flex',
         flexDirection: 'column',
@@ -63,7 +67,7 @@ const MainMenuScreenComponent = () => {
             <Header/>
             <div style = {Container}> 
                 <button style = {ButtonStyle} onClick={redirectToMail}>{emailButtonText}</button>
-                <button style = {ButtonStyle} onClick={redirectToMail}>{schulungButtonText}</button>
+                <button style = {ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
                 <button style = {ButtonStyle} onClick={redirectToMail}>{achievementButtonText}</button>
             </div>
         </div>

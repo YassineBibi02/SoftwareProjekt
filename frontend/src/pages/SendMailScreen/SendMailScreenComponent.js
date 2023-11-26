@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Header from '../components/Header';
-import UserList from '../users/UserList';
+import Header from '../../components/Header';
+import UserList from '../../users/UserList';
 import DateSetter from './DateSetter';
 import { Button } from 'react-bootstrap';
 import SelectedUsers from './SelectedUsers';
