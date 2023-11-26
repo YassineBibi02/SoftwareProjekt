@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import UserList from '../users/UserList';
+import React, { useState } from 'react';
+import Header from '../../components/Header';
+import UserList from '../../users/UserList';
 import DateSetter from './DateSetter';
 import { Button } from 'react-bootstrap';
 import SelectedUsers from './SelectedUsers';
@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
-    const [buttonText, setButtonText] = useState('');
+    //const [buttonText, setButtonText] = useState('');
 
     const ButtonStyle = {
         margin: '20px',
@@ -32,44 +32,19 @@ const SendMailScreenComponent = () => {
         setSelectedUsers(checkedCardNames);
     };
 
-    const SendMail = async () => {
-        
+    const SendMail = async () => {        
         console.log("SendMailPressed");
         const checkedCards = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'));
-        var checkedCardNames = checkedCards.map(card => card.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('name'));
-        console.log(checkedCardNames);
-        
-       
-       const a = ["value1", "value2", "value3"]
+        var checkedCardNames = checkedCards.map(card => card.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('mail'));
+        console.log(checkedCardNames);        
         try {
-            const response = await axios.post('http://localhost:8080/SendEmail', checkedCardNames);
+            const response = await axios.post('http://localhost:8080/api/methode/SendEmail', checkedCardNames);
             console.log('Email sent successfully');
             console.log('Response:', response.data); // Print out the returned string
         } catch (error) {
             console.error('Error sending email:', error);
-        }
-
-
-        
+        }        
     };
-
-    const fetchData = async () => {
-        
-        try {
-            fetch('http://localhost:8080/test1234')
-            .then(response => response.text())
-            .then(txt => {
-              console.log('Ret', txt)   
-            })
-        } catch (error) {
-            console.error(error);
-        }
-        
-    };
-
-    useEffect(() => {
-        //fetchData();
-    }, []);
 
     return (
         <div>
@@ -83,7 +58,7 @@ const SendMailScreenComponent = () => {
                 <SelectedUsers id="SelectedUsers" usernames={selectedUsers} />
             </div>
             <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
-                {buttonText}Bestätigen
+                Bestätigen
             </Button>
         </div>
     );

@@ -1,12 +1,9 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-
-import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 
 
-const UserCard = ({ username, onSelect }) => {
+const UserCard = ({ userData, onSelect }) => {
   const CardStyle = {
     margin: '1px',
     padding: '3px',
@@ -25,10 +22,10 @@ const UserCard = ({ username, onSelect }) => {
     size: 1000,
   };
 
-  const name = username;
+  const jsonData = JSON.parse(userData);
 
   return (
-    <Card style={CardStyle} name={username}>
+    <Card style={CardStyle} name={jsonData.firstname} mail={jsonData.EMail}>
       <Card.Body>
         <Form>
           <div key="custom-checkbox">
@@ -38,12 +35,12 @@ const UserCard = ({ username, onSelect }) => {
               label=""
               style={CheckmarkStyle}
               size={1}
-              name={username}
+              name={jsonData.firstname}
               onChange={onSelect}
             />
           </div>
         </Form>
-        <Card.Title style={{ fontSize: '1rem' }}>{username}</Card.Title>
+        <Card.Title style={{ fontSize: '1rem' }}>{jsonData.firstname}</Card.Title>
         <Card.Text>Aktuelles Level: 1</Card.Text>
       </Card.Body>
     </Card>

@@ -28,7 +28,7 @@ const UserList = ({ onUserCardSelect }) => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/GetUsers');
+                const response = await axios.get('http://localhost:8080/api/methode/GetUsers');
                 console.log('Raw data: ', response.data)
                 setLoadedUsers(response.data);
                 console.log('Array: ' , loadedUsers);
@@ -52,7 +52,7 @@ const UserList = ({ onUserCardSelect }) => {
                     <Row>
                         {loadedUsers.map((user, index) => (
                             <Col key={index} xs={6} sm={6} md={6} lg={2} style={{marginBottom: '5px'}}>
-                                <UserCard username={JSON.parse(user).firstname} onSelect={onUserCardSelect} />
+                                <UserCard userData={user} onSelect={onUserCardSelect} />
                             </Col>
                         ))}
                     </Row>
