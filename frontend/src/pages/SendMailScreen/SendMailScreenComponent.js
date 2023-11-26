@@ -38,7 +38,7 @@ const SendMailScreenComponent = () => {
         var checkedCardNames = checkedCards.map(card => card.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('mail'));
         console.log(checkedCardNames);        
         try {
-            const response = await axios.post('http://localhost:8080/SendEmail', checkedCardNames);
+            const response = await axios.post('http://localhost:8080/api/methode/SendEmail', checkedCardNames);
             console.log('Email sent successfully');
             console.log('Response:', response.data); // Print out the returned string
         } catch (error) {

@@ -28,7 +28,7 @@ const UserList = ({ onUserCardSelect }) => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/GetUsers');
+                const response = await axios.get('http://localhost:8080/api/methode/GetUsers');
                 console.log('Raw data: ', response.data)
                 setLoadedUsers(response.data);
                 console.log('Array: ' , loadedUsers);
