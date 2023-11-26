@@ -21,8 +21,8 @@ public class SecurityConfig {
         http    
                 .cors().and()
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers(antMatcher("/"), antMatcher("/SendEmail"), antMatcher("/index.html"), antMatcher("/static/**"),
-                                antMatcher("/*.ico"), antMatcher("/GetUsers"),  antMatcher("/GetUser"),antMatcher("/test1234"), antMatcher("/*.json"), antMatcher("/*.png"), antMatcher("/api/user")).permitAll()
+                        .requestMatchers(antMatcher("/"), antMatcher("/index.html"), antMatcher("/static/**"),
+                                antMatcher("/*.ico"), antMatcher("/GetUsers"),  antMatcher("/api/methode/*"),antMatcher("/test1234"), antMatcher("/*.json"), antMatcher("/*.png"),  antMatcher("/api/user")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf().disable()
