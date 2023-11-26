@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -37,17 +38,24 @@ public class Cyberkraftwerk2Application {
 
 	@PostMapping("/SendEmail")
 	public String sendEmail(@RequestBody String[] Subject) {
-		//EmailService mail = new EmailService();
-		//mail.sendEmail("soenke_harder@gmx.de", "Test", "Hello World");
+		EmailService mail = new EmailService();
+		mail.sendEmail(Subject[0], "Test", "Hello World");
 		System.out.println(Arrays.toString(Subject));
-		return "Subject is : |" + Arrays.toString(Subject) + "|";
+		return "Received : " + Arrays.toString(Subject) + "";
 	}
 
 	@GetMapping("/GetUsers")
 	public String[] getAllUsers (){
-		User test1 = new User("Soenke", "Harder", "soenke_harder@gmx.de", new int[]{1, 2}, 0);
-		User test2 = new User("Aaron", "Sava", "testest@fakemail.de", new int[]{1, 2}, 0);
-		return new String[]{test1.toJson(), test2.toJson()};
+		//User test1 = new User("Soenke", "Harder", "soenke_harder@gmx.de", new int[]{1, 2}, 0);
+		//User test2 = new User("Aaron", "Sava", "testest@fakemail.de", new int[]{1, 2}, 0);
+		List<User> UserList = this.userRepository.findAll();
+		String[] result = new String[UserList.size()];
+		int i = 0;
+		for (User n : UserList) {
+			result[i] = (n.toJson());
+			i++;
+		}
+		return result;
 	}
 
 	//Mostly for testing
