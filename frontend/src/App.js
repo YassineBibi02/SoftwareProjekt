@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import MainMenuScreenComponent from './components/MainMenuScreen/MainMenuScreenComponent';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';  
+import HereingefallenScreen from './pages/HereingefallenScreen';
 
 
 
@@ -13,6 +14,7 @@ function App() {
     <Router>
       <Routes>
         <Route exact path="/" element= { <MainMenuScreenComponent/> }/>
+        <Route path ="/hereingefallen" element = {<HereingefallenScreen/>}/>
         <Route path="/login" element= { <LoginScreen/> }/>
         <Route path="/mail" element= { <SendMailScreenComponent/> }/>    
       </Routes>       
