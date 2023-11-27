@@ -8,16 +8,19 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+
+/**
+ * Class to handle the data and logic for sending mails
+ * @author BM
+ */
 public class Mail {
 
     private static String MAILPATH = "src\\main\\resources\\mails\\"; // relativer Datenpfad zum mails-Verzeichnis
     private static String TIPPATH = "actualpath";
 
-    
-
 
     /**
-    * internal method, wraps the call to EmailService for timed sending
+    * internal method, wraps the call to EmailService for timed sending, attempts HTML first, then falls back to plain text
     * @param mailtext the text of the mail
     * @param subject the subject of the mail
     * @param recipient_email the email of the recipient
@@ -25,22 +28,14 @@ public class Mail {
     */
     private static void actual_sendmail(String mailtext, String subject, String recipient_email){
         EmailService service = new EmailService();
-        service.sendEmail(recipient_email, subject, mailtext);
-        /*send mail*/
+        try{
+            service.sendHtmlMessage(recipient_email, subject, mailtext);
+            }
+        catch(Exception e){
+            service.sendEmail(recipient_email, subject, mailtext);
+            }
     }
 
-    /**
-    * internal method, formats the mail text by replacing variables with actual values
-    * @param recipient the recipient of the mail
-    * @param mailtext the text of the mail
-    * @return the formatted mail text
-    */
-    private String format_mail(User recipient, String mailtext){
-        String formatted_mail = mailtext;
-        formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.firstname);
-        formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.lastname);
-        return formatted_mail;
-    }
 
     /** internal instance of TimerTask to send mails
     */
@@ -79,9 +74,6 @@ public class Mail {
         /*format link*/
         if(!text_copy.contains("LINK")){
             return false;
-            }
-        else{
-            text_copy = text_copy.replace("LINK", TIPPATH);
             }
         /*scan list.txt for last line*/    
         String lastline = "";
@@ -152,9 +144,6 @@ public class Mail {
         /*check for LINK and format*/
         if(!text_copy.contains("LINK")){
             return false;
-            }
-        else{
-            text_copy = text_copy.replace("LINK", TIPPATH);
             }
         /*count lines in list*/
         int total_lines = 0;
@@ -280,9 +269,6 @@ public class Mail {
             Scanner mailreader = new Scanner(mail);
             for(int i = 0; i < total_lines; i++){
                 maillines[i] = mailreader.nextLine();
-                if(maillines[i].contains(TIPPATH)){
-                    maillines[i] = maillines[i].replace(TIPPATH, "LINK");
-                    }
                 }
             mailreader.close();
             }
@@ -382,6 +368,23 @@ public class Mail {
         return count;
     }
 
+
+    /**
+    * internal method, formats the mail text by replacing variables with actual values
+    * @param recipient the recipient of the mail
+    * @param mailtext the text of the mail
+    * @return the formatted mail text
+    */
+    private String format_mail(User recipient, String mailtext, int userid, int mailid){
+        String formatted_mail = mailtext;
+        formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.Firstname);
+        formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.Lastname);
+        /*format Link */
+        mailtext = mailtext.replace("LINK", TIPPATH + "?UID=" + String.valueOf(userid) + "&MID=" + String.valueOf(mailid));
+        return formatted_mail;
+    }
+
+
     /**
      * internal method, calculates the days between start_date and end_date
      * @param  start_date  the start date as int array with year, month, day in that order
@@ -432,13 +435,17 @@ public class Mail {
         /*timed send*/
         Timer sendtimer = new Timer();
         Calendar calendar = Calendar.getInstance();
+        boolean[] first_iteration = new boolean[recipients.length];
+        for(int i = 0; i < recipients.length; i++){
+            first_iteration[i] = true;
+            }
         /*for each date*/
         for(int d = 0; d < dates.length; d++){
             int mailssent = 0;
             /*for each user*/
             for(int i = 0; i < recipients.length; i++){
                 User thisuser = recipients[i];
-                int userlevel = thisuser.MailLevel;
+                int userlevel = User.get_userlevel(thisuser.ID);
                 int[] possiblemails = new int[count_mails() + 1];
                 while(userlevel <= 3) {
                     boolean mailfound = false;
@@ -453,7 +460,7 @@ public class Mail {
                             }
                         }
                     /*compare with mails user has already received*/
-                    int[] mailsreceived = thisuser.MailsReceived;
+                    int[] mailsreceived = User.get_received(thisuser.ID);
                     for(int j = 1; j < mailsreceived.length; j++){
                         if(mailsreceived[j] == 1){
                             possiblemails[j] = 0;
@@ -463,25 +470,31 @@ public class Mail {
                     for(int j = 1; j < possiblemails.length; j++){
                         if(possiblemails[j] == 1){
                             String mailtext = get_mail(j);
-                            mailtext = format_mail(thisuser, mailtext);
+                            mailtext = format_mail(thisuser, mailtext, thisuser.ID, j);
                             String subject = get_subject(j);
                             calendar.setTime(dates[d]);
                             calendar.set(Calendar.MINUTE, mailssent);
                             Date senddate = calendar.getTime();
                             sendtimer.schedule(new ActualSendmail(mailtext, thisuser.EMail, subject), senddate);
-                            User.mail_received(thisuser.ID, j, userlevel);
+                            /*log mail as received, gets reset when user clicks link*/
+                            User.mail_received(thisuser.ID, j);
                             mailssent++;
                             mailfound = true;
                             break;
                             }
                         }
-                    if(mailfound){
-                        break;
-                        }
-                    else{
+                    if(first_iteration[i] == true && !mailfound){
+                        /*raise userlevel, but only if no received mails this cycle to ensure integrity*/
+                        first_iteration[i] = false;
+                        User.raise_userlevel(thisuser.ID);
                         userlevel++;
                         }
+                    else{
+                        first_iteration[i] = false;
+                        break;
+                        }
                     }
+                    
                 }
             }    
     }

@@ -36,11 +36,11 @@ public class User {
     private int MailLevel;
 
 
-    public User(String firstname, String lastname, String email, int id, int[] mailsreceived, int maillevel){
+    public User(String firstname, String lastname, String email, int[] mailsreceived, int maillevel){
         this.Firstname = firstname;
         this.Lastname = lastname;
         this.EMail = email;
-        this.ID = id;
+        
         this.MailsReceived = mailsreceived;
         this.MailLevel = maillevel;
     }
@@ -64,7 +64,7 @@ public class User {
         for(int i = 0; i < mailsreceived_as_string.length(); i++){
             mailsreceived[i] = Character.getNumericValue(mailsreceived_as_string.charAt(i));
         }
-        User loaduser = new User(firstname, lastname, email, ID, mailsreceived, maillevel);
+        User loaduser = new User(firstname, lastname, email, mailsreceived, maillevel);
         return loaduser;
     }
     
