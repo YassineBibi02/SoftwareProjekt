@@ -37,17 +37,19 @@ const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
   }
 
   const logout = () => {
-    console.log("Noch nicht implementiert\n" , cookies);
+    console.log("Started Logging out\n" );
 
-  //    fetch('/api/logout', {
-  //      method: 'POST', credentials: 'include',
-  //      headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] } // <.>
-  //    })
-  //      .then(res => res.json())
-  //      .then(response => {
-  //        window.location.href = `${response.logoutUrl}?id_token_hint=${response.idToken}`
-  //          + `&post_logout_redirect_uri=${window.location.origin}`;
-  //      });
+      fetch('/api/logout', {
+        method: 'POST', credentials: 'include',
+        headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] } // <.>
+      })
+        .then(res => res.json())
+        .then(response => {
+          window.location.href = `${response.logoutUrl}?id_token_hint=${response.idToken}`
+            + `&post_logout_redirect_uri=${window.location.origin}`;
+        });
+
+        console.log("Finished Logging out\n" );
   }
 
   const button = authenticated ?
@@ -58,7 +60,7 @@ const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
 
   const message = user ?
   <h2>Welcome, {user.name}!</h2> :
-  <p>Please log in to manage your JUG Tour.</p>;
+  <p>Please log in.</p>;
 
 
   return (

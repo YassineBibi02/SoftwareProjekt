@@ -1,4 +1,4 @@
-package SWP.Cyberkraftwerk2.Security;
+package SWP.Cyberkraftwerk2.Controller;
 
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
 import SWP.Cyberkraftwerk2.Mail.EmailService;
