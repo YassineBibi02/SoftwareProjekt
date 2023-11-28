@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import DateSetter from './DateSetter';
@@ -11,7 +11,25 @@ const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
     //const [buttonText, setButtonText] = useState('');
     const navigate = useNavigate();
-    const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
+
+
+//THE LOGIN BLOCK
+    const [cookies] = useCookies(['XSRF-TOKEN']); // Calls the CSRF token. VERY IMPORTANT
+    const [user, setUser] = useState(undefined);
+
+     useEffect(() => {
+    //        fetchData();
+             fetch('api/user', { credentials: 'include' }) // <.>
+                .then(response => response.text())
+                .then(body => {
+                    if (body === '') {
+                         navigate('/login');
+                    } else {
+                        setUser(JSON.parse(body));
+                    }
+                });
+        }, []);
+//THE LOGIN BLOCK
 
     const ButtonStyle = {
         margin: '20px',
@@ -58,35 +76,28 @@ const SendMailScreenComponent = () => {
     navigate('/login');
     }
 
-    if(cookies['XSRF-TOKEN']==undefined){
-        return (
-            <div>
-                <Header />
-                <h1>Bitte einloggen</h1>
-                <Button variant="primary" size="lg" style={ButtonStyle} onClick={login}>
-                    Einloggen
-                </Button>
-            </div>
-        );
-    }
+const Body = <p>Waiting for login</p>;
 
-
-    return (
+if (user){
+  Body =
         <div>
-            <Header />
-            <div style={DateContainerStyle}>
-                <DateSetter title={"Start (proto)"} />
-                <DateSetter title={"Ende (proto)"} />
-            </div>
-            <div>
-                <UserList onUserCardSelect={handleUserSelectionChange} />
-                <SelectedUsers id="SelectedUsers" usernames={selectedUsers} />
-            </div>
-            <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
-                Bestätigen
-            </Button>
+                    <Header />
+                    <div style={DateContainerStyle}>
+                        <DateSetter title={"Start (proto)"} />
+                        <DateSetter title={"Ende (proto)"} />
+                    </div>
+                    <div>
+                        <UserList onUserCardSelect={handleUserSelectionChange} />
+                        <SelectedUsers id="SelectedUsers" usernames={selectedUsers} />
+                    </div>
+                    <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
+                        Bestätigen
+                    </Button>
         </div>
-    );
+}else
+
+
+    return ( Body  );
 };
 
 export default SendMailScreenComponent;

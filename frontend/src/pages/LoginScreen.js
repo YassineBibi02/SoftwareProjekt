@@ -10,14 +10,12 @@ const LoginScreen = () => {
 
 //User variables
 const [authenticated, setAuthenticated] = useState(false);
-const [loading, setLoading] = useState(false);
 const [user, setUser] = useState(undefined);
 const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
 
 
 
   useEffect(() => {
-    setLoading(true);
     fetch('api/user', { credentials: 'include' }) // <.>
     .then(response => response.text())
     .then(body => {
@@ -27,9 +25,8 @@ const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
             setUser(JSON.parse(body));
             setAuthenticated(true);
         }
-     setLoading(false);
     });
-}, [setAuthenticated, setLoading, setUser])
+}, [setAuthenticated, setUser])
 
   const login = () => {
     let port = (window.location.port ? ':' + window.location.port : '');
@@ -63,9 +60,6 @@ const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
   <h2>Welcome, {user.name}!</h2> :
   <p>Please log in to manage your JUG Tour.</p>;
 
-  if (loading) {
-      return <p>Loading...</p>;
-  }
 
   return (
       <div>
