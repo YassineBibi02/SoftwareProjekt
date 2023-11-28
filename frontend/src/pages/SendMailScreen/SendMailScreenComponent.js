@@ -76,10 +76,8 @@ const SendMailScreenComponent = () => {
     navigate('/login');
     }
 
-const Body = <p>Waiting for login</p>;
 
-if (user){
-  Body =
+const Body = user ?
         <div>
                     <Header />
                     <div style={DateContainerStyle}>
@@ -93,8 +91,8 @@ if (user){
                     <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
                         Bestätigen
                     </Button>
-        </div>
-}else
+        </div>:
+         <p>Waiting for login</p>;
 
 
     return ( Body  );
