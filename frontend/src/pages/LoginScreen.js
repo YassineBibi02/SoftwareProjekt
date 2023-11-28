@@ -46,7 +46,8 @@ const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
         .then(res => res.json())
         .then(response => {
           window.location.href = `${response.logoutUrl}?id_token_hint=${response.idToken}`
-            + `&post_logout_redirect_uri=${window.location.origin}`;
+           + `&post_logout_redirect_uri=http://${window.location.hostname}:3000/`;                     //MAKE SURE TO MODIFY THIS
+           console.log(`&post_logout_redirect_uri=`+`http://${window.location.hostname}:3000/` );
         });
 
         console.log("Finished Logging out\n" );

@@ -45,5 +45,6 @@ public class UserController {
         logoutDetails.put("idToken", idToken.getTokenValue());
         request.getSession(false).invalidate();
         return ResponseEntity.ok().body(logoutDetails);
+
     }
 }
