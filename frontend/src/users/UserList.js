@@ -13,13 +13,13 @@ const UserList = ({ onUserCardSelect }) => {
         height: '100%',
         color: 'black',
         borderRadius: '5px',
-        border: '3px solid black',
+        border: '3px solid #ec6608',
         justifyContent: 'center',
         overflow: 'scroll',
         margin: '0 auto', 
         float: 'left',
         marginLeft: '40px',
-        backgroundColor: 'orange',
+        backgroundColor: 'lightgrey',
         padding: '5px',
     };
 
