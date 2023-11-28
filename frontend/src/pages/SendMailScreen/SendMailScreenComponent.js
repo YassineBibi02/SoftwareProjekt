@@ -78,6 +78,7 @@ const SendMailScreenComponent = () => {
 
 
 const Body = user ?
+         ////// noramle page
         <div>
                     <Header />
                     <div style={DateContainerStyle}>
@@ -92,6 +93,8 @@ const Body = user ?
                         Bestätigen
                     </Button>
         </div>:
+
+        //// sicherheite , damit man nicht sieht was er nicht sehen soll BIS WIR EINE BESSERE LöSUNG HABEN
          <p>Waiting for login</p>;
 
 
