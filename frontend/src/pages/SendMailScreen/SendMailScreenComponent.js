@@ -4,11 +4,14 @@ import UserList from '../../users/UserList';
 import DateSetter from './DateSetter';
 import { Button } from 'react-bootstrap';
 import SelectedUsers from './SelectedUsers';
-import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
     //const [buttonText, setButtonText] = useState('');
+    const navigate = useNavigate();
+    const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
 
     const ButtonStyle = {
         margin: '20px',
@@ -38,13 +41,35 @@ const SendMailScreenComponent = () => {
         var checkedCardNames = checkedCards.map(card => card.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('mail'));
         console.log(checkedCardNames);        
         try {
-            const response = await axios.post('http://localhost:8080/api/methode/SendEmail', checkedCardNames);
+            //const response = await axios.post('http://localhost:8080/api/methode/SendEmail', checkedCardNames);
+            fetch('/api/methode/SendEmail', {
+                      method: 'POST', credentials: 'include',
+                      headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] }, // <.>
+                       body: checkedCardNames
+                })
+               .then(response => response.text()).then(data => console.log("Response:",data));
             console.log('Email sent successfully');
-            console.log('Response:', response.data); // Print out the returned string
         } catch (error) {
             console.error('Error sending email:', error);
         }        
     };
+
+    const login = () => {
+    navigate('/login');
+    }
+
+    if(cookies['XSRF-TOKEN']==undefined){
+        return (
+            <div>
+                <Header />
+                <h1>Bitte einloggen</h1>
+                <Button variant="primary" size="lg" style={ButtonStyle} onClick={login}>
+                    Einloggen
+                </Button>
+            </div>
+        );
+    }
+
 
     return (
         <div>

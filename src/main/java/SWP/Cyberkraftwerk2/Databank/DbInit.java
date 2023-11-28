@@ -43,7 +43,7 @@ public class DbInit implements CommandLineRunner {
         this.userRepository.deleteAll();
 
         //Create Users
-        User ADMIN = new User("FirstName", "LastName", "test@Gmail.com", new int[]{1, 2, 3}, 1);
+        User ADMIN = new User("Yassine", "LastName", "yassinebibi2002@Gmail.com", new int[]{1, 2, 3}, 1);
         User USER = new User("FirstName2", "LastName2", "test2@Gmail.com", new int[]{1, 2, 3}, 1);
         User SUPERUSER = new User("FirstName2", "LastName2", "test3@Gmail.com", new int[]{1, 2, 3}, 1);
 

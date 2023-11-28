@@ -1,6 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Header = () => {
+    const navigate = useNavigate();
+
     const HeaderStyle = {
         margin: '20px',
         padding: '20px',
@@ -23,13 +27,21 @@ const Header = () => {
         fontSize: '1.5em'
     }
 
+    const goToHome = () => {
+        navigate('/');
+    };
+
+    const login = () => {
+        navigate('/login');
+    }
+
     return (
         <div style={HeaderStyle}>
-            <p style={left}>
-                Cyber-Kraftwerk
-            </p>
+             <p style={left} onClick={goToHome} role="button" tabIndex={0}>
+                            Cyber-Kraftwerk
+             </p>
             <p style={right}>Einstellungen</p>
-            <p style={right}>Abmelden</p>
+            <p style={right} onClick={login} >Login</p>
         </div>
     );
 };

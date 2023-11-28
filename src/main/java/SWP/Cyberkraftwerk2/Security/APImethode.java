@@ -3,9 +3,10 @@ package SWP.Cyberkraftwerk2.Security;
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
 import SWP.Cyberkraftwerk2.Mail.EmailService;
 import SWP.Cyberkraftwerk2.Module.User;
-import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,8 @@ public class APImethode {
         }
         return result;
     }
+
+
     @PostMapping("/SendEmail")
     public String sendEmail(@RequestBody String[] Subject) {
         EmailService mail = new EmailService();
@@ -43,6 +46,7 @@ public class APImethode {
         System.out.println(Arrays.toString(Subject));
         return "Received : " + Arrays.toString(Subject) + "";
     }
+
 
     /**
      * Method accessible by the Frontend to blame a User for falling for a Phishing-Mail
@@ -78,4 +82,10 @@ public class APImethode {
         return "This is the Server";
     }
 
+
+    @PostMapping("/testback")
+    public String testback(@RequestBody String subject) {
+        System.out.println(subject);
+        return "Received : " + subject + "";
+    }
 }
