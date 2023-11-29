@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import { useNavigate } from 'react-router-dom';
-import LoginContext from '../../globals/globalContext';
+
 
 const MainMenuScreenComponent = () => {
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const MainMenuScreenComponent = () => {
     var schulungButtonText = "Schulungsübersicht";
     var achievementButtonText = "Archievementsübersicht";
 
-    const {isLoggedIn, setLoggedIn} = useContext(LoginContext);
+
 
 
     const ButtonStyle = {
@@ -49,7 +49,7 @@ const MainMenuScreenComponent = () => {
 
 
     useEffect(() => {
-//    console.log("isLoggedIn: "+isLoggedIn());
+//        fetchData();
     }, []);
 
 

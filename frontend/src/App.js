@@ -8,13 +8,12 @@ import { BrowserRouter as Router, Route, Routes , Navigate} from 'react-router-d
 import 'bootstrap/dist/css/bootstrap.min.css';  
 import HereingefallenScreen from './pages/HereingefallenScreen';
 import WatchLessonScreen from './pages/WatchLessonScreen/WatchLessonScreen';
-import { LoginProvider } from './globals/globalContext';
+
 
 
 
 function App() {
   return (
-  <LoginProvider>
     <Router>
       <Routes>
         <Route exact path="/" element= { <MainMenuScreenComponent/> }/>
@@ -26,7 +25,6 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>
-   </LoginProvider>
   );  
 }
 

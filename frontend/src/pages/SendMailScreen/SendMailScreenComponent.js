@@ -1,4 +1,4 @@
-import React, { useState,useEffect,useContext } from 'react';
+import React, { useState,useEffect } from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import DateSetter from './DateSetter';
@@ -6,8 +6,6 @@ import { Button } from 'react-bootstrap';
 import SelectedUsers from './SelectedUsers';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import LoginContext from '../../globals/globalContext';
-
 
 const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -17,13 +15,19 @@ const SendMailScreenComponent = () => {
 
 //THE LOGIN BLOCK
     const [cookies] = useCookies(['XSRF-TOKEN']); // Calls the CSRF token. VERY IMPORTANT
-    const {isLoggedIn, setLoggedIn} = useContext(LoginContext);
+    const [user, setUser] = useState(undefined);
 
-    //RUFT CONTEXT- WENN NICHT EINGELOGGT DANN LOGIN SCREEN
      useEffect(() => {
-//        console.log("isLoggedIn: "+isLoggedIn());
-          if(!isLoggedIn()){navigate('/login');}
-
+    //        fetchData();
+             fetch('api/user', { credentials: 'include' }) // <.>
+                .then(response => response.text())
+                .then(body => {
+                    if (body === '') {
+                         navigate('/login');
+                    } else {
+                        setUser(JSON.parse(body));
+                    }
+                });
         }, []);
 //THE LOGIN BLOCK
 
@@ -75,8 +79,8 @@ const SendMailScreenComponent = () => {
     navigate('/login');
     }
 
-//Uberpruft ob eingeloggt und zeigt entschprechendes an die Seite
-const Body = isLoggedIn() ?
+
+const Body = user ?
          ////// noramle page
         <div>
                     <Header />
@@ -97,7 +101,7 @@ const Body = isLoggedIn() ?
          <p>Waiting for login</p>;
 
 
-    return ( Body );
+    return ( Body  );
 };
 
 export default SendMailScreenComponent;
