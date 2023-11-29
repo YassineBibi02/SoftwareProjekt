@@ -62,8 +62,11 @@ const SendMailScreenComponent = () => {
             //const response = await axios.post('http://localhost:8080/api/methode/SendEmail', checkedCardNames);
             fetch('/api/methode/SendEmail', {
                       method: 'POST', credentials: 'include',
-                      headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] }, // <.>
-                       body: checkedCardNames
+                      headers: { 
+                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                        'Content-Type': 'application/json',
+                     }, // <.>
+                    body: JSON.stringify(checkedCardNames)
                 })
                .then(response => response.text()).then(data => console.log("Response:",data));
             console.log('Email sent successfully');

@@ -39,7 +39,7 @@ public class APImethode {
     }
 
 
-    @PostMapping("/SendEmail")
+    @PostMapping(value="/SendEmail", consumes = "application/json")
     public String sendEmail(@RequestBody String[] Subject) {
         EmailService mail = new EmailService();
         mail.sendEmail(Subject[0], "Test", "Hello World");
