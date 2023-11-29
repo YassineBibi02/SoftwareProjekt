@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Container } from 'reactstrap';
 import { useCookies } from 'react-cookie';
 import Header from '../components/Header';
-
+import LoginContext from '../globals/globalContext';
 
 const LoginScreen = () => {
+
+//global variables
+const {isLoggedIn, setLoggedIn} = useContext(LoginContext);
 
 
 //User variables
@@ -16,14 +19,17 @@ const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
 
 
   useEffect(() => {
-    fetch('api/user', { credentials: 'include' }) // <.>
+//    console.log("isLoggedIn: "+isLoggedIn());
+     fetch('api/user', { credentials: 'include' }) // <.>
     .then(response => response.text())
     .then(body => {
         if (body === '') {
             setAuthenticated(false);
+
         } else {
             setUser(JSON.parse(body));
             setAuthenticated(true);
+            setLoggedIn(true);
         }
     });
 }, [setAuthenticated, setUser])
@@ -38,7 +44,7 @@ const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
 
   const logout = () => {
     console.log("Started Logging out\n" );
-
+    setLoggedIn(false);
       fetch('/api/logout', {
         method: 'POST', credentials: 'include',
         headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] } // <.>
@@ -53,13 +59,13 @@ const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
         console.log("Finished Logging out\n" );
   }
 
-  const button = authenticated ?
+  const button = isLoggedIn() ?
       <div>
         <Button color="link" onClick={logout}>Logout</Button>
       </div> :
       <Button color="primary" onClick={login}>Login</Button>;
 
-  const message = user ?
+  const message = user&& isLoggedIn() ?
   <h2>Welcome, {user.name}!</h2> :
   <p>Please log in.</p>;
 
