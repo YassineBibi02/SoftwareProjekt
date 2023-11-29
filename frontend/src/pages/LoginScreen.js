@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Container } from 'reactstrap';
 import { useCookies } from 'react-cookie';
 import Header from '../components/Header';
-
+import LoginContext from '../globals/globalContext';
 
 const LoginScreen = () => {
 
@@ -12,7 +12,7 @@ const LoginScreen = () => {
 const [authenticated, setAuthenticated] = useState(false);
 const [user, setUser] = useState(undefined);
 const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
-
+const {isLoggedIn, setLoggedIn , userV , setUserV} = useContext(LoginContext);
 
 
   useEffect(() => {
@@ -24,9 +24,12 @@ const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
         } else {
             setUser(JSON.parse(body));
             setAuthenticated(true);
+            setLoggedIn(true);
+            setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email });
+            console.log(userV);
         }
     });
-}, [setAuthenticated, setUser])
+}, [setAuthenticated, setUser, setUserV])
 
   const login = () => {
     let port = (window.location.port ? ':' + window.location.port : '');
@@ -38,7 +41,7 @@ const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
 
   const logout = () => {
     console.log("Started Logging out\n" );
-
+    setLoggedIn(false);
       fetch('/api/logout', {
         method: 'POST', credentials: 'include',
         headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] } // <.>

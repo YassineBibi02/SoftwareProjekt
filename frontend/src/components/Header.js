@@ -1,8 +1,9 @@
-import React from 'react';
+import React , {useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import LoginContext from '../globals/globalContext';
 
 const Header = () => {
+    const {isLoggedIn, setLoggedIn,userV} = useContext(LoginContext);
     const navigate = useNavigate();
 
     const HeaderStyle = {
@@ -41,7 +42,15 @@ const Header = () => {
                             Cyber-Kraftwerk
              </p>
             <p style={right}>Einstellungen</p>
-            <p style={right} onClick={login} >Login</p>
+            {
+                    isLoggedIn() ?
+                    <>
+                        <p style={right}>Welcome {userV.given_name}</p>
+                        <p style={right} onClick={login} >Logout</p>
+                    </>
+                    :
+                    <p style={right} onClick={login} >Login</p>
+            }
         </div>
     );
 };

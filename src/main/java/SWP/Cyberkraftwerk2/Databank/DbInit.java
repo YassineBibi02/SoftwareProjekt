@@ -33,8 +33,8 @@ public class DbInit implements CommandLineRunner {
      * @param args Arguments
      * @throws Exception Errors
      */
-//    @Override
-//    public void run(String... args) throws Exception {
+    @Override
+    public void run(String... args) throws Exception {
 //        //Delete Users from before
 //        this.userRepository.deleteAll();
 //
@@ -53,5 +53,5 @@ public class DbInit implements CommandLineRunner {
 //
 //        //save to Db
 //        this.userRepository.saveAll(userList);
-//    }
+    }
 }
