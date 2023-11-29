@@ -56,6 +56,7 @@ public class Mail {
     }
 
 
+
     /**
     * saves a new mail
     * Mail MUST at least contain placeholder "LINK" to be valid
@@ -377,8 +378,8 @@ public class Mail {
     */
     private String format_mail(User recipient, String mailtext, int userid, int mailid){
         String formatted_mail = mailtext;
-        formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.Firstname);
-        formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.Lastname);
+        formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.firstname);
+        formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.lastname);
         /*format Link */
         mailtext = mailtext.replace("LINK", TIPPATH + "?UID=" + String.valueOf(userid) + "&MID=" + String.valueOf(mailid));
         return formatted_mail;

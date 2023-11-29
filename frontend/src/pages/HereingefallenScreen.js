@@ -1,6 +1,9 @@
 import React from "react";
 import Youtube from "react-youtube";
 import gifImage from "./../images/its_a_trap.gif";
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
 
 function HereingefallenScreen() {
 
@@ -96,6 +99,32 @@ function HereingefallenScreen() {
         margin: 'auto'
     }
 
+    const [username, setUsername] = useState('');                           // State Variable um den Usernamen des Nutzers uebernehmen zu koennen
+    const queryParams = new URLSearchParams(window.location.search);
+    var user_payload = [queryParams.get("UID"), queryParams.get("MID")];    // Auslesen der Parameter in der URL
+    let ignore = false;                 // Boolean zum Umgehen der Doppel-Ausfuehrung von useEffect() im React-Dev-Mode
+
+    useEffect(() => {
+        const blameUser = async (user_params) => {
+            if(user_params[0] == null || user_params[1] == null) {              // ohne Parameter kann man sich den POST sparen
+                console.log("No payload to read from! Did you access the site without UID and/or MID?");
+                return
+            }
+            if(!ignore) {
+                try {
+                    console.log("Blaming user with UID " + user_params[0] + " for clicking the Link of Mail with MID " + user_params[1] + ".");
+                    const response = await axios.post('http://localhost:8080/api/methode/BlameUser', user_params);      // Uebergeben der Parameter an das Java-Backend
+                    console.log('Response: ', response.data)
+                    setUsername(response.data);             // Java-Backend antwortet mit Namen des Nutzers
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        };
+        blameUser(user_payload);
+        return () => { ignore = true };
+    }, []);
+
     return (
         <div>
             <div style={container1}>
@@ -106,7 +135,7 @@ function HereingefallenScreen() {
                 <img src={gifImage} alt="GIF" style={GifStyle}/>
             </div>
             <div style={container2}>
-                <p style = {FontStyleBig}>Hallo "Username",</p>
+                <p style = {FontStyleBig}>Hallo {username},</p>
                 <p style = {FontStyle}>
                     Du bist auf unsere Fake-Phishing E-Mail hereingefallen. In einem realen Szenario könnte diese Seite dazu dienen, 
                     dich zur Eingabe persönlicher Daten wie deines Passworts oder deiner Kreditkarteninformationen zu verleiten. 

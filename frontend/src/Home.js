@@ -5,6 +5,7 @@ import { Button, Container } from 'reactstrap';
 import { useCookies } from 'react-cookie';
 import Header from './components/Header';
 
+
 const Home = () => {
 
   const [authenticated, setAuthenticated] = useState(false);
@@ -36,16 +37,38 @@ const Home = () => {
   }
 
   const logout = () => {
-    fetch('/api/logout', {
-      method: 'POST', credentials: 'include',
-      headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] } // <.>
+
+//    fetch('/api/logout', {
+//      method: 'POST', credentials: 'include',
+//      headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] } // <.>
+//    })
+//      .then(res => res.json())
+//      .then(response => {
+//        window.location.href = `${response.logoutUrl}?id_token_hint=${response.idToken}`
+//          + `&post_logout_redirect_uri=${window.location.origin}`;
+//      });
+  console.log("AUTH= ",authenticated,"\n\n",user,"\n\n",cookies);
+  try {
+
+
+    fetch('/api/methode/testback', {
+          method: 'POST', credentials: 'include',
+          headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] }, // <.>
+            body: "TESTER"
     })
-      .then(res => res.json())
-      .then(response => {
-        window.location.href = `${response.logoutUrl}?id_token_hint=${response.idToken}`
-          + `&post_logout_redirect_uri=${window.location.origin}`;
-      });
+    .then(response => response.text()).then(data => console.log(data));
+
+//    console.log(response);
+    } catch (error) {
+        console.error('Error debugging', error);
+    }
+
+
+
+
+
   }
+
 
   const message = user ?
     <h2>Welcome, {user.name}!</h2> :

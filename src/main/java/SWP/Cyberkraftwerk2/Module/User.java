@@ -1,7 +1,8 @@
 package SWP.Cyberkraftwerk2.Module;
 
-import jakarta.persistence.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.*;
+
 import java.io.IOException;
 
 @Entity
@@ -13,12 +14,12 @@ public class User {
     @Column(
         nullable = false
     )
-    public String Firstname;
+    public String firstname;
 
     @Column(
         nullable = false
     )
-    public String Lastname;
+    public String lastname;
 
     @Column(
         nullable = false
@@ -36,9 +37,12 @@ public class User {
     private int MailLevel;
 
 
+    public User() {
+    }
+
     public User(String firstname, String lastname, String email, int[] mailsreceived, int maillevel){
-        this.Firstname = firstname;
-        this.Lastname = lastname;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.EMail = email;
         
         this.MailsReceived = mailsreceived;
