@@ -42,6 +42,7 @@ const {isLoggedIn, setLoggedIn , userV , setUserV} = useContext(LoginContext);
   const logout = () => {
     console.log("Started Logging out\n" );
     setLoggedIn(false);
+    setUserV({ given_name: "", email:""});
       fetch('/api/logout', {
         method: 'POST', credentials: 'include',
         headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] } // <.>
