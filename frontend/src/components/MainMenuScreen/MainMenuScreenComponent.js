@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useContext} from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import { useNavigate } from 'react-router-dom';
+import LoginContext from '../../globals/globalContext';
 
 
 const MainMenuScreenComponent = () => {
@@ -10,6 +11,22 @@ const MainMenuScreenComponent = () => {
     var emailButtonText = "Emails senden";
     var schulungButtonText = "Schulungsübersicht";
     var achievementButtonText = "Archievementsübersicht";
+    const {isLoggedIn, setLoggedIn,userV,setUserV} = useContext(LoginContext);
+
+
+  useEffect(() => {
+    fetch('api/user', { credentials: 'include' }) // <.>
+    .then(response => response.text())
+    .then(body => {
+        if (body === '') {
+
+        } else {
+            setLoggedIn(true);
+            setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email });
+        }
+    });
+}, [setUserV])
+
 
 
     const ButtonStyle = {
@@ -44,28 +61,17 @@ const MainMenuScreenComponent = () => {
     }
 
     
-    const fetchData = async () => {        
-        try {
-            fetch('http://localhost:8080/test1234')
-            .then(response => response.text())
-            .then(txt => {
-              setButtonText(txt);
-            })
-        } catch (error) {
-            console.error(error);
-        }
-        
-    };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+
+
+
+
 
 
     return (
         <div>
             <Header/>
-            <div style = {Container}> 
+            <div style = {Container}>
                 <button style = {ButtonStyle} onClick={redirectToMail}>{emailButtonText}</button>
                 <button style = {ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
                 <button style = {ButtonStyle} onClick={redirectToMail}>{achievementButtonText}</button>

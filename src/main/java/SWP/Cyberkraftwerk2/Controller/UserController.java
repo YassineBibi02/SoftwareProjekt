@@ -1,4 +1,4 @@
-package SWP.Cyberkraftwerk2.Security;
+package SWP.Cyberkraftwerk2.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,9 @@ import java.util.Map;
 public class UserController {
     private final ClientRegistration registration;
 
+
     public UserController(ClientRegistrationRepository registrations) {
-        this.registration = registrations.findByRegistrationId("okta");
+        this.registration = registrations.findByRegistrationId("kraftcloud-ops-thymeleaf-client");
     }
 
     @GetMapping("/api/user")
@@ -44,5 +45,6 @@ public class UserController {
         logoutDetails.put("idToken", idToken.getTokenValue());
         request.getSession(false).invalidate();
         return ResponseEntity.ok().body(logoutDetails);
+
     }
 }

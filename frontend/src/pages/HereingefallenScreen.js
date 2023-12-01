@@ -1,9 +1,17 @@
 import React from "react";
+import Youtube from "react-youtube";
+import gifImage from "./../images/its_a_trap.gif";
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 
 function HereingefallenScreen() {
+
+    const videos = [
+        {id: "dQw4w9WgXcQ&ab_channel=RickAstley", title: "Was ist Phishing?"},
+        {id: "dQw4w9WgXcQ&ab_channel=RickAstley", title: "Wie erkennt man Phishing?"},
+        {id: "dQw4w9WgXcQ&ab_channel=RickAstley", title: "Wie kann man Phishing vermeiden?"}
+    ];
 
     const FontStyle = {
         color: '#333',
@@ -34,6 +42,13 @@ function HereingefallenScreen() {
         ...FontStyle
     }
 
+    const container3 = {
+        display: 'flex',
+        flexDirection: 'row',
+        margin: '20px',
+        justifyContent: 'space-between'
+    }
+
     const HeaderStyle = {
         color: '#ec6608',
         fontSize: '3em',
@@ -58,6 +73,30 @@ function HereingefallenScreen() {
 
     const MarginLeft = {
         marginLeft: '50px'
+    }
+
+    const VideoOptions = {
+        height: '300',
+        width: '500'
+    }
+
+    const VideoTitle = {
+        textAlign: 'center',
+        color: '#ec6608',
+        fontSize: '1.2em',
+        marginBottom: '10px'
+    }
+
+    const GifCOntainer = {
+        marginTop: '20px',
+        display: 'flex',
+        alignItems: 'center'
+    }
+
+    const GifStyle = {
+        maxWidth: '100%',
+        maxHeight: '400px',
+        margin: 'auto'
     }
 
     const [username, setUsername] = useState('');                           // State Variable um den Usernamen des Nutzers uebernehmen zu koennen
@@ -89,8 +128,11 @@ function HereingefallenScreen() {
     return (
         <div>
             <div style={container1}>
-                <h1 style={HeaderStyle}>Du bist hereingefallen!</h1>
-                <p style={FontStyleSmall}>Keine Sorge, das ist nicht echt</p>
+                <h1 style={HeaderStyle}>Du bist hereingefallen!</h1>    
+                {/*<p style={FontStyleSmall}>Keine Sorge, das ist nicht echt</p>*/}           
+            </div>
+            <div style ={GifCOntainer}>
+                <img src={gifImage} alt="GIF" style={GifStyle}/>
             </div>
             <div style={container2}>
                 <p style = {FontStyleBig}>Hallo {username},</p>
@@ -101,16 +143,28 @@ function HereingefallenScreen() {
                 </p>
                 <p style = {FontStyle}>
                     Hier sind einige Tipps um zuküntflich solche Betrügereien zu vermeiden:
-                    <u1>
-                        <li style = {MarginLeft}>Überprüfe die E-Mail des Versenders. Sollte diese E-mail wirklich von diesem Versender stammen?</li>
-                        <li style = {MarginLeft}>Klicke nicht auf verdächtige Links und lade keine unbekannten Dateien herunter.</li>
-                        <li style = {MarginLeft}>Überprüfe die Legitimität einer Website, bevor du dort irgendwelche Daten eingibst.</li>
-                    </u1>
-                <p style={{...FontStyle, ...MarginTop}}>Um dazu mehr zu erfahren, klicke auf den folgenden Link:</p>
+                </p>
+                <ul>
+                    <li style = {MarginLeft}>Überprüfe die E-Mail des Versenders. Sollte diese E-mail wirklich von diesem Versender stammen?</li>
+                    <li style = {MarginLeft}>Klicke nicht auf verdächtige Links und lade keine unbekannten Dateien herunter.</li>
+                    <li style = {MarginLeft}>Überprüfe die Legitimität einer Website, bevor du dort irgendwelche Daten eingibst.</li>
+                </ul>
+                <p style={{...FontStyle, ...MarginTop}}>Um dazu mehr zu erfahren, klicke auf den folgenden Link oder schau dir eines der unteren Videos an:</p>
                 <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley" target="_blank" rel="noopener noreferrer">
                     Weitere Informationen
                 </a>
-                </p>
+            </div>
+            <div style={container3}>
+                {videos.map((video) => (
+                        <div key={video.id}>
+                            <h2 style={VideoTitle}>{video.title}</h2>
+                            <Youtube
+                                videoID={video.id}
+                                opts={VideoOptions}
+                                onReady={(event) => event.target.pauseVideo()}
+                            />
+                        </div>
+                    ))}
             </div>
         </div>
 

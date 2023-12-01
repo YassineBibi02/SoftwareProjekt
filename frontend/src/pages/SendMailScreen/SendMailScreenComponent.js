@@ -1,14 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import DateSetter from './DateSetter';
 import { Button } from 'react-bootstrap';
 import SelectedUsers from './SelectedUsers';
-import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
     //const [buttonText, setButtonText] = useState('');
+    const navigate = useNavigate();
+
+
+//THE LOGIN BLOCK
+    const [cookies] = useCookies(['XSRF-TOKEN']); // Calls the CSRF token. VERY IMPORTANT
+    const [user, setUser] = useState(undefined);
+
+     useEffect(() => {
+    //        fetchData();
+             fetch('api/user', { credentials: 'include' }) // <.>
+                .then(response => response.text())
+                .then(body => {
+                    if (body === '') {
+                         navigate('/login');
+                    } else {
+                        setUser(JSON.parse(body));
+                    }
+                });
+        }, []);
+//THE LOGIN BLOCK
 
     const ButtonStyle = {
         margin: '20px',
@@ -38,30 +59,49 @@ const SendMailScreenComponent = () => {
         var checkedCardNames = checkedCards.map(card => card.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('mail'));
         console.log(checkedCardNames);        
         try {
-            const response = await axios.post('http://localhost:8080/api/methode/SendEmail', checkedCardNames);
+            //const response = await axios.post('http://localhost:8080/api/methode/SendEmail', checkedCardNames);
+            fetch('/api/methode/SendEmail', {
+                      method: 'POST', credentials: 'include',
+                      headers: { 
+                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                        'Content-Type': 'application/json',
+                     }, // <.>
+                    body: JSON.stringify(checkedCardNames)
+                })
+               .then(response => response.text()).then(data => console.log("Response:",data));
             console.log('Email sent successfully');
-            console.log('Response:', response.data); // Print out the returned string
         } catch (error) {
             console.error('Error sending email:', error);
         }        
     };
 
-    return (
+    const login = () => {
+    navigate('/login');
+    }
+
+
+const Body = user ?
+         ////// noramle page
         <div>
-            <Header />
-            <div style={DateContainerStyle}>
-                <DateSetter title={"Start (proto)"} />
-                <DateSetter title={"Ende (proto)"} />
-            </div>
-            <div>
-                <UserList onUserCardSelect={handleUserSelectionChange} />
-                <SelectedUsers id="SelectedUsers" usernames={selectedUsers} />
-            </div>
-            <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
-                Bestätigen
-            </Button>
-        </div>
-    );
+                    <Header />
+                    <div style={DateContainerStyle}>
+                        <DateSetter title={"Start (proto)"} />
+                        <DateSetter title={"Ende (proto)"} />
+                    </div>
+                    <div>
+                        <UserList onUserCardSelect={handleUserSelectionChange} />
+                        <SelectedUsers id="SelectedUsers" usernames={selectedUsers} />
+                    </div>
+                    <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
+                        Bestätigen
+                    </Button>
+        </div>:
+
+        //// sicherheite , damit man nicht sieht was er nicht sehen soll BIS WIR EINE BESSERE LöSUNG HABEN
+         <p>Waiting for login</p>;
+
+
+    return ( Body  );
 };
 
 export default SendMailScreenComponent;
