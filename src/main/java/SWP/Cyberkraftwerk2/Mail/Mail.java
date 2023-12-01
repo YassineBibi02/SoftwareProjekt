@@ -1,6 +1,5 @@
 package SWP.Cyberkraftwerk2.Mail;
 
-import SWP.Cyberkraftwerk2.Module.User;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -8,15 +7,29 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+
+import SWP.Cyberkraftwerk2.User.*;
+
 
 /**
  * Class to handle the data and logic for sending mails
  * @author BM
  */
+@Repository
 public class Mail {
 
     private static String MAILPATH = "src\\main\\resources\\mails\\"; // relativer Datenpfad zum mails-Verzeichnis
     private static String TIPPATH = "actualpath";
+
+    private UserService userservice;
+
+    @Autowired
+    public Mail(UserService userService){
+        this.userservice = userService;
+    }
 
 
     /**
@@ -54,7 +67,6 @@ public class Mail {
                     actual_sendmail(MailText, Subject, RecipientEmail);
                 }
     }
-
 
 
     /**
@@ -376,12 +388,12 @@ public class Mail {
     * @param mailtext the text of the mail
     * @return the formatted mail text
     */
-    private String format_mail(User recipient, String mailtext, int userid, int mailid){
+    private String format_mail(User recipient, String mailtext, int mailid){
         String formatted_mail = mailtext;
-        formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.firstname);
-        formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.lastname);
+        formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.get_firstname());
+        formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.get_lastname());
         /*format Link */
-        mailtext = mailtext.replace("LINK", TIPPATH + "?UID=" + String.valueOf(userid) + "&MID=" + String.valueOf(mailid));
+        mailtext = mailtext.replace("LINK", TIPPATH + "?UID=" + String.valueOf(recipient.get_ID()) + "&MID=" + String.valueOf(mailid));
         return formatted_mail;
     }
 
@@ -430,7 +442,7 @@ public class Mail {
     * @param end_date to keep it easy, length 3 int array with year, month, day in that order
     * @return void
     */
-    public void send_mails(User[] recipients, int[] start_date, int[] end_date){
+    public void send_mails(int[] recipients, int[] start_date, int[] end_date){
         /*get days*/
         Date[] dates = get_days(start_date, end_date);
         /*timed send*/
@@ -445,8 +457,8 @@ public class Mail {
             int mailssent = 0;
             /*for each user*/
             for(int i = 0; i < recipients.length; i++){
-                User thisuser = recipients[i];
-                int userlevel = User.get_userlevel(thisuser.ID);
+                User thisuser = userservice.getUserByID(recipients[i]);
+                int userlevel = thisuser.get_maillevel();
                 int[] possiblemails = new int[count_mails() + 1];
                 while(userlevel <= 3) {
                     boolean mailfound = false;
@@ -461,7 +473,7 @@ public class Mail {
                             }
                         }
                     /*compare with mails user has already received*/
-                    int[] mailsreceived = User.get_received(thisuser.ID);
+                    int[] mailsreceived = thisuser.get_mailsreceived();
                     for(int j = 1; j < mailsreceived.length; j++){
                         if(mailsreceived[j] == 1){
                             possiblemails[j] = 0;
@@ -471,14 +483,14 @@ public class Mail {
                     for(int j = 1; j < possiblemails.length; j++){
                         if(possiblemails[j] == 1){
                             String mailtext = get_mail(j);
-                            mailtext = format_mail(thisuser, mailtext, thisuser.ID, j);
+                            mailtext = format_mail(thisuser, mailtext, j);
                             String subject = get_subject(j);
                             calendar.setTime(dates[d]);
                             calendar.set(Calendar.MINUTE, mailssent);
                             Date senddate = calendar.getTime();
-                            sendtimer.schedule(new ActualSendmail(mailtext, thisuser.EMail, subject), senddate);
+                            sendtimer.schedule(new ActualSendmail(mailtext, thisuser.get_email(), subject), senddate);
                             /*log mail as received, gets reset when user clicks link*/
-                            User.mail_received(thisuser.ID, j);
+                            userservice.mail_received(thisuser.get_ID(), j);
                             mailssent++;
                             mailfound = true;
                             break;
@@ -487,7 +499,7 @@ public class Mail {
                     if(first_iteration[i] == true && !mailfound){
                         /*raise userlevel, but only if no received mails this cycle to ensure integrity*/
                         first_iteration[i] = false;
-                        User.raise_userlevel(thisuser.ID);
+                        userservice.raise_userlevel(thisuser.get_ID());
                         userlevel++;
                         }
                     else{
