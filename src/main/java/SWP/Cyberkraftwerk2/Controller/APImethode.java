@@ -3,7 +3,7 @@ package SWP.Cyberkraftwerk2.Controller;
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
 import SWP.Cyberkraftwerk2.Lessons.LessonControl;
 import SWP.Cyberkraftwerk2.Mail.EmailService;
-import SWP.Cyberkraftwerk2.User.User;
+import SWP.Cyberkraftwerk2.Module.User;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
@@ -66,9 +66,9 @@ public class APImethode {
         int mid = Integer.parseInt(ids[1]);
         ObjectMapper objMapper = new ObjectMapper();
 
-//        User.mail_clicked(uid, mid);    // User fuer das Anklicken der Mail anschwaerzen
+        User.mail_clicked(uid, mid);    // User fuer das Anklicken der Mail anschwaerzen
 
-        User gotcha = this.userRepository.findById(uid);        // Abrufen des passenden Nutzers aus der Datenbank
+        User gotcha = this.userRepository.findByID(uid);        // Abrufen des passenden Nutzers aus der Datenbank
         if(gotcha == null) {
             return "[USER NOT FOUND]";
         }
