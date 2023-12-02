@@ -1,6 +1,6 @@
 package SWP.Cyberkraftwerk2.Databank;
 
-import SWP.Cyberkraftwerk2.User.User;
+import SWP.Cyberkraftwerk2.Module.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +16,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findByLastname(String Lastname);
 
-    User findById(int ID);
+    User findByID(int ID);
 }
