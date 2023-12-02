@@ -1,10 +1,8 @@
 package SWP.Cyberkraftwerk2.User;
 
-import org.springframework.stereotype.Repository;
-
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 
 @Repository
@@ -18,7 +16,7 @@ public class UserService {
     }
 
     public User getUserByID(int ID){
-        return this.userRepository.findByID(ID);
+        return this.userRepository.findById(ID);
     }
     
 
