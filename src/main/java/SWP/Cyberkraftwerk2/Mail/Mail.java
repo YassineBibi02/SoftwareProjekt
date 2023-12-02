@@ -1,17 +1,16 @@
 package SWP.Cyberkraftwerk2.Mail;
 
 
+import SWP.Cyberkraftwerk2.Module.User;
+import SWP.Cyberkraftwerk2.Module.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-
-import SWP.Cyberkraftwerk2.User.*;
 
 
 /**

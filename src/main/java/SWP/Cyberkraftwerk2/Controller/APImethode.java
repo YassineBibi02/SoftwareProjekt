@@ -66,9 +66,9 @@ public class APImethode {
         int mid = Integer.parseInt(ids[1]);
         ObjectMapper objMapper = new ObjectMapper();
 
-        User.mail_clicked(uid, mid);    // User fuer das Anklicken der Mail anschwaerzen
+        //User.mail_clicked(uid, mid);    // User fuer das Anklicken der Mail anschwaerzen
 
-        User gotcha = this.userRepository.findByID(uid);        // Abrufen des passenden Nutzers aus der Datenbank
+        User gotcha = this.userRepository.findByid(uid);        // Abrufen des passenden Nutzers aus der Datenbank
         if(gotcha == null) {
             return "[USER NOT FOUND]";
         }
