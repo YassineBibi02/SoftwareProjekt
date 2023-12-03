@@ -1,5 +1,5 @@
 import React from "react";
-import Youtube from "react-youtube";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import gifImage from "./../images/its_a_trap.gif";
 import axios from "axios";
 import { useEffect } from "react";
@@ -8,9 +8,8 @@ import { useState } from "react";
 function HereingefallenScreen() {
 
     const videos = [
-        {id: "dQw4w9WgXcQ&ab_channel=RickAstley", title: "Was ist Phishing?"},
-        {id: "dQw4w9WgXcQ&ab_channel=RickAstley", title: "Wie erkennt man Phishing?"},
-        {id: "dQw4w9WgXcQ&ab_channel=RickAstley", title: "Wie kann man Phishing vermeiden?"}
+        {title: "Was ist Phishing?", url:"https://www.youtube.com/embed/DPjb0YWQXyo?si=BXq2RN6Frmy_7y21"},
+        {title: "Wie erkennt man Phishing?", url:"https://www.youtube.com/embed/XgF42Jb8jxo?si=u9BJL4M46INHLGNa"},
     ];
 
     const FontStyle = {
@@ -22,10 +21,12 @@ function HereingefallenScreen() {
 
     const container1 = {
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '20px'
+        marginBottom: '20px',
+        margin: '150px',
+        maxHeight: '10px'
     }
 
     const container2 = {
@@ -39,32 +40,27 @@ function HereingefallenScreen() {
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
         backgroundColor: '#fff',
         textAlign: 'left',
-        ...FontStyle
+        ...FontStyle,
     }
 
     const container3 = {
         display: 'flex',
         flexDirection: 'row',
         margin: '20px',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
     }
 
     const HeaderStyle = {
         color: '#ec6608',
-        fontSize: '3em',
+        fontSize: '6em',
         marginBottom: '10px',
         fontFamily: 'Arial, sans-serif'
     }
 
-    const FontStyleSmall = {
-        color: '#ec6608',
-        fontSize: '1em',
-        fontStyle: 'italic'
-    }
-
     const FontStyleBig = {
         ...FontStyle,
-        fontSize: '1.5'
+        fontSize: '1.5em'
     }
 
     const MarginTop = {
@@ -75,9 +71,9 @@ function HereingefallenScreen() {
         marginLeft: '50px'
     }
 
-    const VideoOptions = {
-        height: '300',
-        width: '500'
+    const VideoContainer ={
+        flex: '0 0 calc(50% - 10px)',
+        marginBottom: '20px'
     }
 
     const VideoTitle = {
@@ -89,8 +85,9 @@ function HereingefallenScreen() {
 
     const GifCOntainer = {
         marginTop: '20px',
+        marginBottom: '20px',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
     }
 
     const GifStyle = {
@@ -128,11 +125,12 @@ function HereingefallenScreen() {
     return (
         <div>
             <div style={container1}>
-                <h1 style={HeaderStyle}>Du bist hereingefallen!</h1>    
-                {/*<p style={FontStyleSmall}>Keine Sorge, das ist nicht echt</p>*/}           
-            </div>
-            <div style ={GifCOntainer}>
-                <img src={gifImage} alt="GIF" style={GifStyle}/>
+                <div>
+                    <h1 style={HeaderStyle}>Du bist hereingefallen!</h1>  
+                </div> 
+                <div style ={GifCOntainer}>
+                    <img src={gifImage} alt="GIF" style={GifStyle}/>
+                </div>          
             </div>
             <div style={container2}>
                 <p style = {FontStyleBig}>Hallo {username},</p>
@@ -149,22 +147,25 @@ function HereingefallenScreen() {
                     <li style = {MarginLeft}>Klicke nicht auf verdächtige Links und lade keine unbekannten Dateien herunter.</li>
                     <li style = {MarginLeft}>Überprüfe die Legitimität einer Website, bevor du dort irgendwelche Daten eingibst.</li>
                 </ul>
-                <p style={{...FontStyle, ...MarginTop}}>Um dazu mehr zu erfahren, klicke auf den folgenden Link oder schau dir eines der unteren Videos an:</p>
+                <p style={{...FontStyle, ...MarginTop}}>Um dazu mehr zu erfahren, schau dir eines der unteren Videos an.</p>
+                <p style={{...FontStyle}}>Vergiss auch nicht unsere zahlreichen Schulungen anzuschauen und dein Wissen mit den dazugehörigen Quizzes zu testen!</p>
                 <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley" target="_blank" rel="noopener noreferrer">
-                    Weitere Informationen
+                    Zu den Schulungen
                 </a>
             </div>
             <div style={container3}>
-                {videos.map((video) => (
-                        <div key={video.id}>
-                            <h2 style={VideoTitle}>{video.title}</h2>
-                            <Youtube
-                                videoID={video.id}
-                                opts={VideoOptions}
-                                onReady={(event) => event.target.pauseVideo()}
-                            />
+                {videos.map((video, index) => (
+                    <div key={index} style={VideoContainer}>
+                        <h2 style={VideoTitle}>{video.title}</h2>
+                        <div className="ratio ratio-16x9">
+                            <iframe
+                                src={video.url}
+                                title={video.title}
+                                allowFullScreen
+                            ></iframe>
                         </div>
-                    ))}
+                    </div>
+                ))}
             </div>
         </div>
 
