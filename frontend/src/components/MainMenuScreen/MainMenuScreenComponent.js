@@ -1,33 +1,15 @@
-import React, { useState, useEffect ,useContext} from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import { useNavigate } from 'react-router-dom';
-import LoginContext from '../../globals/globalContext';
-
-
+import EmployeeInfo from './EmployeeInfo.js';
 const MainMenuScreenComponent = () => {
     const navigate = useNavigate();
     const [buttonText, setButtonText] = useState('');
     var emailButtonText = "Emails senden";
     var schulungButtonText = "Schulungsübersicht";
     var achievementButtonText = "Archievementsübersicht";
-    const {isLoggedIn, setLoggedIn,userV,setUserV} = useContext(LoginContext);
-
-
-  useEffect(() => {
-    fetch('api/user', { credentials: 'include' }) // <.>
-    .then(response => response.text())
-    .then(body => {
-        if (body === '') {
-
-        } else {
-            setLoggedIn(true);
-            setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email });
-        }
-    });
-}, [setUserV])
-
-
+    var nutzerVerwaltenText = "Nutzer Verwalten";
 
     const ButtonStyle = {
         margin: '5px',
@@ -35,9 +17,9 @@ const MainMenuScreenComponent = () => {
         backgroundColor: 'white',
         color: '#ec6608',
         borderColor: '#ec6608',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderRadius: '50px'
+        borderRadius: '50px',
+        width: '100%', 
+        marginBottom: '10px', 
     };    
 
     const redirectToMail = () => {
@@ -50,31 +32,51 @@ const MainMenuScreenComponent = () => {
 
     const Container = {
         display: 'flex',
-        flexDirection: 'column',
-        allignItems: 'center',
-        justifyContent: 'center',
+        flexDirection: 'column', 
+        alignItems: 'center',
         borderRadius: '10px',
         backgroundColor: 'white',
-        width: '50%',
-        padding: '20px'
+        width: '66%',
+        padding: '20px',
+    };
 
-    }
+    const infoContainer = {
+        marginLeft: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '33%', 
+    };
 
-    
-
-
-
-
-
-
+/*    const fetchData = async () => {        
+        try {
+            fetch('http://localhost:8080/test1234')
+            .then(response => response.text())
+            .then(txt => {
+              setButtonText(txt);
+            });
+        } catch (error) {
+            console.error(error);
+        }    
+    };
+*/
+    useEffect(() => {
+        //fetchData();
+    }, []);
 
     return (
         <div>
             <Header/>
-            <div style = {Container}>
-                <button style = {ButtonStyle} onClick={redirectToMail}>{emailButtonText}</button>
-                <button style = {ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
-                <button style = {ButtonStyle} onClick={redirectToMail}>{achievementButtonText}</button>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={Container}>
+                    <button style={ButtonStyle} onClick={redirectToMail}>{emailButtonText}</button>
+                    <button style={ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
+                    <button style={ButtonStyle} onClick={redirectToMail}>{achievementButtonText}</button>
+                    <button style={ButtonStyle} onClick={redirectToMail}>{nutzerVerwaltenText}</button>  
+                </div>
+                <div style={infoContainer}>
+                    <EmployeeInfo name="Max Mustermann" level={buttonText} />
+                </div>
             </div>
         </div>
     );
