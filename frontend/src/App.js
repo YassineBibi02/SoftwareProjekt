@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Routes , Navigate} from 'react-router-d
 import 'bootstrap/dist/css/bootstrap.min.css';  
 import HereingefallenScreen from './pages/HereingefallenScreen';
 import WatchLessonScreen from './pages/WatchLessonScreen/WatchLessonScreen';
+import EditLessonScreenComponent from './pages/EditLessonScreen/EditLessonScreenComponent';
 import { LoginProvider } from './globals/globalContext';
 
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/mail" element= { <SendMailScreenComponent/> }/>    
         <Route path="/lessons" element= { <LessonsScreenComponent/> }/>
         <Route path="/lessons/:lessonID" element={<WatchLessonScreen/>} />
+        <Route path="/lessonEdit/:lessonID" element={<EditLessonScreenComponent/>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>
