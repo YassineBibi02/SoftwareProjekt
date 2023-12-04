@@ -6,6 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.json.JSONArray;
 
 /**
@@ -37,8 +41,8 @@ public class LessonControl {
         }
         System.out.println("[LessonControl] No registry found. Creating one.");
         JSONObject new_registry = new JSONObject();
-        JSONArray empty_lesson_list = new JSONArray();
-        new_registry.put("registered_lessons", empty_lesson_list);
+        JSONArray empty_id_list = new JSONArray();
+        new_registry.put("taken_ids", empty_id_list);
         try {
             FileWriter fw = new FileWriter(res_directory + "\\registry.json");
             fw.write(new_registry.toString());
@@ -49,6 +53,29 @@ public class LessonControl {
             System.out.println(ioe.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Internal method to get the lowest possible id from an array of ids.
+     * Useful for easily assigning unique ids for new registry entries.
+     * @param assigned_ids JSONArray containing the already assigned ids
+     * @return Integer representing the lowest free id to be used
+     */
+    private static int searchNewID(JSONArray assigned_ids) {
+        List<Object> taken_ids = assigned_ids.toList();
+        List<Integer> int_ids = new ArrayList<>();
+        for(Object o: taken_ids) {                      // Inhalt der List<Object> zu einer ArrayList<Integer> umarbeiten
+            int_ids.add((Integer) o );
+        }
+        Collections.sort(int_ids);                      // Sortieren um schneller die kleinsten IDs zu finden
+
+        for(int last = 0; last < int_ids.size(); last++) {
+            if(last != int_ids.get(last)) {             // befindet sich eine ID an einer "falschen" Indexposition in der Liste, wurde eine neue "freie" gefunden
+                return last;
+            }
+        }
+
+        return int_ids.size();          // fehlt keine ID in der natuerlich aufsteigenden Reihenfolge, entspricht die Arraygroesse der neuen ID
     }
 
     /**
@@ -110,75 +137,71 @@ public class LessonControl {
      * Method to register a new lesson into the registry by inserting its values.
      * @param name String of the name of the lesson
      * @param difficulty_level integer representing the difficulty of the corresponding lesson
-     * @param quiz_ids Integer array containing the ids of the quiz relating to the lesson
-     * @param achievement_ids Integer array containing the ids of the achievements relating to the lesson
-     * @return boolean whether the operation was successful
+     * @param quiz_id Integer id of the quiz relating to the lesson
+     * @param achievement_id Integer id of the achievements relating to the lesson
+     * @return Integer representing the newly registered lesson
      * @author Tristan Slodowski
      */
-    public static boolean addLessonEntry(String name, int difficulty_level, int[] quiz_ids, int[] achievement_ids) {
+    public static int addLessonEntry(String name, int difficulty_level, int quiz_id, int achievement_id) {
         JSONObject obj = new JSONObject();
         obj.put("name", name);
         obj.put("difficulty", difficulty_level);
-        obj.put("quiz_ids", quiz_ids);
-        obj.put("achievement_ids", achievement_ids);
+        obj.put("quiz_id", quiz_id);
+        obj.put("achievement_id", achievement_id);
+        String path_name = name.replace(" ", "_");
+        obj.put("path", res_directory + "\\" + path_name + ".pdf");
 
         JSONObject registry = parseRegistry();
-        JSONArray reg_lessons = (JSONArray) registry.get("registered_lessons");
+        JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
 
-        for(int i = 0; i < reg_lessons.length(); i++) {
-            if(((String) reg_lessons.get(i)).equals(name)) {
-                return false;                                         // eine Lesson mit diesem Titel wurde bereits hinzugefuegt
-            }
-        }
+        int new_id = searchNewID(assigned_ids);
+        obj.put("id", new_id);
 
-        registry.put(name, obj);
-        reg_lessons.put(name);
-        registry.put("registered_lessons", reg_lessons);
+        registry.put(Integer.toString(new_id), obj);
+        assigned_ids.put(new_id);
+        registry.put("taken_ids", assigned_ids);
 
-        return writeRegistry(registry);
+        writeRegistry(registry);
+        return new_id;
     }
 
     /**
      * Method to register a new lesson by inserting an already pre-prepared JSONObject.
-     * The JSONObject should contain keys and values for "name", "difficulty", "quiz_ids" and "achievement_ids".
+     * The JSONObject should contain keys and values for "id", "name", "difficulty", "path", "quiz_ids" and "achievement_ids".
      * @param new_obj JSONObject of the new lesson registry entry
-     * @return boolean whether the operation was successful
+     * @return Integer representing the newly registered lesson
      * @author Tristan Slodowski
      */
-    private static boolean addLessonEntry(JSONObject new_obj) {
+    private static int addLessonEntry(JSONObject new_obj) {
         JSONObject registry = parseRegistry();
-        JSONArray reg_lessons = (JSONArray) registry.get("registered_lessons");
-        String name = (String) new_obj.get("name");
+        JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
+        //String name = (String) new_obj.get("name");
+        int new_id = searchNewID(assigned_ids);
 
-        for(int i = 0; i < reg_lessons.length(); i++) {
-            if(((String) reg_lessons.get(i)).equals(name)) {
-                return false;
-            }
-        }
+        registry.put(Integer.toString(new_id), new_obj);
+        assigned_ids.put(new_id);
+        registry.put("taken_ids", assigned_ids);
 
-        registry.put(name, new_obj);
-        reg_lessons.put(name);
-        registry.put("registered_lessons", reg_lessons);
-
-        return writeRegistry(registry);
+        writeRegistry(registry);
+        return new_id;
     }
 
     /**
-     * Static method to remove a lesson entry by its name from the register.
-     * @param name String of the lesson entry to be deleted from the registry
+     * Static method to remove a lesson entry by its id from the register.
+     * @param target_id Integer id of the lesson entry to be deleted from the registry
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
-    public static boolean removeLessonEntry(String name) {
+    public static boolean removeLessonEntry(int target_id) {
         JSONObject registry = parseRegistry();
-        JSONArray reg_lessons = (JSONArray) registry.get("registered_lessons");
+        JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
 
-        for(int i = 0; i < reg_lessons.length(); i++) {
-            if(((String) reg_lessons.get(i)).equals(name)) {
-                registry.remove(name);
+        for(int i = 0; i < assigned_ids.length(); i++) {
+            if((assigned_ids.get(i)).equals(target_id)) {
+                registry.remove(Integer.toString(target_id));
 
-                reg_lessons.remove(i);
-                registry.put("registered_lessons", reg_lessons);
+                assigned_ids.remove(i);
+                registry.put("taken_ids", assigned_ids);
                 return writeRegistry(registry);
             }
         }
@@ -187,50 +210,31 @@ public class LessonControl {
 
     /**
      * Static function to update the values of a lessons entry inside the registry of lessons.
+     * @param id Integer id of the whole lesson
      * @param name String of the lesson registry entry to be updated.
      * @param difficulty integer representing the difficulty of the corresponding lesson
-     * @param quiz_ids Integer array containing the ids of the quiz relating to the lesson
-     * @param achievement_ids Integer array containing the ids of the achievements relating to the lesson
+     * @param quiz_id Integer id of the quiz relating to the lesson
+     * @param achievement_id Integer id of the achievements relating to the lesson
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
-    public static boolean updateLessonEntry(String name, int difficulty, int[] quiz_ids, int[] achievement_ids) {
+    public static boolean updateLessonEntry(int id, String name, int difficulty, int quiz_id, int achievement_id) {
         JSONObject registry = parseRegistry();
-        JSONArray reg_lessons = (JSONArray) registry.get("registered_lessons");
+        JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
 
-        for(int i = 0; i < reg_lessons.length(); i++) {
-            if(((String) reg_lessons.get(i)).equals(name)) {
-                JSONObject chosen_entry = (JSONObject) registry.get(name);
+        for(int i = 0; i < assigned_ids.length(); i++) {
+            if((assigned_ids.get(i)).equals(id)) {
+                JSONObject chosen_entry = (JSONObject) registry.get(Integer.toString(id));
 
+                chosen_entry.put("name", name);
+                String path_name = name.replace(" ", "_");
+                chosen_entry.put("path", res_directory + "\\" + path_name + ".pdf");
                 chosen_entry.put("difficulty", difficulty);
-                chosen_entry.put("quiz_ids", quiz_ids);
-                chosen_entry.put("achievement_ids", achievement_ids);
+                chosen_entry.put("quiz_id", quiz_id);
+                chosen_entry.put("achievement_id", achievement_id);
 
-                registry.put(name, chosen_entry);
+                registry.put(Integer.toString(id), chosen_entry);
                 return writeRegistry(registry);
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Static function to rename the main name of a lessons entry inside the lessons registry
-     * @param old_name String of the name of a lesson registry entry to be changed
-     * @param new_name String of the new name for the lesson registry entry
-     * @return boolean whether the operation was successful
-     * @author Tristan Slodowski
-     */
-    public static boolean updateLessonEntry(String old_name, String new_name) {
-        JSONObject registry = parseRegistry();
-        JSONArray reg_lessons = (JSONArray) registry.get("registered_lessons");
-
-        for(int i = 0; i < reg_lessons.length(); i++) {
-            if(((String) reg_lessons.get(i)).equals(old_name)) {
-                JSONObject old_entry = (JSONObject) registry.get(old_name);
-                JSONObject new_entry = new JSONObject(old_entry, "difficulty", "quiz_ids", "achievement_ids");
-                new_entry.put("name", new_name);
-
-                return removeLessonEntry(old_name) && addLessonEntry(new_entry);
             }
         }
         return false;
@@ -247,5 +251,15 @@ public class LessonControl {
         JSONObject registry = parseRegistry();
         String result = registry.toString();
         return result;
+    }
+
+    public static void main(String[] args) {
+        LessonControl.addLessonEntry("Passwortsicherheit", 1, 1, 1);
+        LessonControl.addLessonEntry("Phishing", 1, 2, 2);
+
+        LessonControl.removeLessonEntry(0);
+        LessonControl.addLessonEntry("Hashing", 2, 3, 3);
+        LessonControl.addLessonEntry("Social Engineering", 2, 4, 4);
+        LessonControl.updateLessonEntry(1, "FIDO2 Keys", 3, 5, 5);
     }
 }

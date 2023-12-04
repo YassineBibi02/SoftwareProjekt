@@ -3,7 +3,7 @@ package SWP.Cyberkraftwerk2.Controller;
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
 import SWP.Cyberkraftwerk2.Lessons.LessonControl;
 import SWP.Cyberkraftwerk2.Mail.EmailService;
-import SWP.Cyberkraftwerk2.User.User;
+import SWP.Cyberkraftwerk2.Module.User;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
@@ -66,9 +66,9 @@ public class APImethode {
         int mid = Integer.parseInt(ids[1]);
         ObjectMapper objMapper = new ObjectMapper();
 
-//        User.mail_clicked(uid, mid);    // User fuer das Anklicken der Mail anschwaerzen
+        //User.mail_clicked(uid, mid);    // User fuer das Anklicken der Mail anschwaerzen
 
-        User gotcha = this.userRepository.findById(uid);        // Abrufen des passenden Nutzers aus der Datenbank
+        User gotcha = this.userRepository.findByid(uid);        // Abrufen des passenden Nutzers aus der Datenbank
         if(gotcha == null) {
             return "[USER NOT FOUND]";
         }
@@ -110,80 +110,50 @@ public class APImethode {
 
     /**
      * Method for the Frontend to register a newly uploaded lesson into the lesson registry
-     * Ideal Input: "{"name", difficulty_level, {IDs of the quizzes related to the lesson}, {IDs of the achievements related to the lesson}}"
-     * @param input String array containing the name (as String), difficulty level (as Integer), an array of the related quiz IDs (as Integer[]) and an array of the related achievement IDs (as Integer[])
-     * @return boolean whether the operation was successful
+     * Ideal Input: "{"name", difficulty_level, quiz_id, achievement_id}"
+     * @param input String array containing the name (as String), difficulty level (as Integer), a quiz ID (as Integer) and a achievement ID (as Integer)
+     * @return Integer representing the id of the newly registered lesson
      * @author Tristan Slodowski
      */
     @PostMapping("/RegisterLesson")                                         // TODO Auslesen der Argumente aus den Inputs für alle Lesson-Methoden sicherer machen
-    public boolean registerLesson(@RequestBody String[] input) {
+    public int registerLesson(@RequestBody String[] input) {
         String name = input[0];
         int difficulty = Integer.parseInt(input[1]);
-
-        String[] incoming_quids = (input[2].substring(1, input[2].length() - 1)).split(", ");
-        int[] quids = new int[incoming_quids.length];
-        for(int i = 0; i < incoming_quids.length; i++) {
-            quids[i] = Integer.parseInt(incoming_quids[i]);
-        }
-        String[] incoming_achids = (input[3].substring(1, input[3].length() - 1)).split(", ");
-        int[] achids = new int[incoming_achids.length];
-        for(int i = 0; i < incoming_achids.length; i++) {
-            achids[i] = Integer.parseInt(incoming_achids[i]);
-        }
+        int quiz_id = Integer.parseInt(input[2]);
+        int achievement_id = Integer.parseInt(input[3]);
         
-        return LessonControl.addLessonEntry(name, difficulty, quids, achids);
+        return LessonControl.addLessonEntry(name, difficulty, quiz_id, achievement_id);
     }
 
     /**
      * Method for the Frontend to delete the registration of a lesson from the registry.
-     * @param input String array with the name of the lesson to be deleted
+     * @param input String array with the id of the lesson to be deleted
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
     @PostMapping("/RemoveFromRegistry")
     public boolean removeFromRegistry(@RequestBody String[] input) {
-        String name = input[0];
+       int target_id = Integer.parseInt(input[0]);
 
-        return LessonControl.removeLessonEntry(name);
+        return LessonControl.removeLessonEntry(target_id);
     }
 
     /**
-     * Method for the Frontend to change the main name of a lesson registration
-     * @param input String array containing the old and new name of and for a lesson; {old_name, new_name}
-     * @return boolean whether the operation was successful
-     * @author Tristan Slodowski
-     */
-    @PostMapping("/RenameInRegistry")
-    public boolean renameLessonInRegistry(@RequestBody String[] input) {
-        String old_name = input[0];
-        String new_name = input[1];
-
-        return LessonControl.updateLessonEntry(old_name, new_name);
-    }
-
-    /**
-     * Method for the Frontend to update the values of a lesson registration
-     * @param input String array containing the name (as String), difficulty level (as Integer), an array of the related quiz IDs (as Integer[]) and an array of the related achievement IDs (as Integer[])
+     * Method for the Frontend to update the values of a lesson registration.
+     * The id dictates which lesson registration will be changed with the input arguments.
+     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), quiz id (Integer) and achievement id (Integer)
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
     @PostMapping("/UpdateInRegistry")
     public boolean updateLessonInRegistry(@RequestBody String[] input) {
-        String name = input[0];
-        int difficulty = Integer.parseInt(input[1]);
-
-        String[] incoming_quids = (input[2].substring(1, input[2].length() - 1)).split(", ");
-        int[] quids = new int[incoming_quids.length];
-        for(int i = 0; i < incoming_quids.length; i++) {
-            quids[i] = Integer.parseInt(incoming_quids[i]);
-        }
-        String[] incoming_achids = (input[3].substring(1, input[3].length() - 1)).split(", ");
-        int[] achids = new int[incoming_achids.length];
-        for(int i = 0; i < incoming_achids.length; i++) {
-            achids[i] = Integer.parseInt(incoming_achids[i]);
-        }
+        int id = Integer.parseInt(input[0]);
+        String name = input[1];
+        int difficulty = Integer.parseInt(input[2]);
+        int quiz_id = Integer.parseInt(input[3]);
+        int achievement_id = Integer.parseInt(input[4]);
         
-        return LessonControl.updateLessonEntry(name, difficulty, quids, achids);
+        return LessonControl.updateLessonEntry(id, name, difficulty, quiz_id, achievement_id);
     }
 
     /**
