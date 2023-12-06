@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './AchievementDisplay.css';
 import userIcon from '../../images/user.png';
+import { useCookies } from 'react-cookie';
 
 const AchievementDisplay = ({ achievementId, xsrfToken }) => {
     const [achievement, setAchievement] = useState(null);
+    const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
+
 
     useEffect(() => {
         fetch('/api/methode/AchievementDetails', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': xsrfToken // Pass the XSRF token here if needed
+                'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] // Pass the XSRF token here if needed
             },
             body: JSON.stringify(achievementId)
         })

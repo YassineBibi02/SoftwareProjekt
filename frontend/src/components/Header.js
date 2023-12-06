@@ -4,8 +4,10 @@ import LoginContext from '../globals/globalContext';
 import logo from '../images/Logo.png'; // Adjust the path as needed
 import userIcon from '../images/user.png'; // Adjust the path as needed
 
+
+
 const Header = () => {
-    const { isLoggedIn, setLoggedIn, userV } = useContext(LoginContext);
+    const { isLoggedIn, setLoggedIn, userV , login, logout} = useContext(LoginContext);
     const navigate = useNavigate();
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -93,9 +95,6 @@ const Header = () => {
             navigate('/');
     };
 
-    const login = () => {
-            navigate('/login');
-    };
 
     const toggleDropdown = () => {
             setDropdownOpen(!dropdownOpen);
@@ -126,7 +125,7 @@ const Header = () => {
                 <div style={dropdownMenuStyle}>
                     <div style={dropdownItemStyle} onClick={goToHome}>Einstellungen</div>
                     <div style={dropdownItemStyle} onClick={goToHome}>Details/etc</div>
-                    <div style={dropdownItemStyle} onClick={login}>Logout</div>
+                    <div style={dropdownItemStyle} onClick={logout}>Logout</div>
                 </div>
             </div>
         </div>

@@ -73,9 +73,7 @@ const MainMenuScreenComponent = () => {
             } else {
                 setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email , mailLevel: JSON.parse(body).Level});
                 roles = JSON.parse(body).roles;
-                console.log(roles);
                 setLoggedIn(true);
-                console.log(userV);
             }
         });
     }, [])
