@@ -66,15 +66,21 @@ public class UserController {
 
             List<String> roles = (List<String>) getUserRoles(user).getBody();
             userAttributes.put("roles", roles);
+            String email = user.getAttribute("email");
 
             try {
-                String email = user.getAttribute("email");
                 List<Integer> achievements = (List<Integer>) getUserAchievements(email).getBody();
                 userAttributes.put("achievements", achievements);
             } catch (Exception e) {
                 userAttributes.put("achievements", new ArrayList<>());
             }
 
+            try {
+                Integer Level = (Integer) getUserLevel(email).getBody();
+                userAttributes.put("Level", Level);
+            } catch (Exception e) {
+                userAttributes.put("Level", 0);
+            }
 
             return ResponseEntity.ok().body(userAttributes);
         }
@@ -99,8 +105,13 @@ public class UserController {
 
     }
 
-
-    @GetMapping("/api/methode/user/roles")
+    /**
+     * This function returns the Roles from the oauth2 token
+     *
+     * @param user User
+     * @return List of Roles
+     * @Author Yassine Bibi
+     */
     public ResponseEntity<?> getUserRoles(@AuthenticationPrincipal OAuth2User user) {
         if (user == null) {
             return new ResponseEntity<>("No user found", HttpStatus.NOT_FOUND);
@@ -120,7 +131,6 @@ public class UserController {
      * @return the Roles from the Access Token
      * @Author Yassine Bibi
      */
-    @GetMapping("/api/methode/token")
     public ResponseEntity<?> getAccessToken(HttpServletRequest request, OAuth2AuthenticationToken authentication) {
         OAuth2AuthorizedClient authorizedClient = authorizedClientRepository.loadAuthorizedClient(
                 authentication.getAuthorizedClientRegistrationId(), authentication, request);
@@ -164,7 +174,6 @@ public class UserController {
      * @return List of Achievement IDs
      * @Author Yassine Bibi
      */
-    @PostMapping("/api/methode/user/achievements")
     private ResponseEntity<?> getUserAchievements(@RequestBody String Email) {
         User user = userService.getUserByEmail(Email);
         List<Integer> IDs = new ArrayList<>();
@@ -177,6 +186,24 @@ public class UserController {
 
             });
             return ResponseEntity.ok().body(IDs);
+        }
+
+    }
+
+
+    /**
+     * This function returns the Level of a User
+     *
+     * @param Email Email of the User
+     * @return Level of the User
+     * @Author Yassine Bibi
+     */
+    private ResponseEntity<?> getUserLevel(@RequestBody String Email) {
+        User user = userService.getUserByEmail(Email);
+        if (user == null) {
+            return new ResponseEntity<>("No user found", HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok().body(user.get_maillevel());
         }
 
     }
