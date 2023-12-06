@@ -10,7 +10,7 @@ import HereingefallenScreen from './pages/HereingefallenScreen';
 import WatchLessonScreen from './pages/WatchLessonScreen/WatchLessonScreen';
 import EditLessonScreenComponent from './pages/EditLessonScreen/EditLessonScreenComponent';
 import { LoginProvider } from './globals/globalContext';
-import UserController from './pages/UserController';
+import UserController from './pages/UserVerwaltungScreen/UserController';
 import AchievementFrontend from './pages/AchievementsPage/AchievementFrontend';
 import CreateAchievement from './pages/AchievementsPage/CreateAchievement';
 

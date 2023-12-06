@@ -18,18 +18,28 @@ const SendMailScreenComponent = () => {
     const [user, setUser] = useState(undefined);
 
 
-     useEffect(() => {
-    //        fetchData();
-             fetch('api/user', { credentials: 'include' }) // <.>
-                .then(response => response.text())
-                .then(body => {
-                    if (body === '') {
-                         navigate('/login');
-                    } else {
-                        setUser(JSON.parse(body));
-                    }
-                });
-        }, []);
+    useEffect(() => {
+        fetch('api/user', { credentials: 'include' }) // <.>
+        .then(response => response.text())
+        .then(body => {
+        if (body === '') {
+             navigate('/login');
+        } else {
+            const userData = JSON.parse(body);
+
+            // Check for Admin_Access role
+            if (!userData.roles.includes("Admin_Access")) {
+                console.log("Access Denied. Admin Only Area")
+                // If the user does not have Admin_Access, navigate to the home screen
+                navigate('/');
+            } else {
+                // If the user has Admin_Access, continue with fetching achievements or other admin tasks
+               setUser(JSON.parse(body));
+            }
+
+        }
+            });
+    }, []);
 //THE LOGIN BLOCK
 
     const ButtonStyle = {

@@ -1,0 +1,22 @@
+/* UserComponent.css */
+.user-card {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin: 20px; /* Margin between user cards */
+  display: inline-block; /* Display users horizontally */
+  width: 300px; /* Width of user card */
+  height: 180px; /* Height of user card */
+  margin-top: 20px; /* Margin between user cards */
+}
+
+.user-actions button {
+  background-color: #ec6608;
+  color: white;
+  margin-right: 10px;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
