@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new SpaWebFilter(), BasicAuthenticationFilter.class)
                 .oauth2Login();
+
         return http.build();
     }
 

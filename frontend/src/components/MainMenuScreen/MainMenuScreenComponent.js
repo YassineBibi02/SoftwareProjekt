@@ -26,6 +26,10 @@ const MainMenuScreenComponent = () => {
         navigate('/mail');
     };
 
+    const redirectControl = () => {
+            navigate('/UserController');
+        };
+
     const redirectToLessons = () => {
         navigate('/lessons');
     };
@@ -72,7 +76,7 @@ const MainMenuScreenComponent = () => {
                     <button style={ButtonStyle} onClick={redirectToMail}>{emailButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectToMail}>{achievementButtonText}</button>
-                    <button style={ButtonStyle} onClick={redirectToMail}>{nutzerVerwaltenText}</button>  
+                    <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
                 </div>
                 <div style={infoContainer}>
                     <EmployeeInfo name="Max Mustermann" level={buttonText} />

@@ -10,6 +10,7 @@ import HereingefallenScreen from './pages/HereingefallenScreen';
 import WatchLessonScreen from './pages/WatchLessonScreen/WatchLessonScreen';
 import EditLessonScreenComponent from './pages/EditLessonScreen/EditLessonScreenComponent';
 import { LoginProvider } from './globals/globalContext';
+import UserController from './pages/UserController';
 
 
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/login" element= { <LoginScreen/> }/>
         <Route path="/mail" element= { <SendMailScreenComponent/> }/>    
         <Route path="/lessons" element= { <LessonsScreenComponent/> }/>
+        <Route path="/UserController" element= { <UserController/> }/>
         <Route path="/lessons/:lessonID" element={<WatchLessonScreen/>} />
         <Route path="/lessonEdit/:lessonID" element={<EditLessonScreenComponent/>} />
         <Route path="*" element={<Navigate to="/" replace />} />
