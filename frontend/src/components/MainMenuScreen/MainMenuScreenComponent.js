@@ -76,8 +76,6 @@ const MainMenuScreenComponent = () => {
 
     const Username = (userV.given_name!="")?
     userV.given_name: "Nicht Eingelogt";
-    const Userlevel = (userV.level!="")?
-    userV.level: "1";
 
       useEffect(() => {
         fetch('api/user', { credentials: 'include' }) // <.>
@@ -104,7 +102,7 @@ const MainMenuScreenComponent = () => {
                     <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
                 </div>
                 <div style={infoContainer}>
-                    <EmployeeInfo name={Username} level={Userlevel} />
+                    <EmployeeInfo name={Username} level={"1"} />
                 </div>
             </div>
         </div>
