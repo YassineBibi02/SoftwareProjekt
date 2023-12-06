@@ -48,6 +48,9 @@ const Header = () => {
     const userInfoBoxStyle = {
             display: 'flex',
             alignItems: 'center',
+            position: 'absolute',
+            right: '40px',
+            top: '26px',
             backgroundColor: 'white',
             border: '2px solid orange',
             padding: '5px 10px', // Increase padding for a longer box
@@ -71,10 +74,12 @@ const Header = () => {
             position: 'absolute',
             backgroundColor: 'white',
             border: '2px solid orange',
-            right: '20px',
+            right: '40px',
             marginTop: '10px',
             borderRadius: '5px',
-            zIndex: '1000'
+            zIndex: '1000',
+            width: '250px',
+            top: '83px'
     };
 
     const dropdownItemStyle = {
@@ -104,12 +109,15 @@ const Header = () => {
             <div>
                 {isLoggedIn() ? (
                     <div style={userInfoBoxStyle} onClick={toggleDropdown}>
-                        <img src={userIcon} alt="User Icon" style={{ marginRight: '20px' ,marginLeft: '20px'}}/>
+                        <img src={userIcon} alt="User Icon" style={{ marginRight: '20px', marginLeft: '20px' }}/>
                         <div style={userDetailsStyle}>
-                            <p style={{ margin: 0, color: 'black' }}>{userV.given_name}</p>
-                            <p style={{ margin: 0, color: 'orange' }}>{userV.mailLevel}</p>
+                            <p style={{ margin: 0, color: 'black', fontWeight: 'bold' }}>{userV.given_name}</p>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ color: 'black', marginRight: '5px' }}>Level:</span>
+                                <p style={{ margin: 0, color: 'orange', fontWeight: 'bold' }}>{userV.mailLevel}</p>
+                            </div>
                         </div>
-                        <p style={{marginLeft:'40px'}}>▼</p>
+                        <p style={{ marginLeft: '40px', marginTop:"15px" }}>▼</p>
                     </div>
                 ) : (
                     <p onClick={login} style={LogoutStyle}>Login</p>

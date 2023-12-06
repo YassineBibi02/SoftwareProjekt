@@ -2,7 +2,7 @@ import React, { useState, useEffect ,useContext} from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import { useNavigate } from 'react-router-dom';
-import EmployeeInfo from './EmployeeInfo.js';
+
 import LoginContext from '../../globals/globalContext';
 
 
@@ -61,25 +61,6 @@ const MainMenuScreenComponent = () => {
         width: '33%', 
     };
 
-/*    const fetchData = async () => {        
-        try {
-            fetch('http://localhost:8080/test1234')
-            .then(response => response.text())
-            .then(txt => {
-              setButtonText(txt);
-            });
-        } catch (error) {
-            console.error(error);
-        }    
-    };
-*/
-
-    const Username = (userV) ?
-        (userV.given_name != "") ? userV.given_name: "Nicht Eingelogt" :"Nicht Eingelogt" ;
-    const Level = (userV) ?
-        (userV.mailLevel != "") ? userV.mailLevel: "" :"" ;
-
-
       useEffect(() => {
         fetch('api/user', { credentials: 'include' }) // <.>
         .then(response => response.text())
@@ -97,15 +78,12 @@ const MainMenuScreenComponent = () => {
     return (
         <div>
             <Header/>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}> {/* Changed this line to center the content */}
                 <div style={Container}>
                     <button style={ButtonStyle} onClick={redirectToMail}>{emailButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectToAchievements}>{achievementButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
-                </div>
-                <div style={infoContainer}>
-                    <EmployeeInfo name={Username} level={Level} />
                 </div>
             </div>
         </div>
