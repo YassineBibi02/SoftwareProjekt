@@ -15,10 +15,12 @@ const MainMenuScreenComponent = () => {
         margin: '5px',
         padding: '20px',
         backgroundColor: 'white',
-        color: '#000000',
+        color: '#333',
+        fontSize: '1.5rem',
         borderColor: '#ec6608',
         borderRadius: '50px',
         width: '100%', 
+        height: '150%',
         marginBottom: '10px', 
     };    
 
@@ -42,6 +44,7 @@ const MainMenuScreenComponent = () => {
         backgroundColor: 'white',
         width: '66%',
         padding: '20px',
+        height: '50vh'
     };
 
     const infoContainer = {
