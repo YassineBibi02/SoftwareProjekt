@@ -17,6 +17,7 @@ const SendMailScreenComponent = () => {
     const [cookies] = useCookies(['XSRF-TOKEN']); // Calls the CSRF token. VERY IMPORTANT
     const [user, setUser] = useState(undefined);
 
+
      useEffect(() => {
     //        fetchData();
              fetch('api/user', { credentials: 'include' }) // <.>

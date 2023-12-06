@@ -11,7 +11,7 @@ import WatchLessonScreen from './pages/WatchLessonScreen/WatchLessonScreen';
 import EditLessonScreenComponent from './pages/EditLessonScreen/EditLessonScreenComponent';
 import { LoginProvider } from './globals/globalContext';
 import UserController from './pages/UserController';
-
+import AchievementFrontend from './pages/AchievementsPage/AchievementFrontend';
 
 
 
@@ -28,6 +28,7 @@ function App() {
         <Route path="/UserController" element= { <UserController/> }/>
         <Route path="/lessons/:lessonID" element={<WatchLessonScreen/>} />
         <Route path="/lessonEdit/:lessonID" element={<EditLessonScreenComponent/>} />
+        <Route path="/achievements" element={<AchievementFrontend/>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>

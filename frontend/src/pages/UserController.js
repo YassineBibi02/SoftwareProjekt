@@ -26,13 +26,13 @@ const {isLoggedIn, setLoggedIn , userV , setUserV} = useContext(LoginContext);
 
     const login2 = () => {
     console.log(userV);
-    fetch('/api/methode/user/achievements', {
+    fetch('/api/methode/AchievementDetails', {
                           method: 'POST', credentials: 'include',
                           headers: {
                             'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
                             'Content-Type': 'application/json',
                          }, // <.>
-                        body: userV.email
+                        body: 1
                     })
                    .then(response => response.text()).then(data => console.log("Response:",data));
 

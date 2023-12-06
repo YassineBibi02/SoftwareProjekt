@@ -251,4 +251,20 @@ public class APImethode {
         achievementService.removeAchievement(achievementID);
         return ResponseEntity.ok().body("Achievement deleted");
     }
+
+    /**
+     * This functions returns the Achievement Detilas of an Achievement
+     *
+     * @param achievementID ID of the Achievement
+     * @return ResponseEntity Indicating Success or Failure
+     */
+    @PostMapping("/AchievementDetails")
+    public ResponseEntity<?> getAchievementDetails(@RequestBody Integer achievementID) {
+        Achievement achievement = achievementRepository.findByid(achievementID);
+        if (achievement == null) {
+            return new ResponseEntity<>("No achievement found", HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok().body(achievement);
+        }
+    }
 }

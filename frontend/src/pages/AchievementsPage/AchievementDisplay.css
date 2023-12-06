@@ -1,0 +1,60 @@
+.achievements-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.achievement {
+    background-color: #f7f7f7;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    display: flex; /* Added for flex layout */
+    align-items: center; /* Align items vertically */
+    text-align: left; /* Align text to the left */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.achievement-image-container {
+    margin-right: 20px; /* Space between image and text */
+}
+
+.achievement-icon {
+    width: 60px; /* Example size, adjust as needed */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.achievement-text {
+    text-align: left; /* Ensure text is aligned to the left */
+}
+
+
+.achievement:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.achievement h2 {
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.achievement p {
+    color: #666;
+    font-size: 1em;
+}
+
+.achievement-page-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.achievements-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
