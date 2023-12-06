@@ -1,11 +1,16 @@
 package SWP.Cyberkraftwerk2.Controller;
 
+import SWP.Cyberkraftwerk2.Databank.AchievementRepository;
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
 import SWP.Cyberkraftwerk2.Lessons.LessonControl;
 import SWP.Cyberkraftwerk2.Mail.EmailService;
+import SWP.Cyberkraftwerk2.Module.Achievement;
 import SWP.Cyberkraftwerk2.Module.User;
+import SWP.Cyberkraftwerk2.Module.UserService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -27,9 +32,13 @@ import java.util.Map;
 public class APImethode {
 
     private UserRepository userRepository;
+    private AchievementRepository achievementRepository;
+    private UserService userService;
 
-    public APImethode(UserRepository rep) {
+    public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService) {
         this.userRepository = rep;
+        this.achievementRepository = achievementRepository;
+        this.userService = userService;
     }
 
 
@@ -171,15 +180,24 @@ public class APImethode {
         return LessonControl.getJsonString();
     }
 
-    @GetMapping("/test1234")
-    public String welcomeText2 (){
-        return "This is the Server";
-    }
 
-
-    @PostMapping("/testback")
-    public String testback(@RequestBody String subject) {
-        System.out.println(subject);
-        return "Received : " + subject + "";
+    /**
+     * This Function adds an Achievement to a User
+     *
+     * @param achievementID ID of the Achievement
+     * @param userEmail     Email of the User
+     * @return ResponseEntity Indicating Success or Failure
+     * @Author Yassine Bibi
+     */
+    @PostMapping("/AddAchievement")
+    public ResponseEntity<?> addAchievement(@RequestBody Integer achievementID, @RequestBody String userEmail) {
+        User user = userService.getUserByEmail(userEmail);
+        Achievement achievement = achievementRepository.findByid(achievementID);
+        if (user == null || achievement == null) {
+            return new ResponseEntity<>("No user found", HttpStatus.NOT_FOUND);
+        } else {
+            achievement.addUser(user);
+            return ResponseEntity.ok().body("Achievement added");
+        }
     }
 }
