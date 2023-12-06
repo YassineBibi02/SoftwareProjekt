@@ -32,7 +32,7 @@ export function LoginProvider({children}) {
             localStorage.setItem('LoggedIn', JSON.stringify(LoggedIn));
             // Save user to local storage
             if (userV) {
-                localStorage.setItem('userV', JSON.stringify({ given_name: userV.given_name, email: userV.email }));
+                localStorage.setItem('userV', JSON.stringify({ given_name: userV.given_name, email: userV.email , mailLevel: userV.mailLevel }));
             }
         }, [LoggedIn,userV]);
 

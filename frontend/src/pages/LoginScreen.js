@@ -26,7 +26,7 @@ const {isLoggedIn, setLoggedIn , userV , setUserV} = useContext(LoginContext);
             setUser(JSON.parse(body));
             setAuthenticated(true);
             setLoggedIn(true);
-            setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email });
+            setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email , mailLevel: JSON.parse(body).Level});
             console.log(userV);
         }
     });

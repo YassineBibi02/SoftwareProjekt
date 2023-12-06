@@ -75,8 +75,9 @@ const MainMenuScreenComponent = () => {
 */
 
     const Username = (userV) ?
-     (userV.given_name != "") ? userV.given_name: "Nicht Eingelogt" :"Nicht Eingelogt" ;
-
+        (userV.given_name != "") ? userV.given_name: "Nicht Eingelogt" :"Nicht Eingelogt" ;
+    const Level = (userV) ?
+        (userV.mailLevel != "") ? userV.mailLevel: "" :"" ;
 
 
       useEffect(() => {
@@ -86,7 +87,7 @@ const MainMenuScreenComponent = () => {
             if (body === '') {
                 setLoggedIn(false);
             } else {
-                setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email });
+                setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email , mailLevel: JSON.parse(body).Level});
                 setLoggedIn(true);
                 console.log(userV);
             }
@@ -104,7 +105,7 @@ const MainMenuScreenComponent = () => {
                     <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
                 </div>
                 <div style={infoContainer}>
-                    <EmployeeInfo name={Username} level={"1"} />
+                    <EmployeeInfo name={Username} level={Level} />
                 </div>
             </div>
         </div>
