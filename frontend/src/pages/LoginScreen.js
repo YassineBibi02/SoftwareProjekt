@@ -21,6 +21,7 @@ const {isLoggedIn, setLoggedIn , userV , setUserV} = useContext(LoginContext);
     .then(body => {
         if (body === '') {
             setAuthenticated(false);
+            setLoggedIn(false);
         } else {
             setUser(JSON.parse(body));
             setAuthenticated(true);

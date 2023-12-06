@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useContext} from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import { useNavigate } from 'react-router-dom';
 import EmployeeInfo from './EmployeeInfo.js';
+import LoginContext from '../../globals/globalContext';
+
+
+
 const MainMenuScreenComponent = () => {
+    const {isLoggedIn, setLoggedIn,userV , setUserV} = useContext(LoginContext);
     const navigate = useNavigate();
     const [buttonText, setButtonText] = useState('');
     var emailButtonText = "Emails senden";
@@ -64,9 +69,23 @@ const MainMenuScreenComponent = () => {
         }    
     };
 */
-    useEffect(() => {
-        //fetchData();
-    }, []);
+
+    const Username = (userV.given_name!="")?
+    userV.given_name: "Nicht Eingelogt";
+
+      useEffect(() => {
+        fetch('api/user', { credentials: 'include' }) // <.>
+        .then(response => response.text())
+        .then(body => {
+            if (body === '') {
+                setLoggedIn(false);
+            } else {
+                setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email });
+                setLoggedIn(true);
+                console.log(userV);
+            }
+        });
+    }, [ setLoggedIn,setLoggedIn, setUserV])
 
     return (
         <div>
@@ -79,7 +98,7 @@ const MainMenuScreenComponent = () => {
                     <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
                 </div>
                 <div style={infoContainer}>
-                    <EmployeeInfo name="Max Mustermann" level={buttonText} />
+                    <EmployeeInfo name={Username} level={buttonText} />
                 </div>
             </div>
         </div>
