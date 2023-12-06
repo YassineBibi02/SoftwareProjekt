@@ -8,19 +8,21 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * This class is used to configure the CORS Filter
+ *
+ * @Author: Danny
+ */
+
 @Configuration
 @EnableWebMvc
 public class CorsConfig implements WebMvcConfigurer {
-    /*
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-            .allowedOrigins("http://localhost:3000")
-            .allowedMethods("GET", "POST", "PUT", "DELETE")
-            .allowCredentials(true)
-            .maxAge(3600);
-    }
-    */
+
+
+    /**
+     * This function is used to configure the CORS Filter
+     * @return CorsFilter
+     */
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -23,6 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+/**
+ * This Class handles the User related API Calls
+ *
+ * @Author Yassine Bibi
+ */
 @RestController
 public class UserController {
     private final ClientRegistration registration;
@@ -37,6 +43,13 @@ public class UserController {
         this.userService = userService;
     }
 
+
+    /**
+     * This function returns the User from the oauth2 token
+     * @param user User
+     * @return User
+     * @Author Yassine Bibi
+     */
     @GetMapping("/api/user")
     public ResponseEntity<?> getUser(@AuthenticationPrincipal OAuth2User user) {
         if (user == null) {
@@ -46,6 +59,10 @@ public class UserController {
         }
     }
 
+    /**
+     * This function returns logout instructions from the oauth2 token
+     * @Author Yassine Bibi
+     */
     @PostMapping("/api/logout")
     public ResponseEntity<?> logout(HttpServletRequest request,
                                     @AuthenticationPrincipal(expression = "idToken") OidcIdToken idToken) {
@@ -75,6 +92,13 @@ public class UserController {
         }
     }
 
+    /**
+     * This function returns the Roles from the Access Token of a User
+     * @param request Request
+     * @param authentication Authentication
+     * @return the Roles from the Access Token
+     * @Author Yassine Bibi
+     */
     @GetMapping("/api/methode/token")
     public ResponseEntity<?> getAccessToken(HttpServletRequest request, OAuth2AuthenticationToken authentication) {
         OAuth2AuthorizedClient authorizedClient = authorizedClientRepository.loadAuthorizedClient(
@@ -93,6 +117,12 @@ public class UserController {
         }
     }
 
+    /**
+     * This function extracts the Realm Access Roles from a JWT Token
+     * @param jwtToken JWT Token
+     * @return List of Roles
+     * @Author Yassine Bibi
+     */
     private List<String> extractRealmAccessRoles(String jwtToken) {
         String[] splitToken = jwtToken.split("\\.");
         if (splitToken.length < 2) {
@@ -107,13 +137,25 @@ public class UserController {
     }
 
 
+    /**
+     * This function returns the Achievements of a User
+     * @param Email Email of the User
+     * @return List of Achievement IDs
+     * @Author Yassine Bibi
+     */
     @PostMapping("/api/methode/user/achievements")
     private ResponseEntity<?> getUserAchievements(@RequestBody String Email) {
         User user = userService.getUserByEmail(Email);
         if (user == null) {
             return new ResponseEntity<>("No user found", HttpStatus.NOT_FOUND);
         } else {
-            return ResponseEntity.ok().body(userService.getUserAchievements(user));
+            List<Integer> IDs = new ArrayList<>();
+            userService.getUserAchievements(user).forEach(achievement -> {
+
+                IDs.add(achievement.getId());
+
+            });
+            return ResponseEntity.ok().body(IDs);
         }
 
     }

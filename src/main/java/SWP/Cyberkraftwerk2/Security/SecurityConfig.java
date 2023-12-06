@@ -15,9 +15,21 @@ import org.springframework.security.web.savedrequest.SimpleSavedRequest;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
+/**
+ * This class is used to configure the Security
+ *
+ * @Author: Yassine Bibi
+ */
 @Configuration
 public class SecurityConfig {
 
+    /**
+     * This function is used to configure the Security
+     * @param http HttpSecurity
+     * @return SecurityFilterChain
+     * @throws Exception
+     * @Author: Yassine Bibi
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http    
@@ -40,6 +52,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+
+    /**
+     * This function is used to configure the CSRF Token upon refresh
+     * @return CookieCsrfTokenRepository
+     * @Author: Yassine Bibi
+     */
     @Bean
     public RequestCache refererRequestCache() {
         return new HttpSessionRequestCache() {

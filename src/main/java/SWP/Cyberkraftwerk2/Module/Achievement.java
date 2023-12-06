@@ -7,6 +7,14 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * This class represents the achievements of the users.
+ *
+ * @Author: Yassine Bibi
+ */
+
+
 @Getter
 @Entity
 @Table(
@@ -25,11 +33,6 @@ public class Achievement {
     )
     private String name;
 
-    /**
-     * -- GETTER --
-     *
-     * @return the Users ID
-     */
     private List<Integer> Users;
 
     private String description;
@@ -44,6 +47,22 @@ public class Achievement {
     public Achievement() {
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Integer> getUsers() {
+        return Users;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -53,6 +72,12 @@ public class Achievement {
         this.description = description;
     }
 
+
+    /**
+     * This function adds a user to the achievement
+     * @param user User to be added
+     * @Author Yassine Bibi
+     */
     public void addUser(User user) {
         Integer userId = user.get_ID();
 

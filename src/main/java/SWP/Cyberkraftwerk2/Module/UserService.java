@@ -52,6 +52,14 @@ public class UserService {
         //UNFINISHED
     }
 
+
+    /**
+     * This function returns all achievements of a user
+     *
+     * @param user User
+     * @return List of Achievements
+     * @Author: Yassine Bibi
+     */
     public List<Achievement> getUserAchievements(User user) {
         Integer userId = user.get_ID();
         List<Achievement> achievements = new ArrayList<>();

@@ -43,11 +43,12 @@ public class DbInit implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-//        Optional<User> userOptional = Optional.ofNullable(this.userRepository.findByid(3));
+//        Optional<User> userOptional = Optional.ofNullable(this.userRepository.findByid(8));
 //        if(userOptional.isPresent()) {
 //            User user = userOptional.get();
-//            List<Achievement> ThisUsersAchievements = userService.getUserAchievements(user);
-//
+//            Achievement achievement = achievementRepository.findByid(1);
+//            achievement.addUser(user);
+//            achievementRepository.save(achievement);
 //
 //        } else {
 //            // Handle the case where the user is not found

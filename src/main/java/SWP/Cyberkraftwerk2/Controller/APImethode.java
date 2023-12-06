@@ -16,7 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * This Class handles the API Calls
+ *
+ * @Author Soenke Harder
+ */
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/methode")

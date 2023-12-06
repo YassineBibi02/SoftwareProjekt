@@ -14,6 +14,16 @@ public class CookieCsrfFilter extends OncePerRequestFilter {
     /**
      * {@inheritDoc}
      */
+
+    /**
+     * This function is used to filter the CSRF Token
+     *
+     * @param request
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {

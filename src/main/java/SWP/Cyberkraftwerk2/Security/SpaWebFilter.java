@@ -10,6 +10,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * This class is used to filter the CSRF Token
+ *
+ * @Author: Yassine Bibi
+ */
 public class SpaWebFilter extends OncePerRequestFilter {
 
     @Override

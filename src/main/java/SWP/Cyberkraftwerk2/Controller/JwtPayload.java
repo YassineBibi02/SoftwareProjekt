@@ -2,6 +2,13 @@ package SWP.Cyberkraftwerk2.Controller;
 
 import java.util.List;
 
+
+/**
+ * This class represents the payload of the JWT token.
+ * It contains the realm_access object which contains the roles of the user.
+ *
+ * @Author: Yassine Bibi
+ */
 public class JwtPayload {
     private RealmAccess realm_access;
 
