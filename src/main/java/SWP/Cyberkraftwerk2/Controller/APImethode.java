@@ -5,6 +5,7 @@ import SWP.Cyberkraftwerk2.Databank.UserRepository;
 import SWP.Cyberkraftwerk2.Lessons.LessonControl;
 import SWP.Cyberkraftwerk2.Mail.EmailService;
 import SWP.Cyberkraftwerk2.Module.Achievement;
+import SWP.Cyberkraftwerk2.Module.AchievementService;
 import SWP.Cyberkraftwerk2.Module.User;
 import SWP.Cyberkraftwerk2.Module.UserService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -34,11 +35,13 @@ public class APImethode {
     private UserRepository userRepository;
     private AchievementRepository achievementRepository;
     private UserService userService;
+    private AchievementService achievementService;
 
-    public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService) {
+    public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService, AchievementService achievementService) {
         this.userRepository = rep;
         this.achievementRepository = achievementRepository;
         this.userService = userService;
+        this.achievementService = achievementService;
     }
 
 
@@ -219,5 +222,33 @@ public class APImethode {
             achievement.removeUser(user);
             return ResponseEntity.ok().body("Achievement removed");
         }
+    }
+
+    /**
+     * This Function creates an Achievement
+     *
+     * @param input Name and Description of the Achievement in a String Array
+     * @return ResponseEntity Indicating Success or Failure
+     * @Author Yassine Bibi
+     */
+    @PostMapping("/CreateAchievement")
+    public ResponseEntity<?> createAchievement(@RequestBody String[] input) {
+        String name = input[0];
+        String description = input[1];
+        achievementService.addAchievement(name, description);
+        return ResponseEntity.ok().body("Achievement created");
+    }
+
+    /**
+     * This Function deletes an Achievement
+     *
+     * @param achievementID ID of the Achievement
+     * @return ResponseEntity Indicating Success or Failure
+     * @Author Yassine Bibi
+     */
+    @PostMapping("/DeleteAchievement")
+    public ResponseEntity<?> deleteAchievement(@RequestBody Integer achievementID) {
+        achievementService.removeAchievement(achievementID);
+        return ResponseEntity.ok().body("Achievement deleted");
     }
 }
