@@ -41,5 +41,18 @@ public class AchievementService {
         achievementRepository.delete(achievement);
     }
 
+    /**
+     * This function edits an achievement
+     *
+     * @param ID          ID of the achievement
+     * @param name        new name
+     * @param description new description
+     */
+    public void editAchievement(Integer ID, String name, String description) {
+        Achievement achievement = achievementRepository.findByid(ID);
+        achievement.setName(name);
+        achievement.setDescription(description);
+        achievementRepository.save(achievement);
+    }
 
 }

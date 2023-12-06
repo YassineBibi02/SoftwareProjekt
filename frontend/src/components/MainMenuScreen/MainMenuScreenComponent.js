@@ -2,7 +2,6 @@ import React, { useState, useEffect ,useContext} from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import { useNavigate } from 'react-router-dom';
-
 import LoginContext from '../../globals/globalContext';
 
 
@@ -46,6 +45,10 @@ const MainMenuScreenComponent = () => {
         navigate('/achievements');
     };
 
+    const redirectCreateAchievement = () => {
+        navigate('/createAchievement');
+    }
+
     const Container = {
         display: 'flex',
         flexDirection: 'column', 
@@ -87,6 +90,7 @@ const MainMenuScreenComponent = () => {
                     <button style={ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectToAchievements}>{achievementButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
+                    <button style={ButtonStyle} onClick={redirectCreateAchievement}>Achievement Erstellen</button>
                 </div>
             </div>
         </div>

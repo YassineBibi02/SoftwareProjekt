@@ -12,7 +12,7 @@ import EditLessonScreenComponent from './pages/EditLessonScreen/EditLessonScreen
 import { LoginProvider } from './globals/globalContext';
 import UserController from './pages/UserController';
 import AchievementFrontend from './pages/AchievementsPage/AchievementFrontend';
-
+import CreateAchievement from './pages/AchievementsPage/CreateAchievement';
 
 
 function App() {
@@ -29,6 +29,7 @@ function App() {
         <Route path="/lessons/:lessonID" element={<WatchLessonScreen/>} />
         <Route path="/lessonEdit/:lessonID" element={<EditLessonScreenComponent/>} />
         <Route path="/achievements" element={<AchievementFrontend/>} />
+        <Route path="/createAchievement" element={<CreateAchievement/>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>

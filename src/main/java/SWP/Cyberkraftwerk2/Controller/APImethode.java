@@ -298,4 +298,30 @@ public class APImethode {
         userService.removeUserByEmail(email);
         return ResponseEntity.ok().body("User removed");
     }
+
+    /**
+     * this functions returns all existing achievements
+     *
+     * @return String Array containing all achievements
+     */
+    @GetMapping("/GetAllAchievements")
+    public ResponseEntity<?> getAllAchievements() {
+        List<Achievement> achievementList = this.achievementRepository.findAll();
+        return ResponseEntity.ok().body(achievementList);
+    }
+
+    /**
+     * this function edits an achievement
+     *
+     * @param input String Array containing the id, name and description of the achievement to be edited
+     * @return ResponseEntity Indicating Success or Failure
+     */
+    @PostMapping("/EditAchievement")
+    public ResponseEntity<?> editAchievement(@RequestBody String[] input) {
+        int id = Integer.parseInt(input[0]);
+        String name = input[1];
+        String description = input[2];
+        achievementService.editAchievement(id, name, description);
+        return ResponseEntity.ok().body("Achievement edited");
+    }
 }

@@ -2,7 +2,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 10px;
+}
+
+.achievements-container2 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .achievement {
@@ -15,6 +21,23 @@
     max-width: 400px;
     display: flex; /* Added for flex layout */
     align-items: center; /* Align items vertically */
+    text-align: left; /* Align text to the left */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.achievement2 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* This will push the .achievement-text and .achievement-actions to opposite ends */
+    align-items: center;
+    background-color: #f7f7f7;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    display: flex; /* Added for flex layout */
     text-align: left; /* Align text to the left */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -51,10 +74,72 @@
 
 .achievement-page-container {
     text-align: center;
-    padding: 20px;
+    padding-top: 50px;
+    margin-left: 100px;
+    margin-right: 100px;
 }
+
+
 
 .achievements-title {
     font-size: 2em;
-    margin-bottom: 20px;
+    margin-bottom: 60px;
+}
+
+.achievement .delete-button {
+    background-color: #ec6608; /* Or any specific orange color code you prefer */
+    border-color: #ec6608; /* If you have a border */
+    color: white;
+
+}
+.achievement2    .delete-button  {
+    background-color: #ec6608; /* Or any specific orange color code you prefer */
+    border-color: #ec6608; /* If you have a border */
+    color: white;
+
+}
+.achievement2 .edit-button {
+    background-color: #bfbfbf; /* Or any specific orange color code you prefer */
+    border-color: #bfbfbf; /* If you have a border */
+    color: white;
+
+}
+
+
+.achievement, .add-new {
+    flex-basis: calc(25% - 70px); /* Adjust for 3 items per row */
+    margin: 10px; /* Add margin for spacing */
+    box-sizing: border-box;
+}
+
+.add-new {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px; /* Rounded edges, adjust radius as desired */
+    height: 150px; /* Set a fixed height or match with your achievement items */
+    border: 2px dashed #ccc; /* Example styling for the box */
+    font-size: 24px; /* Adjust as needed */
+    cursor: pointer;
+    background-color: #f3f3f3; /* Grey background */
+    height: 130px; /* Set a fixed height or match with your achievement items */
+}
+
+.add-new p {
+    margin: 0; /* Remove any default margin */
+    font-size: 48px; /* Much larger font size for the '+' */
+    color: orange; /* Orange color for the '+' */
+}
+
+.achievement-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Aligns items to the right */
+}
+
+.achievement-actions .edit-button,
+.achievement-actions .delete-button {
+    width: 70px; /* Adjust width as needed */
+    margin-top: 5px; /* Adds spacing between the buttons */
+
 }
