@@ -85,4 +85,18 @@ public class Achievement {
             this.Users.add(userId);
         }
     }
+
+    /**
+     * This function removes a user from the achievement
+     *
+     * @param user User to be removed
+     * @Author Yassine Bibi
+     */
+    public void removeUser(User user) {
+        Integer userId = user.get_ID();
+
+        if (this.Users.contains(userId)) {
+            this.Users.remove(userId);
+        }
+    }
 }

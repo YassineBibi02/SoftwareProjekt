@@ -200,4 +200,24 @@ public class APImethode {
             return ResponseEntity.ok().body("Achievement added");
         }
     }
+
+    /**
+     * This Function removes an Achievement from a User
+     *
+     * @param achievementID ID of the Achievement
+     * @param userEmail     Email of the User
+     * @return ResponseEntity Indicating Success or Failure
+     * @Author Yassine Bibi
+     */
+    @PostMapping("/RemoveAchievement")
+    public ResponseEntity<?> removeAchievement(@RequestBody Integer achievementID, @RequestBody String userEmail) {
+        User user = userService.getUserByEmail(userEmail);
+        Achievement achievement = achievementRepository.findByid(achievementID);
+        if (user == null || achievement == null) {
+            return new ResponseEntity<>("No user found", HttpStatus.NOT_FOUND);
+        } else {
+            achievement.removeUser(user);
+            return ResponseEntity.ok().body("Achievement removed");
+        }
+    }
 }
