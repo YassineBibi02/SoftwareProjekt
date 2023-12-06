@@ -1,5 +1,7 @@
 package SWP.Cyberkraftwerk2.Controller;
 
+import SWP.Cyberkraftwerk2.Module.User;
+import SWP.Cyberkraftwerk2.Module.UserService;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -25,10 +28,13 @@ public class UserController {
     private final ClientRegistration registration;
     private final OAuth2AuthorizedClientRepository authorizedClientRepository;
 
+    private UserService userService;
 
-    public UserController(ClientRegistrationRepository registrations, OAuth2AuthorizedClientRepository authorizedClientRepository) {
+    public UserController(ClientRegistrationRepository registrations, OAuth2AuthorizedClientRepository authorizedClientRepository, UserService userService) {
         this.registration = registrations.findByRegistrationId("kraftcloud-ops-thymeleaf-client");
         this.authorizedClientRepository = authorizedClientRepository;
+
+        this.userService = userService;
     }
 
     @GetMapping("/api/user")
@@ -98,6 +104,18 @@ public class UserController {
         JwtPayload jwtPayload = gson.fromJson(payload, JwtPayload.class);
 
         return jwtPayload.getRealm_access().getRoles();
+    }
+
+
+    @PostMapping("/api/methode/user/achievements")
+    private ResponseEntity<?> getUserAchievements(@RequestBody String Email) {
+        User user = userService.getUserByEmail(Email);
+        if (user == null) {
+            return new ResponseEntity<>("No user found", HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok().body(userService.getUserAchievements(user));
+        }
+
     }
 
 }

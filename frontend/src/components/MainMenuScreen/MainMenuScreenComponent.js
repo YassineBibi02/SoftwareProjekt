@@ -74,8 +74,10 @@ const MainMenuScreenComponent = () => {
     };
 */
 
-    const Username = (userV.given_name!="")?
-    userV.given_name: "Nicht Eingelogt";
+    const Username = (userV) ?
+     (userV.given_name != "") ? userV.given_name: "Nicht Eingelogt" :"Nicht Eingelogt" ;
+
+
 
       useEffect(() => {
         fetch('api/user', { credentials: 'include' }) // <.>

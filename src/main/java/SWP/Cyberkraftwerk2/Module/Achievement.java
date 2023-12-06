@@ -7,6 +7,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(
         name = "Achievements"
@@ -19,12 +20,16 @@ public class Achievement {
     )
     private int id;
 
-    @Getter
     @Column(
             nullable = false
     )
     private String name;
 
+    /**
+     * -- GETTER --
+     *
+     * @return the Users ID
+     */
     private List<Integer> Users;
 
     private String description;
@@ -43,24 +48,9 @@ public class Achievement {
         this.name = name;
     }
 
-    /**
-     * @return the Users ID
-     */
-    public List<Integer> getUsers() {
-        return Users;
-    }
-
-
-    public String getDescription() {
-        return description;
-    }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public void addUser(User user) {

@@ -1,5 +1,6 @@
 package SWP.Cyberkraftwerk2.Databank;
 
+import SWP.Cyberkraftwerk2.Module.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class DbInit implements CommandLineRunner {
      */
     private UserRepository userRepository;
     private AchievementRepository achievementRepository;
+    private UserService userService;
 
 
     /**
@@ -25,10 +27,12 @@ public class DbInit implements CommandLineRunner {
      *
      * @param userRepository        The Data Repository
      * @param achievementRepository Achievement Repository
+     * @param userService
      */
-    public DbInit(UserRepository userRepository, AchievementRepository achievementRepository) {
+    public DbInit(UserRepository userRepository, AchievementRepository achievementRepository, UserService userService) {
         this.userRepository = userRepository;
         this.achievementRepository = achievementRepository;
+        this.userService = userService;
     }
 
     /**
@@ -42,11 +46,9 @@ public class DbInit implements CommandLineRunner {
 //        Optional<User> userOptional = Optional.ofNullable(this.userRepository.findByid(3));
 //        if(userOptional.isPresent()) {
 //            User user = userOptional.get();
+//            List<Achievement> ThisUsersAchievements = userService.getUserAchievements(user);
 //
-//            // Modify the user's name
-//            Achievement Tomodifiy= this.achievementRepository.findByid(1);
-//            Tomodifiy.addUser(user);
-//            this.achievementRepository.save(Tomodifiy);
+//
 //        } else {
 //            // Handle the case where the user is not found
 //            System.out.println("User not found with ID: " + "Yassine");

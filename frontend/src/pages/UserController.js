@@ -25,24 +25,31 @@ const {isLoggedIn, setLoggedIn , userV , setUserV} = useContext(LoginContext);
     }
 
     const login2 = () => {
-    fetch('/api/methode/user/roles', {
-            method: 'GET', credentials: 'include',
-            headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] } // <.>
-          })
-            .then(response => response.text())// <.>
+    console.log(userV);
+    fetch('/api/methode/user/achievements', {
+                          method: 'POST', credentials: 'include',
+                          headers: {
+                            'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                            'Content-Type': 'application/json',
+                         }, // <.>
+                        body: userV.email
+                    })
+                   .then(response => response.text()).then(data => console.log("Response:",data));
+
     }
 
     const login3 = () => {
         fetch('/api/methode/token', {
                 method: 'GET', credentials: 'include',
                 headers: { 'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] } // <.>
+
               })
                 .then(response => response.text())// <.>
         }
 
 
   const button = <Button color="primary" onClick={login}>Keycloak</Button>;
-  const button2 = <Button color="primary" onClick={login2}>User</Button>;
+  const button2 = <Button color="primary" onClick={login2}>Achievements</Button>;
   const button3 = <Button color="primary" onClick={login3}>Token</Button>;
 
   const message = <h2>Welcome</h2> ;
