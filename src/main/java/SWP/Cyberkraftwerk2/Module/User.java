@@ -95,5 +95,27 @@ public class User {
         }
     }
 
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
 
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setMailsreceived(int[] mailsreceived) {
+        this.mailsreceived = mailsreceived;
+    }
+
+    public void setMaillevel(int maillevel) {
+        this.maillevel = maillevel;
+    }
 }

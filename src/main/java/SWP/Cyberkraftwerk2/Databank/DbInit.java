@@ -17,15 +17,18 @@ public class DbInit implements CommandLineRunner {
      * Data repository
      */
     private UserRepository userRepository;
+    private AchievementRepository achievementRepository;
 
 
     /**
      * Injection through constructor of the Data repository and the password Encoder
      *
-     * @param userRepository  The Data Repository
+     * @param userRepository        The Data Repository
+     * @param achievementRepository Achievement Repository
      */
-    public DbInit(UserRepository userRepository) {
+    public DbInit(UserRepository userRepository, AchievementRepository achievementRepository) {
         this.userRepository = userRepository;
+        this.achievementRepository = achievementRepository;
     }
 
     /**
@@ -35,6 +38,23 @@ public class DbInit implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
+
+//        Optional<User> userOptional = Optional.ofNullable(this.userRepository.findByid(3));
+//        if(userOptional.isPresent()) {
+//            User user = userOptional.get();
+//
+//            // Modify the user's name
+//            Achievement Tomodifiy= this.achievementRepository.findByid(1);
+//            Tomodifiy.addUser(user);
+//            this.achievementRepository.save(Tomodifiy);
+//        } else {
+//            // Handle the case where the user is not found
+//            System.out.println("User not found with ID: " + "Yassine");
+//        }
+
+//        Achievement FirstStarted = new Achievement("FirstStarted", "You joined the Service" );
+//        this.achievementRepository.save(FirstStarted);
+
 //        //Delete Users from before
 //        this.userRepository.deleteAll();
 //
@@ -53,5 +73,7 @@ public class DbInit implements CommandLineRunner {
 //
 //        //save to Db
 //        this.userRepository.saveAll(userList);
+
+
     }
 }
