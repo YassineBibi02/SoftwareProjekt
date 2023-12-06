@@ -46,6 +46,7 @@ public class UserController {
 
     /**
      * This function returns the User from the oauth2 token
+     * it also combines the roles and achievements of the user from the functions in this class
      * @param user User
      * @return User
      * @Author Yassine Bibi
@@ -55,7 +56,27 @@ public class UserController {
         if (user == null) {
             return new ResponseEntity<>("", HttpStatus.OK);
         } else {
-            return ResponseEntity.ok().body(user.getAttributes());
+            Map<String, Object> userAttributes = new HashMap<>();
+            userAttributes.put("email", user.getAttribute("email"));
+            userAttributes.put("email_verified", user.getAttribute("email_verified"));
+            userAttributes.put("preferred_username", user.getAttribute("preferred_username"));
+            userAttributes.put("given_name", user.getAttribute("given_name"));
+            userAttributes.put("name", user.getAttribute("name"));
+            userAttributes.put("family_name", user.getAttribute("family_name"));
+
+            List<String> roles = (List<String>) getUserRoles(user).getBody();
+            userAttributes.put("roles", roles);
+
+            try {
+                String email = user.getAttribute("email");
+                List<Integer> achievements = (List<Integer>) getUserAchievements(email).getBody();
+                userAttributes.put("achievements", achievements);
+            } catch (Exception e) {
+                userAttributes.put("achievements", new ArrayList<>());
+            }
+
+
+            return ResponseEntity.ok().body(userAttributes);
         }
     }
 
@@ -146,10 +167,10 @@ public class UserController {
     @PostMapping("/api/methode/user/achievements")
     private ResponseEntity<?> getUserAchievements(@RequestBody String Email) {
         User user = userService.getUserByEmail(Email);
+        List<Integer> IDs = new ArrayList<>();
         if (user == null) {
             return new ResponseEntity<>("No user found", HttpStatus.NOT_FOUND);
         } else {
-            List<Integer> IDs = new ArrayList<>();
             userService.getUserAchievements(user).forEach(achievement -> {
 
                 IDs.add(achievement.getId());
