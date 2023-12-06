@@ -91,7 +91,7 @@ const MainMenuScreenComponent = () => {
                 console.log(userV);
             }
         });
-    }, [ setLoggedIn,setLoggedIn, setUserV])
+    }, [])
 
     return (
         <div>
