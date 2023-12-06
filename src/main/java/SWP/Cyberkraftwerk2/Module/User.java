@@ -54,6 +54,13 @@ public class User {
         this.maillevel = maillevel;
     }
 
+    public User(String firstname, String lastname, String email) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.maillevel = 1;
+        this.mailsreceived = new int[]{1, 2, 3};
+    }
 
     public String get_firstname(){
         return this.firstname;

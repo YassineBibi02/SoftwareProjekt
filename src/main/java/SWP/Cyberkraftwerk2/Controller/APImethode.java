@@ -257,6 +257,7 @@ public class APImethode {
      *
      * @param achievementID ID of the Achievement
      * @return ResponseEntity Indicating Success or Failure
+     * @Author Yassine Bibi
      */
     @PostMapping("/AchievementDetails")
     public ResponseEntity<?> getAchievementDetails(@RequestBody Integer achievementID) {
@@ -266,5 +267,35 @@ public class APImethode {
         } else {
             return ResponseEntity.ok().body(achievement);
         }
+    }
+
+    /**
+     * This function creates a new user
+     *
+     * @param input String Array containing the firstname, lastname and email of the new user
+     * @return ResponseEntity Indicating Success or Failure
+     * @Author Yassine Bibi
+     */
+    @PostMapping("/AddUser")
+    public ResponseEntity<?> addUser(@RequestBody String[] input) {
+        String firstname = input[0];
+        String lastname = input[1];
+        String email = input[2];
+        userService.create_user(firstname, lastname, email);
+        return ResponseEntity.ok().body("User created");
+    }
+
+    /**
+     * This function deletes a user
+     *
+     * @param input String Array containing the email of the user to be deleted
+     * @return ResponseEntity Indicating Success or Failure
+     * @Author Yassine Bibi
+     */
+    @PostMapping("/RemoveUser")
+    public ResponseEntity<?> removeUser(@RequestBody String[] input) {
+        String email = input[0];
+        userService.removeUserByEmail(email);
+        return ResponseEntity.ok().body("User removed");
     }
 }

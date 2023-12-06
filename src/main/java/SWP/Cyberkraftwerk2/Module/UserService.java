@@ -71,4 +71,34 @@ public class UserService {
 
         return achievements;
     }
+
+    /**
+     * this function creates a new user
+     *
+     * @param firstname firstname
+     * @param lastname  lastname
+     * @param email     email
+     */
+    public void create_user(String firstname, String lastname, String email) {
+        User user = new User(firstname, lastname, email);
+        this.userRepository.save(user);
+    }
+
+    /**
+     * this function deletes a user
+     *
+     * @param ID ID of the user
+     */
+    public void removeUserByID(int ID) {
+        this.userRepository.deleteById(ID);
+    }
+
+    /**
+     * this function deletes a user
+     *
+     * @param email email of the user
+     */
+    public void removeUserByEmail(String email) {
+        this.userRepository.deleteByEmail(email);
+    }
 }
