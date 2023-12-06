@@ -241,30 +241,30 @@ public class LessonControl {
     }
 
     /**
-     * 
-     * @param quiz_id
-     * @param wrongAnswers
-     * @param rightAnswer
+     * Adds a new quiz for given lesson. Can be searched in the registry as quiz_<quiz_id>.
+     * @param quiz_id Int that represents the quiz id given to the Lesson.
+     * @param Question String that is the question that the quiz is about.
+     * @param wrongAnswers String[] that represents all the wrong answers in for the question
+     * @param rightAnswer String that is the only right answer to the question.
      * @author Kevin Kempa
      */
-    public static void addQuiz(int quiz_id, String[] wrongAnswers, String rightAnswer){
+    public static void addQuiz(int quiz_id, String Question, String[] wrongAnswers, String rightAnswer){
         JSONObject registry = parseRegistry();
-
-
-            JSONObject obj = new JSONObject();
-            JSONArray arr = new JSONArray();
-            for(int i=0; wrongAnswers.length > i; i++){
-                System.out.println(wrongAnswers[i]);
-                arr.put(wrongAnswers[i]);
-            }
-
-            obj.put("quiz_id", quiz_id);
-            obj.put("rightAnswer", rightAnswer);
-            obj.put("wrongAnswers", arr);
-
-            String str = "quiz" + Integer.toString(quiz_id);
-            registry.put(str, obj);
-            writeRegistry(registry);
+    
+        JSONObject obj = new JSONObject();
+        JSONArray arr = new JSONArray();
+        for(int i=0; wrongAnswers.length > i; i++){
+            arr.put(wrongAnswers[i]);
+        }
+    
+        obj.put("quiz_id", quiz_id);
+        obj.put("Question", Question);
+        obj.put("rightAnswer", rightAnswer);
+        obj.put("wrongAnswers", arr);
+    
+        String str = "quiz" + Integer.toString(quiz_id);
+        registry.put(str, obj);
+        writeRegistry(registry);
     }
 
 
@@ -291,6 +291,6 @@ public class LessonControl {
         LessonControl.updateLessonEntry(1, "FIDO2 Keys", 3, 5, 5);
 
         String[] w_q = {"a", "b", "c"};
-        LessonControl.addQuiz(3, w_q, "Right");
+        LessonControl.addQuiz(3, "Warum?", w_q, "Right");
     }
 }
