@@ -20,7 +20,7 @@ const MainMenuScreenComponent = () => {
         margin: '5px',
         padding: '20px',
         backgroundColor: 'white',
-        color: '#ec6608',
+        color: '#000000',
         borderColor: '#ec6608',
         borderRadius: '50px',
         width: '100%', 
@@ -37,6 +37,10 @@ const MainMenuScreenComponent = () => {
 
     const redirectToLessons = () => {
         navigate('/lessons');
+    };
+
+    const redirectToAchievements = () => {
+        navigate('/achievements');
     };
 
     const Container = {
@@ -94,11 +98,11 @@ const MainMenuScreenComponent = () => {
                 <div style={Container}>
                     <button style={ButtonStyle} onClick={redirectToMail}>{emailButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
-                    <button style={ButtonStyle} onClick={redirectToMail}>{achievementButtonText}</button>
+                    <button style={ButtonStyle} onClick={redirectToAchievements}>{achievementButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
                 </div>
                 <div style={infoContainer}>
-                    <EmployeeInfo name={Username} level={buttonText} />
+                    <EmployeeInfo name={Username} level={"1"} />
                 </div>
             </div>
         </div>

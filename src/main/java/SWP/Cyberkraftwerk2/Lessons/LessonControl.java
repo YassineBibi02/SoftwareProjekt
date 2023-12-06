@@ -241,6 +241,34 @@ public class LessonControl {
     }
 
     /**
+     * Adds a new quiz for given lesson. Can be searched in the registry as quiz_<quiz_id>.
+     * @param quiz_id Int that represents the quiz id given to the Lesson.
+     * @param Question String that is the question that the quiz is about.
+     * @param wrongAnswers String[] that represents all the wrong answers in for the question
+     * @param rightAnswer String that is the only right answer to the question.
+     * @author Kevin Kempa
+     */
+    public static void addQuiz(int quiz_id, String Question, String[] wrongAnswers, String rightAnswer){
+        JSONObject registry = parseRegistry();
+    
+        JSONObject obj = new JSONObject();
+        JSONArray arr = new JSONArray();
+        for(int i=0; wrongAnswers.length > i; i++){
+            arr.put(wrongAnswers[i]);
+        }
+    
+        obj.put("quiz_id", quiz_id);
+        obj.put("Question", Question);
+        obj.put("rightAnswer", rightAnswer);
+        obj.put("wrongAnswers", arr);
+    
+        String str = "quiz" + Integer.toString(quiz_id);
+        registry.put(str, obj);
+        writeRegistry(registry);
+    }
+
+
+    /**
      * Static method to get a Json String representation of the whole registry
      * 
      * Ideally this String can be used to easily access all the data in JavaScript
@@ -253,7 +281,7 @@ public class LessonControl {
         return result;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {                // TODO die Main hier ist zum lokalen Testen der Methoden; am Ende bitte entfernen!
         LessonControl.addLessonEntry("Passwortsicherheit", 1, 1, 1);
         LessonControl.addLessonEntry("Phishing", 1, 2, 2);
 
@@ -261,5 +289,8 @@ public class LessonControl {
         LessonControl.addLessonEntry("Hashing", 2, 3, 3);
         LessonControl.addLessonEntry("Social Engineering", 2, 4, 4);
         LessonControl.updateLessonEntry(1, "FIDO2 Keys", 3, 5, 5);
+
+        String[] w_q = {"a", "b", "c"};
+        LessonControl.addQuiz(3, "Warum?", w_q, "Right");
     }
 }
