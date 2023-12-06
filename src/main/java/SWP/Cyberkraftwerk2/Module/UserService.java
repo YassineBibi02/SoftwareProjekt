@@ -45,11 +45,24 @@ public class UserService {
         /*raise Userlevel by one*/
         //UNFINISHED
     }
-    
 
-    public void change_user(int ID, String firstname, String lastname, String email){
-        /*change User "ID" in database*/
-        //UNFINISHED
+
+    /**
+     * This function changes the user
+     *
+     * @param ID        ID of the user
+     * @param firstname firstname
+     * @param lastname  lastname
+     * @param email     email
+     * @Author: Yassine Bibi
+     */
+    public void change_user(int ID, String firstname, String lastname, String email, Integer level) {
+        User user = userRepository.findByid(ID);
+        user.setFirstname(firstname);
+        user.setLastname(lastname);
+        user.setEmail(email);
+        user.setMaillevel(level);
+        userRepository.save(user);
     }
 
 
@@ -101,4 +114,5 @@ public class UserService {
     public void removeUserByEmail(String email) {
         this.userRepository.deleteByEmail(email);
     }
+
 }

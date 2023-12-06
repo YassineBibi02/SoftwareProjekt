@@ -67,6 +67,7 @@ public class User {
     }
 
 
+
     public String get_lastname(){
         return this.lastname;
     }
@@ -125,4 +126,6 @@ public class User {
     public void setMaillevel(int maillevel) {
         this.maillevel = maillevel;
     }
+
+
 }

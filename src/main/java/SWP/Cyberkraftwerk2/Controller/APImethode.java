@@ -305,6 +305,7 @@ public class APImethode {
      * this functions returns all existing achievements
      *
      * @return String Array containing all achievements
+     * @Author Yassine Bibi
      */
     @GetMapping("/GetAllAchievements")
     public ResponseEntity<?> getAllAchievements() {
@@ -317,6 +318,7 @@ public class APImethode {
      *
      * @param input String Array containing the id, name and description of the achievement to be edited
      * @return ResponseEntity Indicating Success or Failure
+     * @Author Yassine Bibi
      */
     @PostMapping("/EditAchievement")
     public ResponseEntity<?> editAchievement(@RequestBody String[] input) {
@@ -327,4 +329,24 @@ public class APImethode {
         achievementService.editAchievement(id, name, description, weight);
         return ResponseEntity.ok().body("Achievement edited");
     }
+
+    /**
+     * this function edits an user
+     *
+     * @param input String Array containing the id, firstname, lastname, email and level of the user to be edited
+     * @return ResponseEntity Indicating Success or Failure
+     * @Author Yassine Bibi
+     */
+    @PostMapping("/EditUser")
+    public ResponseEntity<?> editUser(@RequestBody String[] input) {
+        int id = Integer.parseInt(input[0]);
+        String firstname = input[1];
+        String lastname = input[2];
+        String email = input[3];
+        int Level = Integer.parseInt(input[4]);
+        userService.change_user(id, firstname, lastname, email, Level);
+        return ResponseEntity.ok().body("User edited");
+    }
+
+
 }

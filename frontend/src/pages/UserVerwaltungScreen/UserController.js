@@ -15,6 +15,14 @@ const UserController = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [editedUserData, setEditedUserData] = useState({
+        _id: '',
+      _firstname: '',
+      _lastname: '',
+      _email: '',
+      _maillevel: '',
+
+    });
 
   // Fetch all users when the component mounts
   useEffect(() => {
@@ -32,11 +40,29 @@ const UserController = () => {
   }, []);
 
   // Functions to handle edit and delete
-  const handleEdit = (user) => {
-    setSelectedUser(user);
-    setIsEditModalOpen(true);
-  };
+  // Function to initialize the editedUserData when the "Edit" button is clicked
+    const handleEdit = (user) => {
+      setSelectedUser(user);
+      setIsEditModalOpen(true);
+        console.log(user);
+      // Initialize editedUserData with the values of the selected user
+      setEditedUserData({
+        _firstname: user._firstname,
+        _lastname: user._lastname,
+        _email: user._email,
+        _maillevel: user._maillevel,
+        _id: user._ID, // Assign user._id to _id in editedUserData
+        // Initialize other fields as needed
+      });
+    };
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditedUserData({
+          ...editedUserData,
+          [name]: value,
+        });
+    };
   const handleDelete = (user) => {
     setSelectedUser(user);
     setIsDeleteModalOpen(true);
@@ -49,7 +75,40 @@ const UserController = () => {
   };
 
   const handleEditUser = (editedUserData) => {
-    // Perform the edit logic here with the editedUserData
+    console.log(editedUserData);
+    // Create a JSON payload with the updated user data
+    const payload = [
+      editedUserData._id,
+      editedUserData._firstname,
+      editedUserData._lastname,
+      editedUserData._email,
+      editedUserData._maillevel.toString(),
+    ];
+    console.log(JSON.stringify(payload))    ;
+    // Make a POST request to your backend API
+    fetch('/api/methode/EditUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': cookies['XSRF-TOKEN']
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // User edited successfully
+          // You can handle success actions here (e.g., updating the user list)
+          console.log('User edited successfully');
+        } else {
+          // Handle the case where the request was not successful
+          console.error('Failed to edit user');
+        }
+      })
+      .catch((error) => {
+        // Handle network or other errors here
+        console.error('Error editing user:', error);
+      });
+
     // Close the edit modal
     setIsEditModalOpen(false);
   };
@@ -78,22 +137,52 @@ const UserController = () => {
 
       {/* Edit User Modal */}
       <Modal isOpen={isEditModalOpen} toggle={handleCloseModals}>
-        <ModalHeader>Edit User</ModalHeader>
-        <ModalBody>
-          <Form>
-            {/* Populate the form with selectedUser data */}
-            {/* Handle user data changes */}
-          </Form>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={handleEditUser}>
-            Save
-          </Button>
-          <Button color="secondary" onClick={handleCloseModals}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
+      <ModalHeader>Edit User</ModalHeader>
+      <ModalBody>
+        <Form>
+          {/* Populate the form with selectedUser data */}
+          <FormGroup>
+            <Label for="_firstname">First Name</Label>
+            <Input
+              type="text"
+              name="_firstname"
+              id="_firstname"
+              value={editedUserData._firstname}
+              onChange={handleInputChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label for="_lastname">Last Name</Label>
+            <Input
+              type="text"
+              name="_lastname"
+              id="_lastname"
+              value={editedUserData._lastname}
+              onChange={handleInputChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label for="_email">Email</Label>
+            <Input
+              type="email"
+              name="_email"
+              id="_email"
+              value={editedUserData._email}
+              onChange={handleInputChange}
+            />
+          </FormGroup>
+          {/* Add other input fields as needed */}
+        </Form>
+      </ModalBody>
+      <ModalFooter>
+        <Button color="primary" onClick={() => handleEditUser(editedUserData)}>
+          Save
+        </Button>
+        <Button color="secondary" onClick={handleCloseModals}>
+          Cancel
+        </Button>
+      </ModalFooter>
+    </Modal>
 
       {/* Delete User Confirmation Modal */}
       <Modal isOpen={isDeleteModalOpen} toggle={handleCloseModals}>
