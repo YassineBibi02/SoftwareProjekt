@@ -17,33 +17,56 @@ const Header = () => {
         justifyContent: 'space-between',
         alignItems: 'center',
         height: '80px',
-        borderRadius: '10px'
+        borderRadius: '10px',
+
     };
 
     const homeTextStyle = {
-        marginLeft: '10px', // Closer to the logo
+        marginLeft: '40px', // Closer to the logo
+        marginTop: '40px', // Closer to the top
         color: 'black', // Changed text color to black
         cursor: 'pointer',
         fontWeight: 'bold',
-        fontSize: '1.5em' // Larger text size for visibility
+        fontSize: '1.7em' // Larger text size for visibility
     };
+
+    const LogoutStyle = {
+            marginLeft: '0px', // Closer to the logo
+            marginRight: '40px', // Closer to the logo
+            marginTop: '35px', // Closer to the top
+            color: 'black', // Changed text color to black
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '1.7em' // Larger text size for visibility
+        };
 
     const logoStyle = {
             height: '50px',
             cursor: 'pointer'
-        };
+    };
 
-        const userInfoBoxStyle = {
+    const userInfoBoxStyle = {
             display: 'flex',
             alignItems: 'center',
             backgroundColor: 'white',
             border: '2px solid orange',
-            padding: '5px 10px',
+            padding: '5px 10px', // Increase padding for a longer box
             borderRadius: '5px',
-            cursor: 'pointer'
-        };
+            cursor: 'pointer',
+            width: '250px', // You can set a specific width if you need to
 
-        const dropdownMenuStyle = {
+    };
+
+    const userDetailsStyle = {
+        display: 'flex',
+        flexDirection: 'column', // Stack children vertically
+        alignItems: 'flex-start', // Align children to the start of the flex container
+        marginRight: '10px', // Add some space to the right of the container
+        fontSize: '1.1em' ,// Decrease font size for visibility
+        fontWeight: 'bold' // Make the text bold
+    };
+
+    const dropdownMenuStyle = {
             display: dropdownOpen ? 'block' : 'none',
             position: 'absolute',
             backgroundColor: 'white',
@@ -52,25 +75,25 @@ const Header = () => {
             marginTop: '10px',
             borderRadius: '5px',
             zIndex: '1000'
-        };
+    };
 
-        const dropdownItemStyle = {
+    const dropdownItemStyle = {
             padding: '10px',
             borderTop: '1px solid orange',
             color: 'black'
-        };
+    };
 
-        const goToHome = () => {
+    const goToHome = () => {
             navigate('/');
-        };
+    };
 
-        const login = () => {
+    const login = () => {
             navigate('/login');
-        };
+    };
 
-        const toggleDropdown = () => {
+    const toggleDropdown = () => {
             setDropdownOpen(!dropdownOpen);
-        };
+    };
 
     return (
         <div style={HeaderStyle}>
@@ -80,14 +103,16 @@ const Header = () => {
             </div>
             <div>
                 {isLoggedIn() ? (
-                     <div style={userInfoBoxStyle} onClick={toggleDropdown}>
-                                            <img src={userIcon} alt="User Icon" style={{ marginRight: '10px' }}/>
-                                            <p>{userV.given_name}</p>
-                                            <p style={{ marginLeft: '10px', marginRight: '10px' }}>{userV.level}</p>
-                                            <p>▼</p>
-                                        </div>
+                    <div style={userInfoBoxStyle} onClick={toggleDropdown}>
+                        <img src={userIcon} alt="User Icon" style={{ marginRight: '20px' ,marginLeft: '20px'}}/>
+                        <div style={userDetailsStyle}>
+                            <p style={{ margin: 0, color: 'black' }}>{userV.given_name}</p>
+                            <p style={{ margin: 0, color: 'orange' }}>{userV.mailLevel}</p>
+                        </div>
+                        <p style={{marginLeft:'40px'}}>▼</p>
+                    </div>
                 ) : (
-                    <p onClick={login} style={{ cursor: 'pointer', color: 'black' }}>Login</p>
+                    <p onClick={login} style={LogoutStyle}>Login</p>
                 )}
                 <div style={dropdownMenuStyle}>
                     <div style={dropdownItemStyle} onClick={goToHome}>Einstellungen</div>
