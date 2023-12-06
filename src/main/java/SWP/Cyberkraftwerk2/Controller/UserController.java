@@ -52,7 +52,7 @@ public class UserController {
      * @Author Yassine Bibi
      */
     @GetMapping("/api/user")
-    public ResponseEntity<?> getUser(@AuthenticationPrincipal OAuth2User user) {
+    public ResponseEntity<?> getUser(@AuthenticationPrincipal OAuth2User user, HttpServletRequest request, OAuth2AuthenticationToken authentication) {
         if (user == null) {
             return new ResponseEntity<>("", HttpStatus.OK);
         } else {
@@ -64,8 +64,14 @@ public class UserController {
             userAttributes.put("name", user.getAttribute("name"));
             userAttributes.put("family_name", user.getAttribute("family_name"));
 
-            List<String> roles = (List<String>) getUserRoles(user).getBody();
-            userAttributes.put("roles", roles);
+            try {
+                List<String> roles = (List<String>) getAccessToken(request, authentication).get("roles");
+
+                userAttributes.put("roles", roles);
+            } catch (Exception e) {
+                userAttributes.put("roles", new ArrayList<>());
+            }
+
             String email = user.getAttribute("email");
 
             try {
@@ -131,12 +137,12 @@ public class UserController {
      * @return the Roles from the Access Token
      * @Author Yassine Bibi
      */
-    public ResponseEntity<?> getAccessToken(HttpServletRequest request, OAuth2AuthenticationToken authentication) {
+    public Map<String, Object> getAccessToken(HttpServletRequest request, OAuth2AuthenticationToken authentication) {
         OAuth2AuthorizedClient authorizedClient = authorizedClientRepository.loadAuthorizedClient(
                 authentication.getAuthorizedClientRegistrationId(), authentication, request);
 
         if (authorizedClient == null) {
-            return new ResponseEntity<>("No authorized client found", HttpStatus.NOT_FOUND);
+            return new HashMap<>();
         } else {
             String accessToken = authorizedClient.getAccessToken().getTokenValue();
             List<String> roles = extractRealmAccessRoles(accessToken);
@@ -144,7 +150,7 @@ public class UserController {
             Map<String, Object> tokenDetails = new HashMap<>();
             tokenDetails.put("roles", roles);
 
-            return ResponseEntity.ok().body(tokenDetails);
+            return tokenDetails;
         }
     }
 

@@ -15,6 +15,9 @@ const MainMenuScreenComponent = () => {
     var schulungButtonText = "Schulungsübersicht";
     var achievementButtonText = "Archievementsübersicht";
     var nutzerVerwaltenText = "Nutzer Verwalten";
+    let roles = [];
+
+
 
     const ButtonStyle = {
         margin: '5px',
@@ -69,6 +72,8 @@ const MainMenuScreenComponent = () => {
                 setLoggedIn(false);
             } else {
                 setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email , mailLevel: JSON.parse(body).Level});
+                roles = JSON.parse(body).roles;
+                console.log(roles);
                 setLoggedIn(true);
                 console.log(userV);
             }
