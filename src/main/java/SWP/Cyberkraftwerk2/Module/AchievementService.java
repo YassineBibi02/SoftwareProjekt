@@ -26,8 +26,8 @@ public class AchievementService {
      * @param name
      * @param description
      */
-    public void addAchievement(String name, String description) {
-        Achievement achievement = new Achievement(name, description);
+    public void addAchievement(String name, String description, Integer weight) {
+        Achievement achievement = new Achievement(name, description, weight);
         achievementRepository.save(achievement);
     }
 
@@ -48,10 +48,11 @@ public class AchievementService {
      * @param name        new name
      * @param description new description
      */
-    public void editAchievement(Integer ID, String name, String description) {
+    public void editAchievement(Integer ID, String name, String description, Integer weight) {
         Achievement achievement = achievementRepository.findByid(ID);
         achievement.setName(name);
         achievement.setDescription(description);
+        achievement.setWeight(weight);
         achievementRepository.save(achievement);
     }
 

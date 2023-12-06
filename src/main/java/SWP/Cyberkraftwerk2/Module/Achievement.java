@@ -37,12 +37,23 @@ public class Achievement {
 
     private String description;
 
-    public Achievement(String name, String description) {
+    private Integer Weight;
+
+    public Achievement(String name, String description, Integer weight) {
         this.name = name;
         this.description = description;
+        this.Weight = weight;
         this.Users = new ArrayList<>();
     }
 
+
+    public Integer getWeight() {
+        return Weight;
+    }
+
+    public void setWeight(Integer weight) {
+        Weight = weight;
+    }
 
     public Achievement() {
     }

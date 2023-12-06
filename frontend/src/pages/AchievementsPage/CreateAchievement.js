@@ -10,18 +10,38 @@ const CreateAchievement = () => {
     const navigate = useNavigate();
     const [achievements, setAchievements] = useState([]);
     const [modal, setModal] = useState(false);
-    const [newAchievement, setNewAchievement] = useState({ name: '', description: '' });
+    const [newAchievement, setNewAchievement] = useState({ name: '', description: '', weight: 0 });
     const [cookies] = useCookies(['XSRF-TOKEN']);
     const [editModal, setEditModal] = useState(false);
     const [editAchievementData, setEditAchievementData] = useState({ id: '', name: '', description: '' });
 
 
     useEffect(() => {
-        getAchievements();
+        console.log("test")
+        fetch('api/user', { credentials: 'include' }) // <.>
+            .then(response => response.text())
+            .then(body => {
+                if (body === '') {
+                     navigate('/login');
+                } else {
+                    const userData = JSON.parse(body);
+
+                    // Check for Admin_Access role
+
+                    if (!userData.roles.includes("Admin_Access")) {
+                        console.log("Access Denied. Admin Only Area")
+                        // If the user does not have Admin_Access, navigate to the home screen
+                        navigate('/');
+                    } else {
+                        // If the user has Admin_Access, continue with fetching achievements or other admin tasks
+                        getAchievements();
+                    }
+                }
+            });
+
     }, []);
 
     function getAchievements () {
-    console.log("test");
         fetch('/api/methode/GetAllAchievements')
             .then(response => response.json())
             .then(data => {
@@ -43,49 +63,58 @@ const CreateAchievement = () => {
     };
 
     const handleEditAchievement = () => {
-        const requestOptions = {
+        fetch('api/methode/EditAchievement', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': cookies['XSRF-TOKEN'] // Your CSRF token handling may differ
+                'X-XSRF-TOKEN': cookies['XSRF-TOKEN']
             },
-            body: JSON.stringify([editAchievementData.id ,editAchievementData.name, editAchievementData.description])
-        };
-
-        const id = editAchievementData.id; // The ID to pass as a request parameter
-        fetch('api/methode/EditAchievement', requestOptions)
-            .then(response => response.text())
-            .then(() => {
-                // Handle success
-                setEditModal(false);
-                getAchievements();
-            })
-            .catch(error => {
-                // Handle errors
-                console.error('Error:', error);
-            });
+            body: JSON.stringify([
+                editAchievementData.id,
+                editAchievementData.name,
+                editAchievementData.description,
+                editAchievementData.weight.toString()
+            ])
+        })
+        .then(response => response.text())
+        .then(() => {
+            setEditModal(false);
+            getAchievements();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     };
 
+
     const handleAddAchievement = () => {
+
         fetch('/api/methode/CreateAchievement', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-XSRF-TOKEN': cookies['XSRF-TOKEN']
             },
-            body: JSON.stringify([newAchievement.name, newAchievement.description])
+            body: JSON.stringify([
+                newAchievement.name,
+                newAchievement.description,
+                newAchievement.weight.toString() // Convert weight to string
+            ])
         })
         .then(response => response.text())
         .then(() => {
-             setAchievements(prevAchievements => [...prevAchievements, newAchievement]);
+            setAchievements(prevAchievements => [...prevAchievements, newAchievement]);
             // Reset the form and close the modal
-            setNewAchievement({ name: '', description: '' });
+            setNewAchievement({ name: '', description: '', weight: 0 });
             getAchievements();
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
         toggleModal();
-
-
     };
+
+
 
     const handleDeleteAchievement = (achievementId) => {
         fetch('/api/methode/DeleteAchievement', {
@@ -147,12 +176,24 @@ const CreateAchievement = () => {
                             onChange={e => setNewAchievement({ ...newAchievement, description: e.target.value })}
                         />
                     </FormGroup>
+                    <FormGroup>
+                        <Label for="achievementWeight">Weight</Label>
+                        <Input
+                            type="number"
+                            name="weight"
+                            id="achievementWeight"
+                            placeholder="Enter weight"
+                            value={newAchievement.weight}
+                            onChange={e => setNewAchievement({ ...newAchievement, weight: e.target.value })}
+                        />
+                    </FormGroup>
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onClick={handleAddAchievement}>Add Achievement</Button>{' '}
                     <Button color="secondary" onClick={toggleModal}>Cancel</Button>
                 </ModalFooter>
             </Modal>
+            {/* Modal for editing achievement */}
             <Modal isOpen={editModal} toggle={() => setEditModal(!editModal)}>
                 <ModalHeader toggle={() => setEditModal(!editModal)}>Edit Achievement</ModalHeader>
                 <ModalBody>
@@ -176,6 +217,17 @@ const CreateAchievement = () => {
                             placeholder="Enter description"
                             value={editAchievementData.description}
                             onChange={e => setEditAchievementData({ ...editAchievementData, description: e.target.value })}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="achievementWeight">Weight</Label>
+                        <Input
+                            type="number"
+                            name="weight"
+                            id="achievementWeight"
+                            placeholder="Enter weight"
+                            value={editAchievementData.weight}
+                            onChange={e => setEditAchievementData({ ...editAchievementData, weight: e.target.value })}
                         />
                     </FormGroup>
                 </ModalBody>

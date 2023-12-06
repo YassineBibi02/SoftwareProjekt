@@ -227,7 +227,7 @@ public class APImethode {
     /**
      * This Function creates an Achievement
      *
-     * @param input Name and Description of the Achievement in a String Array
+     * @param input Name, Description and weight of the Achievement in a String Array
      * @return ResponseEntity Indicating Success or Failure
      * @Author Yassine Bibi
      */
@@ -235,7 +235,9 @@ public class APImethode {
     public ResponseEntity<?> createAchievement(@RequestBody String[] input) {
         String name = input[0];
         String description = input[1];
-        achievementService.addAchievement(name, description);
+        Integer weight = Integer.parseInt(input[2]);
+
+        achievementService.addAchievement(name, description, weight);
         return ResponseEntity.ok().body("Achievement created");
     }
 
@@ -321,7 +323,8 @@ public class APImethode {
         int id = Integer.parseInt(input[0]);
         String name = input[1];
         String description = input[2];
-        achievementService.editAchievement(id, name, description);
+        int weight = Integer.parseInt(input[3]);
+        achievementService.editAchievement(id, name, description, weight);
         return ResponseEntity.ok().body("Achievement edited");
     }
 }
