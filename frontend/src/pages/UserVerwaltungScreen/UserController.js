@@ -4,12 +4,13 @@ import { useCookies } from 'react-cookie';
 import Header from '../../components/Header';
 import LoginContext from '../../globals/globalContext';
 import UserComponent from './UserComponent'; // Import your User Component
+import { useNavigate } from 'react-router-dom';
 import './UserControl.css';
 
 const UserController = () => {
   const [cookies] = useCookies(['XSRF-TOKEN']);
   const { isLoggedIn, setLoggedIn, userV, setUserV } = useContext(LoginContext);
-
+  const navigate = useNavigate();
   // User data and edit state
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -29,31 +30,57 @@ const UserController = () => {
 
   // Fetch all users when the component mounts
   useEffect(() => {
-    // Fetch users
-    fetch('/api/methode/GetUsers', {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setUsers(data.map(JSON.parse)))
-      .catch((error) => console.error('Error fetching users:', error));
+      fetch('api/user', { credentials: 'include' }) // <.>
+          .then(response => response.text())
+          .then(body => {
+              if (body === '') {
+                   navigate('/login');
+              } else {
+                  const userData = JSON.parse(body);
 
-    // Fetch achievements
-    fetch('/api/methode/GetAllAchievements')
-      .then((response) => response.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setAchievements(data);
-        }
+                  // Check for Admin_Access role
+
+                  if (!userData.roles.includes("Admin_Access")) {
+                      console.log("Access Denied. Admin Only Area")
+                      // If the user does not have Admin_Access, navigate to the home screen
+                      navigate('/');
+                  } else {
+                      // If the user has Admin_Access, continue with fetching achievements or other admin tasks
+                      Initialize();
+                  }
+              }
+          });
+
+
+  }, []);
+
+  function Initialize () {
+      // Fetch users
+      fetch('/api/methode/GetUsers', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+        },
       })
-      .catch((error) => {
-        console.error('Error fetching achievements:', error);
-        setAchievements([]); // Ensure it's always an array
-      });
-  }, [cookies]);
+        .then((response) => response.json())
+        .then((data) => setUsers(data.map(JSON.parse)))
+        .catch((error) => console.error('Error fetching users:', error));
+
+      // Fetch achievements
+    fetch('/api/methode/GetAllAchievements')
+        .then((response) => response.json())
+        .then((data) => {
+            if (Array.isArray(data)) {
+                setAchievements(data);
+            }
+        })
+        .catch((error) => {
+            console.error('Error fetching achievements:', error);
+            setAchievements([]); // Ensure it's always an array
+    });
+
+  }
 
   // Toggle the assignment popup
   const toggleAssignPopup = () => setAssignPopup(!assignPopup);
