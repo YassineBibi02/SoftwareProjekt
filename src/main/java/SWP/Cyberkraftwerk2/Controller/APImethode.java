@@ -149,8 +149,8 @@ public class APImethode {
      * @author Tristan Slodowski
      */
     @PostMapping("/RemoveFromRegistry")
-    public boolean removeFromRegistry(@RequestBody String[] input) {
-       int target_id = Integer.parseInt(input[0]);
+    public boolean removeFromRegistry(@RequestBody int input) {
+       int target_id = input;
 
         return LessonControl.removeLessonEntry(target_id);
     }

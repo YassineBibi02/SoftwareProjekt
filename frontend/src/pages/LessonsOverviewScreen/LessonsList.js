@@ -68,7 +68,22 @@ const LessonsList = () => {
 
     const AdminTable = () => {
         if (loadedLessons.length === 0) {
-            return <p>Loading...</p>;
+            return (
+                <div>
+                    <p>No Lessons found</p>
+                    <Button style={{
+                        float: 'right',
+                        marginRight: '100px',
+                        marginTop: '20px',
+                    }}
+                    onClick={addLesson}>
+                        <IoMdAdd size={30} style={{
+                            borderColor: '#ec6608',
+                            borderRadius: '50px'}
+                        }/>
+                    </Button>
+                </div>
+            );
         }
         return (
             <div>              
@@ -101,6 +116,11 @@ const LessonsList = () => {
     }
 
     const UserTable = () => {
+        
+        if (loadedLessons.length === 0) {
+            return <p>No Lessons found</p>;
+        }
+
         return (
             <div>              
                 <h1 style={{marginLeft: '30px', marginBottom: '30px', fontWeight: 'bold'}}>Schulungen</h1>
@@ -111,8 +131,8 @@ const LessonsList = () => {
                         <Col style={HeaderStyle} lg={3}>Completion</Col>
                         <Col style={HeaderStyle} lg={3}>Quiz</Col>
                     </Row>
-                    {lessonEntries.map((lesson) => (
-                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={admin_status} />
+                    {loadedLessons.map((lesson) => (
+                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={admin_status}/>
                     ))}
                 </Container>
             </div>
