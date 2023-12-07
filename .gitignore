@@ -2,3 +2,5 @@
 #/.vscode
 #/.idea
 #/.mvn
+# Ignore all files in /target
+/target/

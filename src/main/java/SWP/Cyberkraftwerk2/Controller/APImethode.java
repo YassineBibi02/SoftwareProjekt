@@ -8,6 +8,7 @@ import SWP.Cyberkraftwerk2.Module.Achievement;
 import SWP.Cyberkraftwerk2.Module.AchievementService;
 import SWP.Cyberkraftwerk2.Module.User;
 import SWP.Cyberkraftwerk2.Module.UserService;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -180,6 +181,7 @@ public class APImethode {
      */
     @GetMapping("/GetLessonRegistry")
     public String getJsonString() {
+        System.out.println(LessonControl.getJsonString());
         return LessonControl.getJsonString();
     }
 

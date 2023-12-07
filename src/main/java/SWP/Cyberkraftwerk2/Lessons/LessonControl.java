@@ -22,7 +22,7 @@ import org.json.JSONArray;
  * @version 01.12.2023
  */
 public class LessonControl {
-    static String res_directory = "frontend\\src\\ressources";
+    static String res_directory = "frontend/src/ressources";
 
     /**
      * Internal method to initialize the registry file if there is no present yet.
@@ -149,7 +149,7 @@ public class LessonControl {
         obj.put("quiz_id", quiz_id);
         obj.put("achievement_id", achievement_id);
         String path_name = name.replace(" ", "_");
-        obj.put("path", res_directory + "\\" + path_name + ".pdf");
+        obj.put("path", res_directory + "/" + path_name + ".pdf");
 
         JSONObject registry = parseRegistry();
         JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
@@ -228,7 +228,7 @@ public class LessonControl {
 
                 chosen_entry.put("name", name);
                 String path_name = name.replace(" ", "_");
-                chosen_entry.put("path", res_directory + "\\" + path_name + ".pdf");
+                chosen_entry.put("path", res_directory + "/" + path_name + ".pdf");
                 chosen_entry.put("difficulty", difficulty);
                 chosen_entry.put("quiz_id", quiz_id);
                 chosen_entry.put("achievement_id", achievement_id);
@@ -286,7 +286,7 @@ public class LessonControl {
         LessonControl.addLessonEntry("Phishing", 1, 2, 2);
 
         LessonControl.removeLessonEntry(0);
-        LessonControl.addLessonEntry("Hashing", 2, 3, 3);
+        LessonControl.addLessonEntry("Hashing", 3, 3, 3);
         LessonControl.addLessonEntry("Social Engineering", 2, 4, 4);
         LessonControl.updateLessonEntry(1, "FIDO2 Keys", 3, 5, 5);
 

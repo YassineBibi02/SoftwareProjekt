@@ -35,7 +35,7 @@ const LessonsEntry = ({lessonData, admin}) => {
                         {lessonData.difficulty}
                     </Col>
                     <Col style={EntryStyle} xs={4} sm={4} md={4} lg={4}>
-                        <Link to={`/lessons/${lessonData.id}`}>{lessonData.title}</Link>
+                        <Link to={`/lessons/${lessonData.id}`}>{lessonData.name}</Link>
                     </Col>
                     <Col style={EntryStyle} xs={3} sm={3} md={3} lg={3}>
                         {lessonData.completion}
