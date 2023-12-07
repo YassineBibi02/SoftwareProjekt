@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import LoginContext from '../../globals/globalContext';
 
 
-
 const MainMenuScreenComponent = () => {
     const {isLoggedIn, setLoggedIn,userV , setUserV} = useContext(LoginContext);
     const navigate = useNavigate();
@@ -16,26 +15,36 @@ const MainMenuScreenComponent = () => {
     var nutzerVerwaltenText = "Nutzer Verwalten";
     let roles = [];
 
-
+    const Container = {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-around', 
+        backgroundColor: 'white',
+        width: '80%', 
+        height: '80vh', 
+        padding: '20px',
+    };
 
     const ButtonStyle = {
-        margin: '5px',
-        padding: '20px',
+        margin: '10px', 
+        padding: '20px', 
         backgroundColor: 'white',
-        color: '#000000',
+        color: 'black',
         borderColor: '#ec6608',
-        borderRadius: '50px',
-        width: '100%', 
-        marginBottom: '10px', 
-    };    
+        borderRadius: '4px',
+        width: '100%',
+        height: '15%',
+        fontSize: '1.5rem'
+    };
 
     const redirectToMail = () => {
         navigate('/mail');
     };
 
     const redirectControl = () => {
-            navigate('/UserController');
-        };
+        navigate('/UserController');
+    };
 
     const redirectToLessons = () => {
         navigate('/lessons');
@@ -49,16 +58,6 @@ const MainMenuScreenComponent = () => {
         navigate('/createAchievement');
     }
 
-    const Container = {
-        display: 'flex',
-        flexDirection: 'column', 
-        alignItems: 'center',
-        borderRadius: '10px',
-        backgroundColor: 'white',
-        width: '66%',
-        padding: '20px',
-    };
-
     const infoContainer = {
         marginLeft: '20px',
         display: 'flex',
@@ -67,7 +66,7 @@ const MainMenuScreenComponent = () => {
         width: '33%', 
     };
 
-      useEffect(() => {
+    useEffect(() => {
         fetch('api/user', { credentials: 'include' }) // <.>
         .then(response => response.text())
         .then(body => {
