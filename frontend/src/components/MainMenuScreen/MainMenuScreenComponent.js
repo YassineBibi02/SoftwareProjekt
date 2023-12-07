@@ -20,6 +20,7 @@ const MainMenuScreenComponent = () => {
         width: '100%', 
         height: '150%',
         marginBottom: '15px', 
+        marginLeft: '30px'
 
     };    
 
