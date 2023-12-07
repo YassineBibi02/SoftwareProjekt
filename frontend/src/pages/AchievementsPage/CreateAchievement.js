@@ -16,6 +16,7 @@ const CreateAchievement = () => {
     const [editAchievementData, setEditAchievementData] = useState({ id: '', name: '', description: '' });
 
 
+
     useEffect(() => {
         console.log("test")
         fetch('api/user', { credentials: 'include' }) // <.>

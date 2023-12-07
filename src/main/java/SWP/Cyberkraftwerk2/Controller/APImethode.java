@@ -200,7 +200,36 @@ public class APImethode {
             return new ResponseEntity<>("No user found", HttpStatus.NOT_FOUND);
         } else {
             achievement.addUser(user);
+            achievementRepository.save(achievement);
             return ResponseEntity.ok().body("Achievement added");
+        }
+    }
+
+    /**
+     * This Function adds multiple Achievements to a User
+     *
+     * @param input String Array containing the ID of the User and the IDs of the Achievements
+     * @return ResponseEntity Indicating Success or Failure
+     * @Author Yassine Bibi
+     */
+    @PostMapping("/AddBulkAchievement")
+    public ResponseEntity<?> addBulkAchievement(@RequestBody String[] input) {
+        int ID = Integer.parseInt(input[0]);
+        String[] achievementIDs = input[1].split(",");
+        User user = userService.getUserByID(ID);
+        if (user == null) {
+            return new ResponseEntity<>("No user found", HttpStatus.NOT_FOUND);
+        } else {
+            for (String achievementID : achievementIDs) {
+                Achievement achievement = achievementRepository.findByid(Integer.parseInt(achievementID));
+                if (achievement == null) {
+                    return new ResponseEntity<>("No achievement found", HttpStatus.NOT_FOUND);
+                } else {
+                    achievement.addUser(user);
+                    achievementRepository.save(achievement);
+                }
+            }
+            return ResponseEntity.ok().body("Achievements added");
         }
     }
 
