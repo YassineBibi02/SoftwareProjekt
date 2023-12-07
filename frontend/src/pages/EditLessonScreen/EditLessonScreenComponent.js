@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
-import { Route, Link, useParams } from 'react-router-dom';
+import { Route, Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
-const EditLessonScreenComponent = () => {
-    let { lessonID } = useParams();
-    console.log(lessonID);
+const EditLessonScreenComponent = ({newLesson}) => {
 
-    //Setup Variables with lesson data
+    
+    const [cookies] = useCookies(['XSRF-TOKEN']);
+    const lessonID = useParams();
+    const navigate = useNavigate();
 
+    if (newLesson) {
+        
+    } else {
+        //Setup Variables with lesson data
+    }
 
     
     const [file, setFile] = useState(null);
@@ -24,9 +31,36 @@ const EditLessonScreenComponent = () => {
         setTitle(event.target.value);
     };
 
-    const handleUpload = () => {
+
+    const createLesson = () => {
+        const lessonArray = [];
+        lessonArray.push(title);
+        lessonArray.push(getDifficulty());
+        lessonArray.push("10");
+        lessonArray.push("10");
+        console.log(lessonArray);
+
+        try {
+          fetch('/api/methode/RegisterLesson', {
+                    method: 'POST', credentials: 'include',
+                    headers: { 
+                      'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                      'Content-Type': 'application/json',
+                   },
+                   body: JSON.stringify(lessonArray)
+              })
+             .then(response => response.text()).then(data => console.log("Response:",data));
+      } catch (error) {
+          console.error('Error', error);
+      }
+      navigate('/lessonsOverview') //TODO does not work sometimes, on loading lessons, cant replicate reliably, solved on reloading???
+    }
+
+    const confirm = () => {
         // Handle file upload logic here
-        console.log("Upload pressed");
+        if (newLesson) {
+            createLesson();
+        }
         console.log(getDifficulty());
     };
 
@@ -90,7 +124,7 @@ const EditLessonScreenComponent = () => {
                 
             </div>
             <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
-                    <Button onClick={handleUpload}>Bestätigen</Button>
+                    <Button onClick={confirm}>Bestätigen</Button>
             </div>
         </div>
     );

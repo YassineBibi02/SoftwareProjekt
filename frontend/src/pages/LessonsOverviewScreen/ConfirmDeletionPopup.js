@@ -14,6 +14,7 @@ const DeleteButton = ({lessonData}) => {
     
     const deleteLesson = () => {
         console.log("Delete lesson pressed");
+        console.log(lessonData.id);
         handleClose();
         try {
           fetch('/api/methode/RemoveFromRegistry', {

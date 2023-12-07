@@ -6,11 +6,14 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from './ConfirmDeletionPopup';
 
 const LessonsEntry = ({lessonData, admin}) => {    
-    
+        
+        const navigate = useNavigate();
+        
         const EntryStyle = {
             textAlign: 'center',
             fontSize: '2em',
@@ -22,9 +25,8 @@ const LessonsEntry = ({lessonData, admin}) => {
       
         const completionPercentage = parseInt(lessonData.completion); // Parse the completion string into a number
         
-        const editLesson = (lessonData1) => {
-            //Navigate to the edit lesson screen
-            console.log("Edit lesson pressed");
+        const editLesson = (lessonData) => {
+            navigate(`/lessonEdit/${lessonData.id}`)
         }
 
         //Includes the edit and delete buttons

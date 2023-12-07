@@ -6,12 +6,14 @@ import Col from 'react-bootstrap/Col';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { ListGroup } from 'react-bootstrap';
 import LessonsEntry from './LessonsEntry';
 import { IoMdAdd } from "react-icons/io";
 
 const LessonsList = () => {
-
+    
+    const navigate = useNavigate();
     const admin_status = true;
 
     const [loadedIDs, setLoadedIDs] = useState([]); 
@@ -62,8 +64,7 @@ const LessonsList = () => {
     };
 
     const addLesson = () => {
-        console.log("Add lesson pressed");
-        console.log(loadedLessons);
+        navigate('/lessonCreate');
     }  
 
     const AdminTable = () => {

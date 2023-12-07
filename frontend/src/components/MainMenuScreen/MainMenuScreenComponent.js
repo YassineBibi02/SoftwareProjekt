@@ -47,7 +47,7 @@ const MainMenuScreenComponent = () => {
     };
 
     const redirectToLessons = () => {
-        navigate('/lessons');
+        navigate('/lessonsOverview');
     };
 
     const redirectToAchievements = () => {

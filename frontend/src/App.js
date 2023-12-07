@@ -24,10 +24,11 @@ function App() {
         <Route path ="/hereingefallen" element = {<HereingefallenScreen/>}/>
         <Route path="/login" element= { <LoginScreen/> }/>
         <Route path="/mail" element= { <SendMailScreenComponent/> }/>    
-        <Route path="/lessons" element= { <LessonsScreenComponent/> }/>
+        <Route path="/lessonsOverview" element= { <LessonsScreenComponent/> }/>
         <Route path="/UserController" element= { <UserController/> }/>
         <Route path="/lessons/:lessonID" element={<WatchLessonScreen/>} />
-        <Route path="/lessonEdit/:lessonID" element={<EditLessonScreenComponent/>} />
+        <Route path="/lessonCreate" element={<EditLessonScreenComponent newLesson={true}/>} />
+        <Route path="/lessonEdit/:lessonID" element={<EditLessonScreenComponent newLesson={false}/>} />
         <Route path="/achievements" element={<AchievementFrontend/>} />
         <Route path="/createAchievement" element={<CreateAchievement/>} />
         <Route path="*" element={<Navigate to="/" replace />} />

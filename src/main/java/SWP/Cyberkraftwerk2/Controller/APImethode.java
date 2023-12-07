@@ -138,7 +138,6 @@ public class APImethode {
         int difficulty = Integer.parseInt(input[1]);
         int quiz_id = Integer.parseInt(input[2]);
         int achievement_id = Integer.parseInt(input[3]);
-        
         return LessonControl.addLessonEntry(name, difficulty, quiz_id, achievement_id);
     }
 
@@ -149,8 +148,8 @@ public class APImethode {
      * @author Tristan Slodowski
      */
     @PostMapping("/RemoveFromRegistry")
-    public boolean removeFromRegistry(@RequestBody int input) {
-       int target_id = input;
+    public boolean removeFromRegistry(@RequestBody String input) {
+       int target_id = Integer.parseInt(input);
 
         return LessonControl.removeLessonEntry(target_id);
     }
