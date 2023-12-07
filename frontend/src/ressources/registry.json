@@ -1,7 +1,7 @@
 {
   "0": {
     "difficulty": 2,
-    "path": "frontend\\src\\ressources\\Hashing.pdf",
+    "path": "frontend/src/ressources/Hashing.pdf",
     "quiz_id": 3,
     "achievement_id": 3,
     "name": "Hashing",
@@ -9,7 +9,7 @@
   },
   "1": {
     "difficulty": 3,
-    "path": "frontend\\src\\ressources\\FIDO2_Keys.pdf",
+    "path": "frontend/src/ressources/Hashing.pdf",
     "quiz_id": 5,
     "achievement_id": 5,
     "name": "FIDO2 Keys",
@@ -17,7 +17,7 @@
   },
   "2": {
     "difficulty": 2,
-    "path": "frontend\\src\\ressources\\Social_Engineering.pdf",
+    "path": "frontend/src/ressources/Hashing.pdf",
     "quiz_id": 4,
     "achievement_id": 4,
     "name": "Social Engineering",

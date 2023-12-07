@@ -24,20 +24,19 @@ const LessonsList = () => {
     const [loadedLessons, setLoadedLessons] = useState([]);
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchLessons = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/methode/GetLessonRegistry');
                 console.log('Raw data: ', response.data)
-                const parsedData = JSON.parse(jsonString);
-                const LessonArray = Object.values(parsedData);
+                const LessonArray = Object.values(response.data);
                 LessonArray.pop(); // Remove the last element
-                setLoadedIDs(parsedData.taken_ids);
+                setLoadedIDs(response.data.taken_ids);
                 setLoadedLessons(LessonArray);
             } catch (error) {
                 console.error(error);
             }
         };
-        fetchUsers();
+        fetchLessons();
     }, []);
 
     const HeaderStyle = {
