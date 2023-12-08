@@ -73,11 +73,14 @@ const EditLessonScreenComponent = ({newLesson}) => {
                    },
                    body: JSON.stringify(lessonArray)
               })
-             .then(response => response.text()).then(data => console.log("Response:",data));
+              .then(response => response.text())
+              .then(data => {
+                  console.log("Response:", data);
+                  navigate('/lessonsOverview');
+              });
       } catch (error) {
           console.error('Error', error);
       }
-      navigate('/lessonsOverview') //TODO does not work sometimes, on loading lessons, cant replicate reliably, solved on reloading???
     }
 
     const editLesson = () => {
@@ -91,19 +94,22 @@ const EditLessonScreenComponent = ({newLesson}) => {
         console.log(lessonArray);
 
         try {
-          fetch('/api/methode//UpdateInRegistry', {
-                    method: 'POST', credentials: 'include',
-                    headers: { 
-                      'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
-                      'Content-Type': 'application/json',
-                   },
-                   body: JSON.stringify(lessonArray)
-              })
-             .then(response => response.text()).then(data => console.log("Response:",data));
-      } catch (error) {
-          console.error('Error', error);
-      }
-      navigate('/lessonsOverview') //TODO does not work sometimes, on loading lessons, cant replicate reliably, solved on reloading???
+            fetch('/api/methode//UpdateInRegistry', {
+                method: 'POST', credentials: 'include',
+                headers: { 
+                    'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(lessonArray)
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log("Response:", data);
+                navigate('/lessonsOverview');
+            });
+        } catch (error) {
+            console.error('Error', error);
+        }
     }
 
     
