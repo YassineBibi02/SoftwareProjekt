@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { ListGroup } from 'react-bootstrap';
 import LessonsEntry from './LessonsEntry';
 import { IoMdAdd } from "react-icons/io";
 
@@ -17,12 +14,6 @@ const LessonsList = () => {
     const admin_status = true;
 
     const [loadedIDs, setLoadedIDs] = useState([]); 
-    const lessonEntries = [
-        { id: 1, title: 'Lesson 1', difficulty: '1', completion: '100%', quiz: 'true', },
-        { id: 2, title: 'Lesson 2', difficulty: '2', completion: '50%', quiz: 'false'  },
-        { id: 3, title: 'Lesson 3', difficulty: '3', completion: '0%', quiz: 'false'  },
-    ];
-    const jsonString = '{"0":{"difficulty":2,"path":"frontendf","quiz_id":3,"achievement_id":3,"name":"Hashing","id":0},"1":{"difficulty":3,"path":"pdf","quiz_id":5,"achievement_id":5,"name":"FIDO2 Keys","id":1},"2":{"difficulty":2,"path":"frontenddf","quiz_id":4,"achievement_id":4,"name":"Social Engineering","id":2},"taken_ids":[1,0,2]}';
     const [loadedLessons, setLoadedLessons] = useState([]);
 
     useEffect(() => {

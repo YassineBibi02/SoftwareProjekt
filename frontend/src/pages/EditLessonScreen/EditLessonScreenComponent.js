@@ -1,26 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
-import { Route, Link, useParams, useNavigate } from 'react-router-dom';
+import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-dom';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 
 const EditLessonScreenComponent = ({newLesson}) => {
 
-    
+    const {state} = useLocation();
+    let lesson = state?.lesson; // Read lesson passed on state for lesson edit
     const [cookies] = useCookies(['XSRF-TOKEN']);
     const lessonID = useParams();
     const navigate = useNavigate();
 
-    if (newLesson) {
-        
-    } else {
-        //Setup Variables with lesson data
-    }
+    const [difficulty, setDifficulty] = useState(() => 
+        {if (newLesson) {
+            // Handle initial state for new lesson
+            return 1;
+        } else {
+            // Setup Variables with lesson data
+            return lesson.difficulty;
+        }
+    });
+
+    const [file, setFile] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return "";
+        } else {
+            // Setup Variables with lesson data
+            return lesson.name;
+        }
+    });
+
+
+    const [title, setTitle] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return "";
+        } else {
+            // Setup Variables with lesson data
+            return lesson.name;
+        }
+    });
 
     
-    const [file, setFile] = useState(null);
-    const [title, setTitle] = useState("Test"); //Load Title from lesson data here
 
 
     const handleFileChange = (event) => {
@@ -56,12 +80,41 @@ const EditLessonScreenComponent = ({newLesson}) => {
       navigate('/lessonsOverview') //TODO does not work sometimes, on loading lessons, cant replicate reliably, solved on reloading???
     }
 
+    const editLesson = () => {
+        const lessonArray = [];
+        lessonArray.push(lesson.id)
+        lessonArray.push(title);
+        lessonArray.push(getDifficulty());
+        lessonArray.push("10");
+        lessonArray.push("10");
+        console.log("Editing");
+        console.log(lessonArray);
+
+        try {
+          fetch('/api/methode//UpdateInRegistry', {
+                    method: 'POST', credentials: 'include',
+                    headers: { 
+                      'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                      'Content-Type': 'application/json',
+                   },
+                   body: JSON.stringify(lessonArray)
+              })
+             .then(response => response.text()).then(data => console.log("Response:",data));
+      } catch (error) {
+          console.error('Error', error);
+      }
+      navigate('/lessonsOverview') //TODO does not work sometimes, on loading lessons, cant replicate reliably, solved on reloading???
+    }
+
+    
+
     const confirm = () => {
         // Handle file upload logic here
         if (newLesson) {
             createLesson();
+        } else {
+            editLesson();
         }
-        console.log(getDifficulty());
     };
 
     const containerStyle = {
@@ -103,7 +156,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
                 <div style={containerStyle}>
                     <p>Level:</p>
-                    <select style={{margin: '20px'}} id='difficulty-select'>
+                    <select style={{margin: '20px'}} id='difficulty-select' value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>

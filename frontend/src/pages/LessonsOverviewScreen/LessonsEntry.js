@@ -26,7 +26,7 @@ const LessonsEntry = ({lessonData, admin}) => {
         const completionPercentage = parseInt(lessonData.completion); // Parse the completion string into a number
         
         const editLesson = (lessonData) => {
-            navigate(`/lessonEdit/${lessonData.id}`)
+            navigate(`/lessonEdit/${lessonData.id}`, { state: { lesson: lessonData } })
         }
 
         //Includes the edit and delete buttons
