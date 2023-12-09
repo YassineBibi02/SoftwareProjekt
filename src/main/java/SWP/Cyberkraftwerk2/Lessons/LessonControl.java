@@ -139,17 +139,18 @@ public class LessonControl {
      * @param difficulty_level integer representing the difficulty of the corresponding lesson
      * @param quiz_id Integer id of the quiz relating to the lesson
      * @param achievement_id Integer id of the achievements relating to the lesson
+     * @param pdf_name String of the pdf designated by this lesson entry
      * @return Integer representing the newly registered lesson
      * @author Tristan Slodowski
      */
-    public static int addLessonEntry(String name, int difficulty_level, int quiz_id, int achievement_id) {
+    public static int addLessonEntry(String name, int difficulty_level, int quiz_id, int achievement_id, String pdf_name) {
         JSONObject obj = new JSONObject();
         obj.put("name", name);
         obj.put("difficulty", difficulty_level);
         obj.put("quiz_id", quiz_id);
         obj.put("achievement_id", achievement_id);
-        String path_name = name.replace(" ", "_");
-        obj.put("path", res_directory + "/" + path_name + ".pdf");
+        String file_name = pdf_name.replace(" ", "_");
+        obj.put("path", res_directory + "/" + file_name);
 
         JSONObject registry = parseRegistry();
         JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
@@ -215,10 +216,11 @@ public class LessonControl {
      * @param difficulty integer representing the difficulty of the corresponding lesson
      * @param quiz_id Integer id of the quiz relating to the lesson
      * @param achievement_id Integer id of the achievements relating to the lesson
+     * @param pdf_name String name of the pdf file designated by this lesson entry
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
-    public static boolean updateLessonEntry(int id, String name, int difficulty, int quiz_id, int achievement_id) {
+    public static boolean updateLessonEntry(int id, String name, int difficulty, int quiz_id, int achievement_id, String pdf_name) {
         JSONObject registry = parseRegistry();
         JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
 
@@ -227,8 +229,8 @@ public class LessonControl {
                 JSONObject chosen_entry = (JSONObject) registry.get(Integer.toString(id));
 
                 chosen_entry.put("name", name);
-                String path_name = name.replace(" ", "_");
-                chosen_entry.put("path", res_directory + "/" + path_name + ".pdf");
+                String file_name = pdf_name.replace(" ", "_");
+                chosen_entry.put("path", res_directory + "/" + file_name);
                 chosen_entry.put("difficulty", difficulty);
                 chosen_entry.put("quiz_id", quiz_id);
                 chosen_entry.put("achievement_id", achievement_id);
@@ -282,13 +284,13 @@ public class LessonControl {
     }
 
     public static void main(String[] args) {                // TODO die Main hier ist zum lokalen Testen der Methoden; am Ende bitte entfernen!
-        LessonControl.addLessonEntry("Passwortsicherheit", 1, 1, 1);
-        LessonControl.addLessonEntry("Phishing", 1, 2, 2);
+        LessonControl.addLessonEntry("Passwortsicherheit", 1, 1, 1, "test1.pdf");
+        LessonControl.addLessonEntry("Phishing", 1, 2, 2, "test2.pdf");
 
         LessonControl.removeLessonEntry(0);
-        LessonControl.addLessonEntry("Hashing", 3, 3, 3);
-        LessonControl.addLessonEntry("Social Engineering", 2, 4, 4);
-        LessonControl.updateLessonEntry(1, "FIDO2 Keys", 3, 5, 5);
+        LessonControl.addLessonEntry("Hashing", 3, 3, 3, "test3.pdf");
+        LessonControl.addLessonEntry("Social Engineering", 2, 4, 4, "test4.pdf");
+        LessonControl.updateLessonEntry(1, "FIDO2 Keys", 3, 5, 5, "test5.pdf");
 
         String[] w_q = {"a", "b", "c"};
         LessonControl.addQuiz(3, "Warum?", w_q, "Right");

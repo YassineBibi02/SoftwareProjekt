@@ -62,6 +62,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         lessonArray.push(getDifficulty());
         lessonArray.push("10");
         lessonArray.push("10");
+        lessonArray.push(file.name);
         console.log(lessonArray);
 
         try {
@@ -90,6 +91,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         lessonArray.push(getDifficulty());
         lessonArray.push("10");
         lessonArray.push("10");
+        lessonArray.push(file.name);
         console.log("Editing");
         console.log(lessonArray);
 
@@ -112,10 +114,30 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     }
 
+    // upload spricht UploadLesson des Backends an
+    async function upload(formData) {
+        try {
+            const response = await fetch('/api/methode//UploadLesson', {
+                method: 'POST', credentials: 'include',
+                headers: {
+                    'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                },
+                body: formData,
+            });
+            const result = await response.json();
+            console.log("Success:", result);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
     
 
     const confirm = () => {
         // Handle file upload logic here
+        const formData = new FormData();
+        formData.append("file", file);
+        upload(formData);       // PDF wird getrennt von dem Registry hochgeladen bzw registriert
+
         if (newLesson) {
             createLesson();
         } else {
