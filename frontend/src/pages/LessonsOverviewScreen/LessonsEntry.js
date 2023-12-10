@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from './ConfirmDeletionPopup';
-import { useNavigate } from 'react-router-dom';
 
 const LessonsEntry = ({lessonData, admin}) => {    
         
