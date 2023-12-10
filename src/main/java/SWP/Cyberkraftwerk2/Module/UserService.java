@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Optional;
+
 
 @Repository
 public class UserService {
@@ -31,19 +33,58 @@ public class UserService {
 
     public void mail_received(int ID, int mailID){
         /*sets receivedmails[mailID] to 1*/
-        //UNFINISHED
+        Optional<User> user_optional = Optional.ofNullable(this.userRepository.findByid(ID));
+        if(user_optional.isPresent()) {
+            User user = user_optional.get();
+            int[] tempmailsreceived = user.get_mailsreceived();
+            tempmailsreceived[mailID] = 1;
+            user.setMailsreceived(tempmailsreceived);
+            // Save the user back to the database
+            userRepository.save(user);
+        } 
     }
 
 
     public void mail_clicked(int ID, int mailID){
         /*sets receivedmails[mailID] to 0*/
-        //UNFINISHED
+        Optional<User> user_optional = Optional.ofNullable(this.userRepository.findByid(ID));
+        if(user_optional.isPresent()) {
+            User user = user_optional.get();
+            int[] tempmailsreceived = user.get_mailsreceived();
+            tempmailsreceived[mailID] = 0;
+            user.setMailsreceived(tempmailsreceived);
+            // Save the user back to the database
+            userRepository.save(user);
+        }
     }
 
 
     public void raise_userlevel(int ID){
         /*raise Userlevel by one*/
-        //UNFINISHED
+        Optional<User> user_optional = Optional.ofNullable(this.userRepository.findByid(ID));
+        if(user_optional.isPresent()) {
+            User user = user_optional.get();
+            int templevel = user.get_maillevel();
+            templevel++;
+            user.setMaillevel(templevel);
+            // Save the user back to the database
+            userRepository.save(user);
+        }
+    }
+
+
+    public void new_mail(){
+        /*adds a new mail to the receivedmails array*/
+        User[] users = this.userRepository.findAll().toArray(new User[0]);
+        for (User user : users) {
+            int[] tempmailsreceived = user.get_mailsreceived();
+            int[] newmailsreceived = new int[tempmailsreceived.length + 1];
+            System.arraycopy(tempmailsreceived, 0, newmailsreceived, 0, tempmailsreceived.length);
+            newmailsreceived[newmailsreceived.length - 1] = 0;
+            user.setMailsreceived(newmailsreceived);
+            // Save the user back to the database
+            userRepository.save(user);
+        }
     }
 
 

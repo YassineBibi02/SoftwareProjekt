@@ -134,6 +134,7 @@ public class Mail {
         catch(Exception e){
             return false;
             }
+        this.userservice.new_mail();
         return true;
     }
 
