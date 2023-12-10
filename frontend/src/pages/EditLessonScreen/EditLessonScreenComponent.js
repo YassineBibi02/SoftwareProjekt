@@ -1,19 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
-import { Route, Link, useParams } from 'react-router-dom';
+import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-dom';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
-const EditLessonScreenComponent = () => {
-    let { lessonID } = useParams();
-    console.log(lessonID);
+const EditLessonScreenComponent = ({newLesson}) => {
 
-    //Setup Variables with lesson data
+    const {state} = useLocation();
+    let lesson = state?.lesson; // Read lesson passed on state for lesson edit
+    const [cookies] = useCookies(['XSRF-TOKEN']);
+    const lessonID = useParams();
+    const navigate = useNavigate();
 
+    const [difficulty, setDifficulty] = useState(() => 
+        {if (newLesson) {
+            // Handle initial state for new lesson
+            return 1;
+        } else {
+            // Setup Variables with lesson data
+            return lesson.difficulty;
+        }
+    });
+
+    const [file, setFile] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return "";
+        } else {
+            // Setup Variables with lesson data
+            return lesson.name;
+        }
+    });
+
+
+    const [title, setTitle] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return "";
+        } else {
+            // Setup Variables with lesson data
+            return lesson.name;
+        }
+    });
 
     
-    const [file, setFile] = useState(null);
-    const [title, setTitle] = useState("Test"); //Load Title from lesson data here
 
 
     const handleFileChange = (event) => {
@@ -24,10 +55,94 @@ const EditLessonScreenComponent = () => {
         setTitle(event.target.value);
     };
 
-    const handleUpload = () => {
+
+    const createLesson = () => {
+        const lessonArray = [];
+        lessonArray.push(title);
+        lessonArray.push(getDifficulty());
+        lessonArray.push("10");
+        lessonArray.push("10");
+        lessonArray.push(file.name);
+        console.log(lessonArray);
+
+        try {
+          fetch('/api/methode/RegisterLesson', {
+                    method: 'POST', credentials: 'include',
+                    headers: { 
+                      'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                      'Content-Type': 'application/json',
+                   },
+                   body: JSON.stringify(lessonArray)
+              })
+              .then(response => response.text())
+              .then(data => {
+                  console.log("Response:", data);
+                  navigate('/lessonsOverview');
+              });
+      } catch (error) {
+          console.error('Error', error);
+      }
+    }
+
+    const editLesson = () => {
+        const lessonArray = [];
+        lessonArray.push(lesson.id)
+        lessonArray.push(title);
+        lessonArray.push(getDifficulty());
+        lessonArray.push("10");
+        lessonArray.push("10");
+        lessonArray.push(file.name);
+        console.log("Editing");
+        console.log(lessonArray);
+
+        try {
+            fetch('/api/methode//UpdateInRegistry', {
+                method: 'POST', credentials: 'include',
+                headers: { 
+                    'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(lessonArray)
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log("Response:", data);
+                navigate('/lessonsOverview');
+            });
+        } catch (error) {
+            console.error('Error', error);
+        }
+    }
+
+    // upload spricht UploadLesson des Backends an
+    async function upload(formData) {
+        try {
+            const response = await fetch('/api/methode//UploadLesson', {
+                method: 'POST', credentials: 'include',
+                headers: {
+                    'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                },
+                body: formData,
+            });
+            const result = await response.json();
+            console.log("Success:", result);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+    
+
+    const confirm = () => {
         // Handle file upload logic here
-        console.log("Upload pressed");
-        console.log(getDifficulty());
+        const formData = new FormData();
+        formData.append("file", file);
+        upload(formData);       // PDF wird getrennt von dem Registry hochgeladen bzw registriert
+
+        if (newLesson) {
+            createLesson();
+        } else {
+            editLesson();
+        }
     };
 
     const containerStyle = {
@@ -69,7 +184,7 @@ const EditLessonScreenComponent = () => {
 
                 <div style={containerStyle}>
                     <p>Level:</p>
-                    <select style={{margin: '20px'}} id='difficulty-select'>
+                    <select style={{margin: '20px'}} id='difficulty-select' value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -90,7 +205,7 @@ const EditLessonScreenComponent = () => {
                 
             </div>
             <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
-                    <Button onClick={handleUpload}>Bestätigen</Button>
+                    <Button onClick={confirm}>Bestätigen</Button>
             </div>
         </div>
     );

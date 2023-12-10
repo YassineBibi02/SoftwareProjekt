@@ -1,24 +1,36 @@
-import React, { useState } from 'react';
-import Table from 'react-bootstrap/Table';
+import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
-import { ListGroup } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import LessonsEntry from './LessonsEntry';
 import { IoMdAdd } from "react-icons/io";
 
 const LessonsList = () => {
-
+    
+    const navigate = useNavigate();
     const admin_status = true;
 
-    const lessonEntries = [
-        { id: 1, title: 'Lesson 1', difficulty: '1', completion: '100%', quiz: 'true', },
-        { id: 2, title: 'Lesson 2', difficulty: '2', completion: '50%', quiz: 'false'  },
-        { id: 3, title: 'Lesson 3', difficulty: '3', completion: '0%', quiz: 'false'  },
-    ];
+    const [loadedIDs, setLoadedIDs] = useState([]); 
+    const [loadedLessons, setLoadedLessons] = useState([]);
+
+    useEffect(() => {
+        const fetchLessons = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/methode/GetLessonRegistry');
+                console.log('Raw data: ', response.data)
+                const LessonArray = Object.values(response.data);
+                LessonArray.pop(); // Remove the last element
+                setLoadedIDs(response.data.taken_ids);
+                setLoadedLessons(LessonArray);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchLessons();
+    }, []);
 
     const HeaderStyle = {
         textAlign: 'center',
@@ -43,10 +55,28 @@ const LessonsList = () => {
     };
 
     const addLesson = () => {
-        console.log("Add lesson pressed");
+        navigate('/lessonCreate');
     }  
 
-    const AdminTable = () => { 
+    const AdminTable = () => {
+        if (loadedLessons.length === 0) {
+            return (
+                <div>
+                    <p>No Lessons found</p>
+                    <Button style={{
+                        float: 'right',
+                        marginRight: '100px',
+                        marginTop: '20px',
+                    }}
+                    onClick={addLesson}>
+                        <IoMdAdd size={30} style={{
+                            borderColor: '#ec6608',
+                            borderRadius: '50px'}
+                        }/>
+                    </Button>
+                </div>
+            );
+        }
         return (
             <div>              
                 <h1 style={{marginLeft: '30px', marginBottom: '30px', fontWeight: 'bold'}}>Schulungen</h1>
@@ -58,7 +88,7 @@ const LessonsList = () => {
                         <Col style={HeaderStyle} lg={2}>Quiz</Col>
                         <Col style={HeaderStyle} lg={1}>Actions</Col>
                     </Row>
-                    {lessonEntries.map((lesson) => (
+                    {loadedLessons.map((lesson) => (
                         <LessonsEntry key={lesson.id} lessonData={lesson} admin={admin_status}/>
                     ))}
                 </Container>
@@ -78,6 +108,11 @@ const LessonsList = () => {
     }
 
     const UserTable = () => {
+        
+        if (loadedLessons.length === 0) {
+            return <p>No Lessons found</p>;
+        }
+
         return (
             <div>              
                 <h1 style={{marginLeft: '30px', marginBottom: '30px', fontWeight: 'bold'}}>Schulungen</h1>
@@ -88,8 +123,8 @@ const LessonsList = () => {
                         <Col style={HeaderStyle} lg={3}>Completion</Col>
                         <Col style={HeaderStyle} lg={3}>Quiz</Col>
                     </Row>
-                    {lessonEntries.map((lesson) => (
-                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={admin_status} />
+                    {loadedLessons.map((lesson) => (
+                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={admin_status}/>
                     ))}
                 </Container>
             </div>

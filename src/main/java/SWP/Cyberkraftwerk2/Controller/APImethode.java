@@ -8,6 +8,8 @@ import SWP.Cyberkraftwerk2.Module.Achievement;
 import SWP.Cyberkraftwerk2.Module.AchievementService;
 import SWP.Cyberkraftwerk2.Module.User;
 import SWP.Cyberkraftwerk2.Module.UserService;
+import org.json.JSONObject;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -16,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,7 @@ import java.util.Map;
  *
  * @Author Soenke Harder
  */
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/methode")
 public class APImethode {
@@ -107,27 +109,30 @@ public class APImethode {
      */
     @PostMapping("/UploadLesson")
     public boolean uploadLesson(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-        if(file.isEmpty()) {
+        if(file.isEmpty()) {                                                                    // Ablehnen wenn keine Datei gewählt wurde
             System.out.println("[uploadLesson] No file provided. Please try again.");
             return false;
         }
 
         try {
-            Path dest_path = Paths.get("\\frontend\\src\\ressources" + file.getOriginalFilename());
-            file.transferTo(dest_path);
+            String normal_orig_path = file.getOriginalFilename().replace(" ", "_");     // PDF-Namen von Leerstellen befreien
+            Path dest_path = Path.of("frontend","src","ressources",normal_orig_path);
+
+            file.transferTo(dest_path);                                     // PDF an entsprechenden Ort im Filesystem speichern
             System.out.println("[uploadLesson] Upload successful.");
             return true;
         } catch (Exception e) {
             System.out.println("[uploadLesson] Upload failed.");
-            System.out.println(e.getMessage());
+            System.out.println("Error message: " + e.getMessage());
+            System.out.println(e.toString());
             return false;
         }
     }
 
     /**
      * Method for the Frontend to register a newly uploaded lesson into the lesson registry
-     * Ideal Input: "{"name", difficulty_level, quiz_id, achievement_id}"
-     * @param input String array containing the name (as String), difficulty level (as Integer), a quiz ID (as Integer) and a achievement ID (as Integer)
+     * Ideal Input: "{"name", difficulty_level, quiz_id, achievement_id, pdf_name}"
+     * @param input String array containing the name (as String), difficulty level (as Integer), a quiz ID (as Integer), an achievement ID (as Integer) and the name of the designated pdf (String)
      * @return Integer representing the id of the newly registered lesson
      * @author Tristan Slodowski
      */
@@ -137,27 +142,39 @@ public class APImethode {
         int difficulty = Integer.parseInt(input[1]);
         int quiz_id = Integer.parseInt(input[2]);
         int achievement_id = Integer.parseInt(input[3]);
-        
-        return LessonControl.addLessonEntry(name, difficulty, quiz_id, achievement_id);
+        String pdf_name = input[4];
+        return LessonControl.addLessonEntry(name, difficulty, quiz_id, achievement_id, pdf_name);
     }
 
     /**
-     * Method for the Frontend to delete the registration of a lesson from the registry.
+     * Method for the Frontend to delete the registration and corresponding pdf file of a lesson.
      * @param input String array with the id of the lesson to be deleted
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
     @PostMapping("/RemoveFromRegistry")
-    public boolean removeFromRegistry(@RequestBody String[] input) {
-       int target_id = Integer.parseInt(input[0]);
+    public boolean removeFromRegistry(@RequestBody String input) {
+        int target_id = Integer.parseInt(input);
 
-        return LessonControl.removeLessonEntry(target_id);
+        JSONObject registry = new JSONObject(LessonControl.getJsonString());
+        JSONObject entry = (JSONObject) registry.get(Integer.toString(target_id));
+        String path = (String) entry.get("path");               // genauen Speicherpfad der zu loeschenden PDF abrufen
+
+        
+        File to_be_deleted = new File(path);
+        if (to_be_deleted.delete()) {               // PDF loeschen und bei Erfolg auch Registryeintrag entfernen
+            System.out.println("[APImethode] Deletion of lesson file successful. Removing from registry ...");
+            return LessonControl.removeLessonEntry(target_id);
+        } else {
+            System.out.println("[APImethode] File to be deleted not found. Aborting ...");
+            return false;
+        }
     }
 
     /**
      * Method for the Frontend to update the values of a lesson registration.
      * The id dictates which lesson registration will be changed with the input arguments.
-     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), quiz id (Integer) and achievement id (Integer)
+     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), quiz id (Integer), an achievement id (Integer) and the name of the designated pdf
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
@@ -168,7 +185,26 @@ public class APImethode {
         int difficulty = Integer.parseInt(input[2]);
         int quiz_id = Integer.parseInt(input[3]);
         int achievement_id = Integer.parseInt(input[4]);
+        String new_pdf_name = input[5];
         
+        return LessonControl.updateLessonEntry(id, name, difficulty, quiz_id, achievement_id, new_pdf_name);
+    }
+
+    /**
+     * Method for the Frontend to update the values of a lesson registration without changing the designated pdf.
+     * The id dictates which lesson registration will be changed with the input arguments.
+     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), quiz id (Integer) and achievement id (Integer)
+     * @return boolean whether the operation was successful
+     * @author Tristan Slodowski
+     */
+    @PostMapping("/UpdateInRegistryNoNameChange")
+    public boolean updateWithoutNameChng(@RequestBody String[] input) {
+        int id = Integer.parseInt(input[0]);
+        String name = input[1];
+        int difficulty = Integer.parseInt(input[2]);
+        int quiz_id = Integer.parseInt(input[3]);
+        int achievement_id = Integer.parseInt(input[4]);
+
         return LessonControl.updateLessonEntry(id, name, difficulty, quiz_id, achievement_id);
     }
 
@@ -180,6 +216,7 @@ public class APImethode {
      */
     @GetMapping("/GetLessonRegistry")
     public String getJsonString() {
+        System.out.println(LessonControl.getJsonString());
         return LessonControl.getJsonString();
     }
 
