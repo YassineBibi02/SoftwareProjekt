@@ -11,6 +11,7 @@ import HereingefallenScreen from './pages/HereingefallenScreen';
 import WatchLessonScreen from './pages/WatchLessonScreen/WatchLessonScreen';
 import EditLessonScreenComponent from './pages/EditLessonScreen/EditLessonScreenComponent';
 import { LoginProvider } from './globals/globalContext';
+import DoQuizScreen from './pages/Quiz/doQuizScreen';
 
 
 
@@ -28,6 +29,7 @@ function App() {
         <Route path="/lessons" element= { <LessonsScreenComponent/> }/>
         <Route path="/lessons/:lessonID" element={<WatchLessonScreen/>} />
         <Route path="/lessonEdit/:lessonID" element={<EditLessonScreenComponent/>} />
+        <Route path="/doQuiz" element={<DoQuizScreen/>}/>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>

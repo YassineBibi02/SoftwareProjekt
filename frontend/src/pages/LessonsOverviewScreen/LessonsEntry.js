@@ -8,9 +8,12 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import { Link } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from './ConfirmDeletionPopup';
+import { useNavigate } from 'react-router-dom';
 
 const LessonsEntry = ({lessonData, admin}) => {    
-    
+
+        const navigate = useNavigate();
+
         const EntryStyle = {
             textAlign: 'center',
             fontSize: '2em',
@@ -25,6 +28,10 @@ const LessonsEntry = ({lessonData, admin}) => {
         const editLesson = (lessonData1) => {
             //Navigate to the edit lesson screen
             console.log("Edit lesson pressed");
+        }
+
+        function redirectToQuiz() {
+            navigate('/doQuiz');
         }
 
         //Includes the edit and delete buttons
@@ -42,7 +49,7 @@ const LessonsEntry = ({lessonData, admin}) => {
                         <ProgressBar now={completionPercentage} />
                     </Col>
                     <Col style={EntryStyle} xs={6} sm={6} md={6} lg={2}>
-                        <Button variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
+                        <Button onClick={redirectToQuiz} variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
                     </Col>
                     <Col style={EntryStyle} xs={6} sm={6} md={6} lg={1}>                    
                         <Button variant="dark" size="sm" style={{margin: '5px'}} onClick={() => editLesson(lessonData)}>
