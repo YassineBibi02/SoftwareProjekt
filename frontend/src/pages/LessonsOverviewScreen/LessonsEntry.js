@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from './ConfirmDeletionPopup';
+import { useNavigate } from 'react-router-dom';
 
 const LessonsEntry = ({lessonData, admin}) => {    
         
@@ -29,6 +30,10 @@ const LessonsEntry = ({lessonData, admin}) => {
             navigate(`/lessonEdit/${lessonData.id}`, { state: { lesson: lessonData } })
         }
 
+        function redirectToQuiz() {
+            navigate('/doQuiz');
+        }
+
         //Includes the edit and delete buttons
         const admin_entry = () => {            
             return (
@@ -44,7 +49,7 @@ const LessonsEntry = ({lessonData, admin}) => {
                         <ProgressBar now={completionPercentage} />
                     </Col>
                     <Col style={EntryStyle} xs={6} sm={6} md={6} lg={2}>
-                        <Button variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
+                        <Button onClick={redirectToQuiz} variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
                     </Col>
                     <Col style={EntryStyle} xs={6} sm={6} md={6} lg={1}>                    
                         <Button variant="dark" size="sm" style={{margin: '5px'}} onClick={() => editLesson(lessonData)}>

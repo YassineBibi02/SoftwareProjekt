@@ -3,6 +3,7 @@ import SendMailScreenComponent from './pages/SendMailScreen/SendMailScreenCompon
 import LoginScreen  from './pages/LoginScreen';
 import ReactDOM from 'react-dom';
 import MainMenuScreenComponent from './components/MainMenuScreen/MainMenuScreenComponent';
+import AchievementsOverviewScreenComponent from './pages/AchievementsOverviewScreen/AchievementsOverviewScreeenComponent';
 import LessonsScreenComponent from './pages/LessonsOverviewScreen/LessonsScreenComponent';
 import { BrowserRouter as Router, Route, Routes , Navigate} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';  

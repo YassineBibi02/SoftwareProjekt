@@ -7,13 +7,19 @@ const styles = {
     borderRadius: '8px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     textAlign: 'center',
+    marginTop: '20px',
+    width: '50%',
+    height: '35%'
   },
   employeeName: {
     color: '#333',
-    marginBottom: '8px',
+    marginBottom: '15px',
+
   },
   employeeLevel: {
     color: '#ec6608',
+    marginTop: '35px',
+    fontSize: '1.5rem'
   },
 };
 

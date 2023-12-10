@@ -13,7 +13,7 @@ const Header = () => {
 
 
     const HeaderStyle = {
-        margin: '20px',
+        //margin: '20px',
         padding: '20px',
         display: 'flex',
         backgroundColor: 'lightgrey', // Changed to light grey
