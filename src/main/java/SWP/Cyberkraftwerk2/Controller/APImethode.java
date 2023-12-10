@@ -174,7 +174,7 @@ public class APImethode {
     /**
      * Method for the Frontend to update the values of a lesson registration.
      * The id dictates which lesson registration will be changed with the input arguments.
-     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), quiz id (Integer) and achievement id (Integer)
+     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), quiz id (Integer), an achievement id (Integer) and the name of the designated pdf
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
@@ -188,6 +188,24 @@ public class APImethode {
         String new_pdf_name = input[5];
         
         return LessonControl.updateLessonEntry(id, name, difficulty, quiz_id, achievement_id, new_pdf_name);
+    }
+
+    /**
+     * Method for the Frontend to update the values of a lesson registration without changing the designated pdf.
+     * The id dictates which lesson registration will be changed with the input arguments.
+     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), quiz id (Integer) and achievement id (Integer)
+     * @return boolean whether the operation was successful
+     * @author Tristan Slodowski
+     */
+    @PostMapping("/UpdateInRegistryNoNameChange")
+    public boolean updateWithoutNameChng(@RequestBody String[] input) {
+        int id = Integer.parseInt(input[0]);
+        String name = input[1];
+        int difficulty = Integer.parseInt(input[2]);
+        int quiz_id = Integer.parseInt(input[3]);
+        int achievement_id = Integer.parseInt(input[4]);
+
+        return LessonControl.updateLessonEntry(id, name, difficulty, quiz_id, achievement_id);
     }
 
     /**

@@ -243,6 +243,36 @@ public class LessonControl {
     }
 
     /**
+     * Static function to update the values of a lessons entry inside the registry of lessons without changing the designated pdf.
+     * @param id Integer id of the whole lesson
+     * @param name String of the lesson registry entry to be updated.
+     * @param difficulty integer representing the difficulty of the corresponding lesson
+     * @param quiz_id Integer id of the quiz relating to the lesson
+     * @param achievement_id Integer id of the achievements relating to the lesson
+     * @return boolean whether the operation was successful
+     * @author Tristan Slodowski
+     */
+    public static boolean updateLessonEntry(int id, String name, int difficulty, int quiz_id, int achievement_id) {
+        JSONObject registry = parseRegistry();
+        JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
+
+        for(int i = 0; i < assigned_ids.length(); i++) {
+            if((assigned_ids.get(i)).equals(id)) {
+                JSONObject chosen_entry = (JSONObject) registry.get(Integer.toString(id));
+
+                chosen_entry.put("name", name);
+                chosen_entry.put("difficulty", difficulty);
+                chosen_entry.put("quiz_id", quiz_id);
+                chosen_entry.put("achievement_id", achievement_id);
+
+                registry.put(Integer.toString(id), chosen_entry);
+                return writeRegistry(registry);
+            }
+        }
+        return false;
+    }
+
+    /**
      * Adds a new quiz for given lesson. Can be searched in the registry as quiz_<quiz_id>.
      * @param quiz_id Int that represents the quiz id given to the Lesson.
      * @param Question String that is the question that the quiz is about.
