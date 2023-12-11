@@ -1,3 +1,4 @@
+/*
 package SWP.Cyberkraftwerk2.Controller;
 
 import org.keycloak.OAuth2Constants;
@@ -67,3 +68,4 @@ public class KeycloakService {
     }
 }
 
+*/

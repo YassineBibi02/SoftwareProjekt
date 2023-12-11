@@ -25,6 +25,11 @@ const LessonsEntry = ({lessonData, admin}) => {
       
         const completionPercentage = parseInt(lessonData.completion); // Parse the completion string into a number
         
+        const watchLesson = (lessonData) => {
+            console.log("Navigating to lesson: " + lessonData.id)
+            navigate(`/lessons/${lessonData.id}`, { state: { lesson: lessonData } })
+        }
+
         const editLesson = (lessonData) => {
             navigate(`/lessonEdit/${lessonData.id}`, { state: { lesson: lessonData } })
         }
@@ -41,7 +46,7 @@ const LessonsEntry = ({lessonData, admin}) => {
                         {lessonData.difficulty}
                     </Col>
                     <Col style={EntryStyle} xs={4} sm={4} md={4} lg={4}>
-                        <Link to={`/lessons/${lessonData.id}`}>{lessonData.name}</Link>
+                        <Button onClick={() => watchLesson(lessonData)} variant="link" style={{ padding: 0, textDecoration: 'underline', fontSize: '1em' }}>{lessonData.name}</Button>
                     </Col>
                     <Col style={EntryStyle} xs={3} sm={3} md={3} lg={3}>
                         {lessonData.completion}
@@ -68,7 +73,7 @@ const LessonsEntry = ({lessonData, admin}) => {
                         {lessonData.difficulty}
                     </Col>
                     <Col style={EntryStyle} xs={4} sm={4} md={4} lg={4}>
-                        <Link to={`/lessons/${lessonData.id}`}>{lessonData.title}</Link>
+                        <Button onClick={() => watchLesson(lessonData)} variant="link" style={{ padding: 0, textDecoration: 'underline' , fontSize: '1em'}}>{lessonData.name}</Button>
                     </Col>
                     <Col style={EntryStyle} xs={3} sm={3} md={3} lg={3}>
                         {lessonData.completion}

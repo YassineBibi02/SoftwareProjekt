@@ -1,19 +1,21 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
-import axios from 'axios';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import ProgressBar from 'react-bootstrap/ProgressBar';
-import { Route, Link, useParams } from 'react-router-dom';
+import { Route, Link, useParams, useLocation } from 'react-router-dom';
 import testPDF from '../../ressources/test.pdf';
 //import testPDF2 from '../../ressources/test_horizontal.pdf';
+
 import '../../globals/globals';
 
 const WatchLessonScreen = () => {
+    const {state} = useLocation();
+    let lesson = state?.lesson;
     let { lessonID } = useParams();
-    console.log(lessonID);
+
+    if (lesson != null) {
+        console.log("Path: " , lesson.path)
+    }
+    const path =  "/Zeitplan-v04-JD.pdf"
 
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 112; // Replace with the actual total number of pages in the PDF
@@ -75,7 +77,7 @@ const WatchLessonScreen = () => {
                     id="pdfViewer"
                     title="PDF Viewer"
                     style={styles.pdfViewer}
-                    src={`${testPDF}#page=${currentPage}`}
+                    src={path} // Use lesson.path as the src for the iframe
                 />
                 <div style={styles.buttonContainer}>
                     <Button style={styles.button} onClick={handleBack}>Zurück</Button>
@@ -86,4 +88,4 @@ const WatchLessonScreen = () => {
     );
 }
 
-    export default WatchLessonScreen;
+export default WatchLessonScreen;

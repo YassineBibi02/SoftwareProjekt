@@ -167,6 +167,7 @@ public class APImethode {
             return LessonControl.removeLessonEntry(target_id);
         } else {
             System.out.println("[APImethode] File to be deleted not found. Aborting ...");
+            LessonControl.removeLessonEntry(target_id);
             return false;
         }
     }

@@ -12,9 +12,17 @@ const EditLessonScreenComponent = ({newLesson}) => {
     const [cookies] = useCookies(['XSRF-TOKEN']);
     const lessonID = useParams();
     const navigate = useNavigate();
-
-    const [difficulty, setDifficulty] = useState(() => 
-        {if (newLesson) {
+    const [initialPath, setInitialPath] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return "";
+        } else {
+            // Setup Variables with lesson data
+            return lesson.path;
+        }
+    });
+    const [difficulty, setDifficulty] = useState(() => {
+        if (newLesson) {
             // Handle initial state for new lesson
             return 1;
         } else {
@@ -29,7 +37,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
             return "";
         } else {
             // Setup Variables with lesson data
-            return lesson.name;
+            return lesson.path;
         }
     });
 
@@ -44,11 +52,14 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     });
 
+    let fileChanged = false;
+
     
 
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
+        fileChanged = true;
     };
 
     const handleTitleChange = (event) => {
@@ -126,22 +137,35 @@ const EditLessonScreenComponent = ({newLesson}) => {
             });
             const result = await response.json();
             console.log("Success:", result);
+            return true;
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error2:", error);
+            return false;
         }
     }
     
 
-    const confirm = () => {
+    const confirm = async () => {
         // Handle file upload logic here
-        const formData = new FormData();
-        formData.append("file", file);
-        upload(formData);       // PDF wird getrennt von dem Registry hochgeladen bzw registriert
-
-        if (newLesson) {
-            createLesson();
+        if (fileChanged) {
+            const formData = new FormData();
+            formData.append("file", file);
+            if (await upload(formData)) { // PDF wird getrennt von dem Registry hochgeladen bzw registriert
+                console.log("File uploaded");
+                if (newLesson) {
+                    createLesson();
+                } else {
+                    editLesson();
+                }
+            } else {
+                console.log("Error uploading file");
+            }
         } else {
-            editLesson();
+            if (newLesson) {
+                createLesson();
+            } else {
+                editLesson();
+            }
         }
     };
 
@@ -178,7 +202,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 </div>
 
                 <div style={containerStyle}>
-                    <p>PDF:</p>                
+                    <p>PDF: {initialPath}</p>                
                     <input type="file" onChange={handleFileChange}  style={{margin: '20px'}}/>
                 </div>
 

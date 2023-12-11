@@ -1,3 +1,4 @@
+/*/
 package SWP.Cyberkraftwerk2.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,3 +33,4 @@ public class KeycloakController {
         }
     }
 }
+*/
