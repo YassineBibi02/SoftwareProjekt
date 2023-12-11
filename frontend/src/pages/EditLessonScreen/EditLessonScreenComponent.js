@@ -59,6 +59,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
+        console.log("File changed")
         fileChanged = true;
     };
 
@@ -161,12 +162,21 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 console.log("Error uploading file");
             }
         } else {
-            if (newLesson) {
-                createLesson();
+            console.log("File not changed");
+            const formData = new FormData();
+            formData.append("file", file);
+            if (await upload(formData)) { // PDF wird getrennt von dem Registry hochgeladen bzw registriert
+                console.log("File uploaded");
+                if (newLesson) {
+                    createLesson();
+                } else {
+                    editLesson();
+                }
             } else {
-                editLesson();
+                console.log("Error uploading file");
             }
         }
+        navigate('/lessonsOverview');
     };
 
     const containerStyle = {

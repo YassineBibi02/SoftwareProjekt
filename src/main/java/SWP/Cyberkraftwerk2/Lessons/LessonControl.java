@@ -22,7 +22,7 @@ import org.json.JSONArray;
  * @version 01.12.2023
  */
 public class LessonControl {
-    static String res_directory = "frontend/src/ressources";
+    static String res_directory = "frontend/public";
 
     /**
      * Internal method to initialize the registry file if there is no present yet.

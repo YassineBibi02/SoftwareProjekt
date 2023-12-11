@@ -116,7 +116,7 @@ public class APImethode {
 
         try {
             String normal_orig_path = file.getOriginalFilename().replace(" ", "_");     // PDF-Namen von Leerstellen befreien
-            Path dest_path = Path.of("frontend","src","ressources",normal_orig_path);
+            Path dest_path = Path.of("frontend","public", normal_orig_path);
 
             file.transferTo(dest_path);                                     // PDF an entsprechenden Ort im Filesystem speichern
             System.out.println("[uploadLesson] Upload successful.");
