@@ -11,7 +11,7 @@ import { IoMdAdd } from "react-icons/io";
 const LessonsList = () => {
     
     const navigate = useNavigate();
-    const admin_status = true;
+    const [adminStatus, setAdminStatus] = useState(false); 
 
     const [loadedIDs, setLoadedIDs] = useState([]); 
     const [loadedLessons, setLoadedLessons] = useState([]);
@@ -29,7 +29,23 @@ const LessonsList = () => {
                 console.error(error);
             }
         };
+
+        const fetchAdminStatus = async () => {
+            fetch('api/user', { credentials: 'include' }) // <.>
+            .then(response => response.text())
+            .then(body => {
+                if (body === '') {
+                     navigate('/login');
+                } else {
+                    const userData = JSON.parse(body);
+                    if (userData.roles.includes("Admin_Access")) {
+                        setAdminStatus(true);
+                    }
+                }
+            });
+        };
         fetchLessons();
+        fetchAdminStatus();
     }, []);
 
     const HeaderStyle = {
@@ -62,7 +78,7 @@ const LessonsList = () => {
         if (loadedLessons.length === 0) {
             return (
                 <div>
-                    <p>No Lessons found</p>
+                    <h1>No Lessons found</h1>
                     <Button style={{
                         float: 'right',
                         marginRight: '100px',
@@ -89,7 +105,7 @@ const LessonsList = () => {
                         <Col style={HeaderStyle} lg={1}>Actions</Col>
                     </Row>
                     {loadedLessons.map((lesson) => (
-                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={admin_status}/>
+                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={adminStatus}/>
                     ))}
                 </Container>
                 <Button style={{
@@ -124,7 +140,7 @@ const LessonsList = () => {
                         <Col style={HeaderStyle} lg={3}>Quiz</Col>
                     </Row>
                     {loadedLessons.map((lesson) => (
-                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={admin_status}/>
+                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={adminStatus}/>
                     ))}
                 </Container>
             </div>
@@ -132,7 +148,7 @@ const LessonsList = () => {
 
     }
 
-    if (admin_status) {
+    if (adminStatus) {
         return <AdminTable/>;
     } else {
         return <UserTable/>;

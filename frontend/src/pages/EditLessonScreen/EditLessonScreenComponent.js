@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
 import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-dom';
@@ -55,7 +55,25 @@ const EditLessonScreenComponent = ({newLesson}) => {
     let fileChanged = false;
 
     
+    useEffect(() => {
+        console.log("test")
+        fetch('api/user', { credentials: 'include' }) // <.>
+            .then(response => response.text())
+            .then(body => {
+                if (body === '') {
+                     navigate('/login');
+                } else {
+                    const userData = JSON.parse(body);
+                    // Check for Admin_Access role
 
+                    if (!userData.roles.includes("Admin_Access")) {
+                        console.log("Access Denied. Admin Only Area")
+                        // If the user does not have Admin_Access, navigate to the home screen
+                        navigate('/');
+                    }
+                }
+            });
+    }, []);
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -129,7 +147,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
     // upload spricht UploadLesson des Backends an
     async function upload(formData) {
         try {
-            const response = await fetch('/api/methode//UploadLesson', {
+            const response = await fetch('/api/methode/UploadLesson', {
                 method: 'POST', credentials: 'include',
                 headers: {
                     'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
@@ -201,6 +219,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
     const createQuiz = () => {
         console.log("Create quiz pressed");
     }
+
     
     return (
         <div>            
