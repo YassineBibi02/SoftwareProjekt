@@ -13,6 +13,9 @@ const MainMenuScreenComponent = () => {
     var schulungButtonText = "Schulungsübersicht";
     var achievementButtonText = "Archievementsübersicht";
     var nutzerVerwaltenText = "Nutzer Verwalten";
+    var achievementErstellenText = "Achievement Erstellen";
+    var mailErstellenText = "Mail Erstellen";
+
     let roles = [];
 
     const Container = {
@@ -89,7 +92,8 @@ const MainMenuScreenComponent = () => {
                     <button style={ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectToAchievements}>{achievementButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
-                    <button style={ButtonStyle} onClick={redirectCreateAchievement}>Achievement Erstellen</button>
+                    <button style={ButtonStyle} onClick={redirectCreateAchievement}>{achievementErstellenText}</button>
+                    <button style={ButtonStyle} onClick={redirectToMail}>{mailErstellenText}</button>
                 </div>
             </div>
         </div>
