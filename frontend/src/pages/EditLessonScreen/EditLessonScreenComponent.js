@@ -52,12 +52,21 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     });
 
-    let fileChanged = false;
+    const [fileChanged, setFileChanged] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return true;
+        } else {
+            // Setup Variables with lesson data
+            return false;
+        }
+    });
 
     
     useEffect(() => {
+        
         console.log("test")
-        fetch('api/user', { credentials: 'include' }) // <.>
+        fetch('/api/user', { credentials: 'include' }) // <.>
             .then(response => response.text())
             .then(body => {
                 if (body === '') {
@@ -73,12 +82,13 @@ const EditLessonScreenComponent = ({newLesson}) => {
                     }
                 }
             });
-    }, []);
+        
+    });
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
         console.log("File changed")
-        fileChanged = true;
+        setFileChanged(true);
     };
 
     const handleTitleChange = (event) => {
@@ -114,33 +124,53 @@ const EditLessonScreenComponent = ({newLesson}) => {
       }
     }
 
-    const editLesson = () => {
+    const editLesson = ({newName}) => {
         const lessonArray = [];
         lessonArray.push(lesson.id)
         lessonArray.push(title);
         lessonArray.push(getDifficulty());
         lessonArray.push("10");
         lessonArray.push("10");
-        lessonArray.push(file.name);
         console.log("Editing");
         console.log(lessonArray);
+        if (newName) {
+            lessonArray.push(file.name);
+            try {
+                fetch('/api/methode//UpdateInRegistry', {
+                    method: 'POST', credentials: 'include',
+                    headers: { 
+                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(lessonArray)
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log("Response:", data);
+                    navigate('/lessonsOverview');
+                });
+            } catch (error) {
+                console.error('Error', error);
+            }
 
-        try {
-            fetch('/api/methode//UpdateInRegistry', {
-                method: 'POST', credentials: 'include',
-                headers: { 
-                    'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(lessonArray)
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log("Response:", data);
-                navigate('/lessonsOverview');
-            });
-        } catch (error) {
-            console.error('Error', error);
+        } else {
+            try {
+                fetch('/api/methode//UpdateInRegistryNoNameChange', {
+                    method: 'POST', credentials: 'include',
+                    headers: { 
+                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(lessonArray)
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log("Response:", data);
+                    navigate('/lessonsOverview');
+                });
+            } catch (error) {
+                console.error('Error', error);
+            }
         }
     }
 
@@ -168,30 +198,26 @@ const EditLessonScreenComponent = ({newLesson}) => {
         // Handle file upload logic here
         if (fileChanged) {
             const formData = new FormData();
-            formData.append("file", file);
-            if (await upload(formData)) { // PDF wird getrennt von dem Registry hochgeladen bzw registriert
-                console.log("File uploaded");
-                if (newLesson) {
-                    createLesson();
+                formData.append("file", file);
+                if (await upload(formData)) { // PDF wird getrennt von dem Registry hochgeladen bzw registriert
+                    console.log("File uploaded");
+                    if (newLesson) {
+                        createLesson();
+                    } else {
+                        if (fileChanged) {
+                            editLesson({ newName: true });
+                        } else {
+                            editLesson();
+                        }
+                    }
                 } else {
-                    editLesson();
+                    console.log("Error uploading file");
                 }
-            } else {
-                console.log("Error uploading file");
-            }
         } else {
-            console.log("File not changed");
-            const formData = new FormData();
-            formData.append("file", file);
-            if (await upload(formData)) { // PDF wird getrennt von dem Registry hochgeladen bzw registriert
-                console.log("File uploaded");
-                if (newLesson) {
-                    createLesson();
-                } else {
-                    editLesson();
-                }
+            if (newLesson) {
+                createLesson();
             } else {
-                console.log("Error uploading file");
+                editLesson({ newName: false });
             }
         }
         navigate('/lessonsOverview');
@@ -220,6 +246,8 @@ const EditLessonScreenComponent = ({newLesson}) => {
         console.log("Create quiz pressed");
     }
 
+    
+    
     
     return (
         <div>            

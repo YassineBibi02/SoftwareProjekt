@@ -98,11 +98,11 @@ const LessonsList = () => {
                 <h1 style={{marginLeft: '30px', marginBottom: '30px', fontWeight: 'bold'}}>Schulungen</h1>
                 <Container style={TableStyle} fluid="true">
                     <Row>
-                        <Col style={HeaderStyle} lg={2}>Difficulty</Col>
-                        <Col style={HeaderStyle} lg={4}>Title</Col>
-                        <Col style={HeaderStyle} lg={3}>Completion</Col>
+                        <Col style={HeaderStyle} lg={2}>Schiwerigkeit</Col>
+                        <Col style={HeaderStyle} lg={4}>Titel</Col>
+                        <Col style={HeaderStyle} lg={3}>Fortschritt</Col>
                         <Col style={HeaderStyle} lg={2}>Quiz</Col>
-                        <Col style={HeaderStyle} lg={1}>Actions</Col>
+                        <Col style={HeaderStyle} lg={1}>Aktion</Col>
                     </Row>
                     {loadedLessons.map((lesson) => (
                         <LessonsEntry key={lesson.id} lessonData={lesson} admin={adminStatus}/>
