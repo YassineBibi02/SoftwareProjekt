@@ -61,6 +61,10 @@ const MainMenuScreenComponent = () => {
         navigate('/createAchievement');
     }
 
+    const redirectToCreateMail = () => {
+        navigate('/createMail');
+    }
+
     const infoContainer = {
         marginLeft: '20px',
         display: 'flex',
@@ -93,7 +97,7 @@ const MainMenuScreenComponent = () => {
                     <button style={ButtonStyle} onClick={redirectToAchievements}>{achievementButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
                     <button style={ButtonStyle} onClick={redirectCreateAchievement}>{achievementErstellenText}</button>
-                    <button style={ButtonStyle} onClick={redirectToMail}>{mailErstellenText}</button>
+                    <button style={ButtonStyle} onClick={redirectToCreateMail}>{mailErstellenText}</button>
                 </div>
             </div>
         </div>

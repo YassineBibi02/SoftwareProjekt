@@ -14,6 +14,7 @@ import { LoginProvider } from './globals/globalContext';
 import UserController from './pages/UserVerwaltungScreen/UserController';
 import AchievementFrontend from './pages/AchievementsPage/AchievementFrontend';
 import CreateAchievement from './pages/AchievementsPage/CreateAchievement';
+import CreateMailScreen from './pages/CreateMailScreen/CreateMailComponent';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/lessonEdit/:lessonID" element={<EditLessonScreenComponent newLesson={false}/>} />
         <Route path="/achievements" element={<AchievementFrontend/>} />
         <Route path="/createAchievement" element={<CreateAchievement/>} />
+        <Route path="/createMail" element={<CreateMailScreen/>}/>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>
