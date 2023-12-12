@@ -167,7 +167,7 @@ public class APImethode {
             return LessonControl.removeLessonEntry(target_id);
         } else {
             System.out.println("[APImethode] File to be deleted not found. Aborting ...");
-            LessonControl.removeLessonEntry(target_id);
+            //LessonControl.removeLessonEntry(target_id);
             return false;
         }
     }
@@ -187,8 +187,19 @@ public class APImethode {
         int quiz_id = Integer.parseInt(input[3]);
         int achievement_id = Integer.parseInt(input[4]);
         String new_pdf_name = input[5];
-        
-        return LessonControl.updateLessonEntry(id, name, difficulty, quiz_id, achievement_id, new_pdf_name);
+
+        JSONObject registry = new JSONObject(LessonControl.getJsonString());
+        JSONObject entry = (JSONObject) registry.get(Integer.toString(id));
+        String path = (String) entry.get("path");
+
+        File to_be_deleted = new File(path);
+
+        if(to_be_deleted.delete()) {
+            return LessonControl.updateLessonEntry(id, name, difficulty, quiz_id, achievement_id, new_pdf_name);
+        } else {
+            System.out.println("[UpdateInRegistry] Error while trying to delete old PDF file! Aborting ...");
+            return false;
+        }
     }
 
     /**
