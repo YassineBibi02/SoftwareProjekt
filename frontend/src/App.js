@@ -15,6 +15,7 @@ import UserController from './pages/UserVerwaltungScreen/UserController';
 import AchievementFrontend from './pages/AchievementsPage/AchievementFrontend';
 import CreateAchievement from './pages/AchievementsPage/CreateAchievement';
 import CreateMailScreen from './pages/CreateMailScreen/CreateMailComponent';
+import DoQuizScreen from './pages/Quiz/doQuizScreen';
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="/achievements" element={<AchievementFrontend/>} />
         <Route path="/createAchievement" element={<CreateAchievement/>} />
         <Route path="/createMail" element={<CreateMailScreen/>}/>
+        <Route path="/doQuiz" element={<DoQuizScreen/>}/>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>

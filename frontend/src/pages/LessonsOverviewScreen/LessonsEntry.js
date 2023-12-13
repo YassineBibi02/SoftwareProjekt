@@ -80,7 +80,7 @@ const LessonsEntry = ({lessonData, admin}) => {
                         <ProgressBar now={completionPercentage} />
                     </Col>
                     <Col style={EntryStyle} xs={6} sm={6} md={6} lg={3}>
-                        <Button variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
+                        <Button onClick={redirectToQuiz} variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
                     </Col>
                 </Row>
             );

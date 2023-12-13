@@ -20,7 +20,7 @@ function CreateMailComponent() {
         backgroundColor: '#ec6608',
         borderColor: '#ec6608'
     }
-    /*
+    
     function handleInputChange(event) {
         const { name, value } = event.target;
         if (name === "Titel") {
@@ -32,7 +32,7 @@ function CreateMailComponent() {
         event.preventDefault();
         console.log('This is the title:', title);
     }
-    */
+    
 
     return (
         <div>
@@ -44,7 +44,7 @@ function CreateMailComponent() {
                         <Form.Control 
                             style={FormGroupStyle} 
                             type="title" 
-                            placeholder="Hier der Titel"
+                            //placeholder="Hier der Titel"
                             name="Title"
                             //value={title}
                             onChange={handleInputChange}
