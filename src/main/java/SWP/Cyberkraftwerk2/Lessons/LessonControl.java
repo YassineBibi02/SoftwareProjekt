@@ -3,7 +3,7 @@ package SWP.Cyberkraftwerk2.Lessons;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import SWP.Cyberkraftwerk2.Module.QuizCompService;
+//import SWP.Cyberkraftwerk2.Module.QuizCompService;
 
 import java.io.File;
 import java.io.FileWriter;
