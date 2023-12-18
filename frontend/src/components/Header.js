@@ -18,7 +18,7 @@ const Header = () => {
         marginTop: '10px',
         padding: '10px',
         display: 'flex',
-        backgroundColor: '#333333', // Changed to light grey
+        backgroundColor: '#555555', // Changed to light grey
         alignItems: 'center',
         borderRadius: '10px',
         border: '1px solid black',
