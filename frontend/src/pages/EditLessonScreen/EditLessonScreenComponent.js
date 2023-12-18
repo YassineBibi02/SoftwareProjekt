@@ -3,6 +3,7 @@ import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
 import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-dom';
 import axios from 'axios';
+import AddAchievementPopup from './AchievementAdding/AddAchievementPopup';
 import { useCookies } from 'react-cookie';
 
 const EditLessonScreenComponent = ({newLesson}) => {
@@ -49,6 +50,16 @@ const EditLessonScreenComponent = ({newLesson}) => {
         } else {
             // Setup Variables with lesson data
             return lesson.name;
+        }
+    });
+
+    const [achievementID, setAchievementID] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return "";
+        } else {
+            // Setup Variables with lesson data
+            return lesson.achievement_id;
         }
     });
 
@@ -101,7 +112,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
         lessonArray.push(title);
         lessonArray.push(getDifficulty());
         lessonArray.push("10");
-        lessonArray.push("10");
         lessonArray.push(file.name);
         console.log(lessonArray);
 
@@ -129,7 +139,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
         lessonArray.push(lesson.id)
         lessonArray.push(title);
         lessonArray.push(getDifficulty());
-        lessonArray.push("10");
         lessonArray.push("10");
         console.log("Editing");
         console.log(lessonArray);
@@ -279,9 +288,8 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 </div>
 
                 <div style={containerStyle}>
-                    <p>Achievement:&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                    <p>Achievement noch nicht zugewiesen</p>
-                    <Button variant="primary" size="sm" style={{margin: '20px'}} onClick={addAchievement}>Achievement zuweisen</Button>                 
+                    <p>Achievement:&nbsp;&nbsp; {achievementID}</p>
+                    <AddAchievementPopup lessonTitle={title} setLessonAchievementID={setAchievementID}/>                 
                 </div>
                 
             </div>

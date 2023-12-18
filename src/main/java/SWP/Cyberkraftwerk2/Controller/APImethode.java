@@ -3,11 +3,15 @@ package SWP.Cyberkraftwerk2.Controller;
 import SWP.Cyberkraftwerk2.Databank.AchievementRepository;
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
 import SWP.Cyberkraftwerk2.Lessons.LessonControl;
+import SWP.Cyberkraftwerk2.Lessons.Question;
+import SWP.Cyberkraftwerk2.Lessons.Quiz;
 import SWP.Cyberkraftwerk2.Mail.EmailService;
 import SWP.Cyberkraftwerk2.Module.Achievement;
 import SWP.Cyberkraftwerk2.Module.AchievementService;
 import SWP.Cyberkraftwerk2.Module.User;
 import SWP.Cyberkraftwerk2.Module.UserService;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,6 +27,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 /**
  * This Class handles the API Calls
@@ -140,10 +147,9 @@ public class APImethode {
     public int registerLesson(@RequestBody String[] input) {
         String name = input[0];
         int difficulty = Integer.parseInt(input[1]);
-        int quiz_id = Integer.parseInt(input[2]);
-        int achievement_id = Integer.parseInt(input[3]);
-        String pdf_name = input[4];
-        return LessonControl.addLessonEntry(name, difficulty, quiz_id, achievement_id, pdf_name);
+        int achievement_id = Integer.parseInt(input[2]);
+        String pdf_name = input[3];
+        return LessonControl.addLessonEntry(name, difficulty, achievement_id, pdf_name);
     }
 
     /**
@@ -184,9 +190,8 @@ public class APImethode {
         int id = Integer.parseInt(input[0]);
         String name = input[1];
         int difficulty = Integer.parseInt(input[2]);
-        int quiz_id = Integer.parseInt(input[3]);
-        int achievement_id = Integer.parseInt(input[4]);
-        String new_pdf_name = input[5];
+        int achievement_id = Integer.parseInt(input[3]);
+        String new_pdf_name = input[4];
 
         JSONObject registry = new JSONObject(LessonControl.getJsonString());
         JSONObject entry = (JSONObject) registry.get(Integer.toString(id));
@@ -195,7 +200,7 @@ public class APImethode {
         File to_be_deleted = new File(path);
 
         if(to_be_deleted.delete()) {
-            return LessonControl.updateLessonEntry(id, name, difficulty, quiz_id, achievement_id, new_pdf_name);
+            return LessonControl.updateLessonEntry(id, name, difficulty, achievement_id, new_pdf_name);
         } else {
             System.out.println("[UpdateInRegistry] Error while trying to delete old PDF file! Aborting ...");
             return false;
@@ -214,14 +219,13 @@ public class APImethode {
         int id = Integer.parseInt(input[0]);
         String name = input[1];
         int difficulty = Integer.parseInt(input[2]);
-        int quiz_id = Integer.parseInt(input[3]);
-        int achievement_id = Integer.parseInt(input[4]);
+        int achievement_id = Integer.parseInt(input[3]);
 
-        return LessonControl.updateLessonEntry(id, name, difficulty, quiz_id, achievement_id);
+        return LessonControl.updateLessonEntry(id, name, difficulty, achievement_id);   
     }
 
     /**
-     * Method for the Frontend to get a json string representation of the lesson registry.
+     * Method for the Frontend to get a JSON string representation of the lesson registry.
      * Can be used to access all information about the registered lessons.
      * @return Json-formatted String representation of the lesson registry
      * @author Tristan Slodowski
@@ -231,6 +235,48 @@ public class APImethode {
         System.out.println(LessonControl.getJsonString());
         return LessonControl.getJsonString();
     }
+
+    /**
+     * Method for the Frontend to add/set a quiz for a registered lesson.
+     * The first entry of the String array must be an Integer id of the lesson that is supposed to get the new quiz attached to.
+     * The following entries (number may vary freely) must be JSON strings of the questions the quiz is supposed to have.
+     * <p> A question JSON string must adhere to the following structure: {question: "Question String", right_answer: "Right answer String", wrong_answers: String[] of the wrong answers}.
+     * @param input String array containing an Integer id of the target lesson and JSON strings per question to be added to the quiz
+     * @author Tristan Slodowski
+     */
+    // Notiz ans Frontend: registerLesson() gibt bei der Registrierung einer Lesson die lesson_id ans Frontend zurück; diese muss daraufhin hier für addQuiz() verwendet werden
+    @PostMapping("/AddQuiz")
+    public void addQuiz(@RequestBody String[] input) {
+        int lesson_id = Integer.parseInt(input[0]);
+        Quiz new_quiz = new Quiz(lesson_id);
+        for(int question_nmbr = 1; question_nmbr < input.length; question_nmbr++) {     // per provided question JSON a Question object gets created
+            JSONObject q = new JSONObject(input[question_nmbr]);
+            Question new_question = new Question();
+            new_question.setQuestion((String) q.get("question"));
+            new_question.setRightAnswer((String) q.get("right_answer"));
+            for(Object answer : (JSONArray) q.get("wrong_answers")) {
+                new_question.addWrongAnswer((String) answer);
+            }
+
+            new_quiz.addQuestion(new_question);         // all generated Question objects are being gathered in one Quiz object
+        }
+
+        LessonControl.setQuiz(lesson_id, new_quiz);
+    }
+
+    /**
+     * Function for the Frontend to delete a quiz from a specified lesson entry.
+     * @param lesson_id Integer id of the lesson from which the quiz will be removed
+     * @author Tristan Slodowski
+     */
+    @PostMapping("/RemoveQuiz")
+    public void removeQuiz(@RequestBody String[] lesson_id) {
+        int target_id = Integer.parseInt(lesson_id[0]);
+
+        LessonControl.removeQuiz(target_id);
+    }
+    
+    
 
 
     /**
