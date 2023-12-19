@@ -16,6 +16,7 @@ import AchievementFrontend from './pages/AchievementsPage/AchievementFrontend';
 import CreateAchievement from './pages/AchievementsPage/CreateAchievement';
 import CreateMailScreen from './pages/CreateMailScreen/CreateMailComponent';
 import DoQuizScreen from './pages/Quiz/doQuizScreen';
+import CreateQuizScreen from './pages/Quiz/createQuizScreen';
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
         <Route path="/createAchievement" element={<CreateAchievement/>} />
         <Route path="/createMail" element={<CreateMailScreen/>}/>
         <Route path="/doQuiz" element={<DoQuizScreen/>}/>
+        <Route path="/createQuiz" element={<CreateQuizScreen/>}/>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>
