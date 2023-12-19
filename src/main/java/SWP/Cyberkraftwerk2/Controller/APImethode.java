@@ -7,6 +7,7 @@ import SWP.Cyberkraftwerk2.Lessons.Question;
 import SWP.Cyberkraftwerk2.Lessons.Quiz;
 import SWP.Cyberkraftwerk2.Lessons.QuizMaster;
 import SWP.Cyberkraftwerk2.Mail.EmailService;
+import SWP.Cyberkraftwerk2.Mail.Mail;
 import SWP.Cyberkraftwerk2.Module.Achievement;
 import SWP.Cyberkraftwerk2.Module.AchievementService;
 import SWP.Cyberkraftwerk2.Module.QuizCompService;
@@ -505,5 +506,14 @@ public class APImethode {
         return ResponseEntity.ok().body("User edited");
     }
 
+    @PostMapping("/NewMail")
+    public boolean newMail(@RequestBody String[] input) {
+        String text = input[0];
+        String subject = input[1];
+        int id = Integer.parseInt(input[2]);
+
+        Mail mail = new Mail(userService);
+        return mail.new_mail(text, subject, id);
+    }
 
 }
