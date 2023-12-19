@@ -5,6 +5,7 @@ import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-
 import axios from 'axios';
 import AddAchievementPopup from './AchievementAdding/AddAchievementPopup';
 import { useCookies } from 'react-cookie';
+import AddQuizPopup from './QuizAdding/AddQuizPopup';
 
 const EditLessonScreenComponent = ({newLesson}) => {
 
@@ -73,9 +74,45 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     });
 
+
+    const [question, setQuestion] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return '';
+        } else {
+            // TODO Load from LessonEntry
+            return '';
+        }
+    });
+
+    const [correctAnswer, setCorrectAnswer] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return '';
+        } else {
+            // TODO Load from LessonEntry
+            return '';
+        }
+    });
+
+    const [wrongAnswers, setWrongAnswers] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return [{id:1},{id:2},{id:3}];
+        } else {
+            // TODO Load from LessonEntry
+            return [{id:1},{id:2},{id:3}];
+        }
+    });
+
+    const setQuizData = (q, correct, wrong) => {
+        setQuestion(q);
+        setCorrectAnswer(correct);
+        setWrongAnswers(wrong);
+    }
+
     
-    useEffect(() => {
-        
+    useEffect(() => {        
         console.log("test")
         fetch('/api/user', { credentials: 'include' }) // <.>
             .then(response => response.text())
@@ -93,7 +130,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
                     }
                 }
             });
-        
     });
 
     const handleFileChange = (event) => {
@@ -282,9 +318,8 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 </div>
 
                 <div style={containerStyle}>
-                    <p>Quiz:&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                    <p>Quiz noch nicht erstellt</p>
-                    <Button variant="primary" size="sm" style={{margin: '20px'}} onClick={createQuiz}>Quiz erstellen</Button>                
+                    <p>Quiz:&nbsp;&nbsp;</p>
+                    <AddQuizPopup setQuizData={setQuizData}/>                
                 </div>
 
                 <div style={containerStyle}>
