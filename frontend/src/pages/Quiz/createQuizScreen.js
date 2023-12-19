@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Form, Button, Container} from 'react-bootstrap';
 
-function CreateQuizScreen() {
+function CreateQuizScreen({setQuizData, closePopup}) {
 
     const [question, setQuestion] = useState('');
     const [correctAnswer, setCorrectAnswer] = useState('');
@@ -46,6 +46,12 @@ function CreateQuizScreen() {
         event.preventDefault();
         console.log("This is the queestion:", question);
         console.log("This the the correct answer:", correctAnswer);
+        if (setQuizData != undefined) {
+            setQuizData(question, correctAnswer, wrongAnswers);
+            closePopup();
+        } else {
+            console.log("setQuizData is undefined");
+        }
     }
 
     return (
