@@ -147,7 +147,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         const lessonArray = [];
         lessonArray.push(title);
         lessonArray.push(getDifficulty());
-        lessonArray.push("10");
+        lessonArray.push(achievementID);
         lessonArray.push(file.name);
         console.log(lessonArray);
 
@@ -175,7 +175,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         lessonArray.push(lesson.id)
         lessonArray.push(title);
         lessonArray.push(getDifficulty());
-        lessonArray.push("10");
+        lessonArray.push(achievementID);
         console.log("Editing");
         console.log(lessonArray);
         if (newName) {
