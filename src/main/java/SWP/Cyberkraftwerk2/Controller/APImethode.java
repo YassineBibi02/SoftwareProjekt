@@ -5,9 +5,11 @@ import SWP.Cyberkraftwerk2.Databank.UserRepository;
 import SWP.Cyberkraftwerk2.Lessons.LessonControl;
 import SWP.Cyberkraftwerk2.Lessons.Question;
 import SWP.Cyberkraftwerk2.Lessons.Quiz;
+import SWP.Cyberkraftwerk2.Lessons.QuizMaster;
 import SWP.Cyberkraftwerk2.Mail.EmailService;
 import SWP.Cyberkraftwerk2.Module.Achievement;
 import SWP.Cyberkraftwerk2.Module.AchievementService;
+import SWP.Cyberkraftwerk2.Module.QuizCompService;
 import SWP.Cyberkraftwerk2.Module.User;
 import SWP.Cyberkraftwerk2.Module.UserService;
 
@@ -45,12 +47,16 @@ public class APImethode {
     private AchievementRepository achievementRepository;
     private UserService userService;
     private AchievementService achievementService;
+    private QuizCompService quiz_completion_service;
+    private QuizMaster quiz_master;
 
-    public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService, AchievementService achievementService) {
+    public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService, AchievementService achievementService, QuizCompService qcs) {
         this.userRepository = rep;
         this.achievementRepository = achievementRepository;
         this.userService = userService;
         this.achievementService = achievementService;
+        this.quiz_completion_service = qcs;
+        this.quiz_master = new QuizMaster(this.quiz_completion_service, this.userRepository);
     }
 
 
@@ -139,7 +145,7 @@ public class APImethode {
     /**
      * Method for the Frontend to register a newly uploaded lesson into the lesson registry
      * Ideal Input: "{"name", difficulty_level, quiz_id, achievement_id, pdf_name}"
-     * @param input String array containing the name (as String), difficulty level (as Integer), a quiz ID (as Integer), an achievement ID (as Integer) and the name of the designated pdf (String)
+     * @param input String array containing the name (as String), difficulty level (as Integer), an achievement ID (as Integer) and the name of the designated pdf (String)
      * @return Integer representing the id of the newly registered lesson
      * @author Tristan Slodowski
      */
@@ -181,7 +187,7 @@ public class APImethode {
     /**
      * Method for the Frontend to update the values of a lesson registration.
      * The id dictates which lesson registration will be changed with the input arguments.
-     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), quiz id (Integer), an achievement id (Integer) and the name of the designated pdf
+     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), an achievement id (Integer) and the name of the designated pdf
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
@@ -210,7 +216,7 @@ public class APImethode {
     /**
      * Method for the Frontend to update the values of a lesson registration without changing the designated pdf.
      * The id dictates which lesson registration will be changed with the input arguments.
-     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), quiz id (Integer) and achievement id (Integer)
+     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer) and achievement id (Integer)
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
@@ -261,7 +267,8 @@ public class APImethode {
             new_quiz.addQuestion(new_question);         // all generated Question objects are being gathered in one Quiz object
         }
 
-        LessonControl.setQuiz(lesson_id, new_quiz);
+        LessonControl.setQuiz(lesson_id, new_quiz);                     // Quiz in die Registry uebertragen
+        this.quiz_completion_service.addQuizCompTracker(lesson_id);     // entsprechenden Fortschrittstracker fuer das Quiz einrichten
     }
 
     /**
@@ -273,10 +280,36 @@ public class APImethode {
     public void removeQuiz(@RequestBody String[] lesson_id) {
         int target_id = Integer.parseInt(lesson_id[0]);
 
-        LessonControl.removeQuiz(target_id);
+        LessonControl.removeQuiz(target_id);                                // Quiz aus der Registry entfernen
+        this.quiz_completion_service.removeQuizCompTracker(target_id);      // entsprechenden Fortschrittstracker fuer das Quiz entfernen
     }
     
-    
+    /**
+     * Function for the Frontend to evaluate the answers given by a user to a quiz.
+     * <p>
+     * The input array must contain the id of the lesson/quiz (Integer), the id of the user giving the answers (Integer) and all the answer Strings.
+     * The function will return a boolean whether the user has successfully cleared the quiz and will automatically save the user in the corresponding quiz completion trackers 
+     * "accomplished" or "attempted" list.
+     * 
+     * @param input String array containing the lesson/quiz id (Integer), user id (Integer) and all the answers as Strings
+     * @return boolean whether the user has cleared the quiz successfully
+     * @author Tristan Slodowski
+     */
+    @PostMapping("/EvaluateQuiz")
+    public boolean evaluateQuiz(@RequestBody String[] input) {
+        if(input.length <= 2) {
+            System.err.println("[APImethode - evaluateQuiz] No or not enough arguments given. Aborting ...");
+            return false;
+        }
+        int lesson_id = Integer.parseInt(input[0]);
+        int user_id = Integer.parseInt(input[1]);
+        String[] given_answers = new String[input.length - 2];
+        for(int i = 2; i < input.length; i++) {
+            given_answers[i - 2] = input[i];
+        }
+
+        return quiz_master.validateAnswers(lesson_id, user_id, given_answers);
+    }    
 
 
     /**
