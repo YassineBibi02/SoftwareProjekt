@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginContext from '../globals/globalContext';
 import logo from '../images/logo_weiß.png'; // Adjust the path as needed
-import userIcon from '../images/user.png'; // Adjust the path as needed
+import userIcon from '../images/user_icon.png'; // Adjust the path as needed
 import logoutIcon from '../images/logout_icon.png';
 import settingsIcon from '../images/settings_icon.png';
 import { Container } from 'react-bootstrap';
@@ -29,26 +29,11 @@ const Header = () => {
         cursor: 'pointer'
     }
 
-    const homeTextStyle = {
-        /*
-        marginLeft: '40px', // Closer to the logo
-        marginTop: '40px', // Closer to the top
-        color: 'black', // Changed text color to black
+    const LoginStyle = {
         cursor: 'pointer',
-        fontWeight: 'bold',
-        fontSize: '1.7em' // Larger text size for visibility
-        */     
-    };
-
-    const LogoutStyle = {
-            marginLeft: '0px', // Closer to the logo
-            marginRight: '40px', // Closer to the logo
-            marginTop: '35px', // Closer to the top
-            color: 'black', // Changed text color to black
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            fontSize: '1.7em' // Larger text size for visibility
-        };   
+        fontSize: '2em',
+        color: 'white'
+    }
 
     const IconStyle = {
         maxWidth: '50px',
@@ -69,9 +54,16 @@ const Header = () => {
         alignItems: 'center',
     }
 
+    const LoginContainer = {
+        marginLeft: 'auto',
+        marginBottom: '30px',
+        display: 'flex',
+        height: '10px'
+    }
+
     const goToHome = () => {
             navigate('/');
-    };
+    }
 
     return (
         <div fluid style={HeaderStyle}>
@@ -89,7 +81,11 @@ const Header = () => {
                     </div>
                 </Container>
             ) : (
-                <p onClick={login} style={LogoutStyle}>Login</p>
+                <Container style={RightContainer}>
+                    <div style={LoginContainer}>
+                        <p className='mt-2' onClick={login} style={LoginStyle}>Login</p>
+                    </div>
+                </Container>
             )}
                    
         </div>
