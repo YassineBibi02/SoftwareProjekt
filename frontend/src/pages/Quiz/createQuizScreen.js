@@ -12,6 +12,8 @@ function CreateQuizScreen({setQuizData, closePopup}) {
     const currentQuestion = [question, correctAnswer, wrongAnswers];
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+    const [shouldSubmit, setShouldSubmit] = useState(false); // This is used to submit the quiz data to the parent component
+
     const FormGroupStyle = {
         border: '1px solid grey',
     }
@@ -42,6 +44,17 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         }
     }, [currentQuestionIndex, questions]);
 
+    useEffect(() => {
+        if (shouldSubmit && setQuizData) {
+            setQuizData(questions);
+            closePopup();
+            setShouldSubmit(false); // Reset the flag
+        } else if (setQuizData === undefined) {
+            console.log("setQuizData is undefined");
+        }
+        console.log("These are the questions:", questions);
+    }, [questions, setQuizData, shouldSubmit]);
+
     function addWrongAnswers() {
         const newWrongAnswer = {id: wrongAnswers.length + 1};
         setWrongAnswers([...wrongAnswers, newWrongAnswer]);
@@ -66,6 +79,7 @@ function CreateQuizScreen({setQuizData, closePopup}) {
     function handleSubmit(event) {
         event.preventDefault();
         addQuestion(currentQuestionIndex);      // Aus irgendeinem Grund wird hier erst beim 2. submit hinzugefügt
+        setShouldSubmit(true);
         if (setQuizData != undefined) {
             setQuizData(question, correctAnswer, wrongAnswers);
             closePopup();

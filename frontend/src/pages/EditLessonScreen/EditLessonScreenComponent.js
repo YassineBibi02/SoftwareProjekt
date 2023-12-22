@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
 import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-dom';
-import axios from 'axios';
+import axios, { all } from 'axios';
 import AddAchievementPopup from './AchievementAdding/AddAchievementPopup';
 import { useCookies } from 'react-cookie';
 import AddQuizPopup from './QuizAdding/AddQuizPopup';
@@ -75,7 +75,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
     });
 
 
-    const [question, setQuestion] = useState(() => {
+    const [questions, setQuestions] = useState(() => {
         if (newLesson) {
             // Handle initial state for new lesson
             return '';
@@ -85,30 +85,9 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     });
 
-    const [correctAnswer, setCorrectAnswer] = useState(() => {
-        if (newLesson) {
-            // Handle initial state for new lesson
-            return '';
-        } else {
-            // TODO Load from LessonEntry
-            return '';
-        }
-    });
 
-    const [wrongAnswers, setWrongAnswers] = useState(() => {
-        if (newLesson) {
-            // Handle initial state for new lesson
-            return [{id:1},{id:2},{id:3}];
-        } else {
-            // TODO Load from LessonEntry
-            return [{id:1},{id:2},{id:3}];
-        }
-    });
-
-    const setQuizData = (q, correct, wrong) => {
-        setQuestion(q);
-        setCorrectAnswer(correct);
-        setWrongAnswers(wrong);
+    const setQuizData = (allQuestions) => {
+        setQuestions(allQuestions);
     }
 
     
@@ -268,6 +247,13 @@ const EditLessonScreenComponent = ({newLesson}) => {
         navigate('/lessonsOverview');
     };
 
+    
+    const showQuestions = () => {
+        console.log(questions);
+        const string = JSON.stringify(questions);
+        console.log(string);
+    };
+
     const containerStyle = {
         fontSize: '20px',
         display: 'flex',
@@ -331,9 +317,12 @@ const EditLessonScreenComponent = ({newLesson}) => {
             <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
                     <Button onClick={confirm}>Bestätigen</Button>
             </div>
+            
+            <Button onClick={showQuestions}>Show Questions</Button>
         </div>
     );
 };
+
 
 export default EditLessonScreenComponent;
 
