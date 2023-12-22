@@ -66,7 +66,7 @@ const Header = () => {
     }
 
     return (
-        <div fluid style={HeaderStyle}>
+        <div style={HeaderStyle}>
             <Container>
                 <img src={logo} style={LogoStyle} onClick={goToHome} alt="logo"/>
             </Container>

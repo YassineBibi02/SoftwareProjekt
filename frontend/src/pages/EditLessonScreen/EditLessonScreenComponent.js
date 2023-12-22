@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useRef, useEffect, useState} from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
 import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-dom';
@@ -14,6 +14,14 @@ const EditLessonScreenComponent = ({newLesson}) => {
     const [cookies] = useCookies(['XSRF-TOKEN']);
     const lessonID = useParams();
     const navigate = useNavigate();
+
+    const idRef = useRef('');
+    
+
+    useEffect(() => {
+        idRef.current = newLesson ? '' : lesson.id;
+    },[]);
+
     const [initialPath, setInitialPath] = useState(() => {
         if (newLesson) {
             // Handle initial state for new lesson
@@ -85,14 +93,14 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     });
 
+    const [shouldSubmit, setShouldSubmit] = useState(false);
+
 
     const setQuizData = (allQuestions) => {
         setQuestions(allQuestions);
     }
 
-    
-    useEffect(() => {        
-        console.log("test")
+    useEffect(() => {
         fetch('/api/user', { credentials: 'include' }) // <.>
             .then(response => response.text())
             .then(body => {
@@ -111,6 +119,22 @@ const EditLessonScreenComponent = ({newLesson}) => {
             });
     });
 
+    useEffect(() => {
+        console.log("ID changed: ", idRef.current);
+        if(shouldSubmit) {
+            uploadQuiz();
+            console.log("Navigating to lessonsOverview");            
+        }
+    }, [shouldSubmit]);
+
+    const uploadQuiz = () => {
+        console.log("Uploading quiz with ID: ", idRef.current);
+        if (questions.length > 0) {
+            const convertedQuestions = convertArray(questions);
+            console.log(JSON.stringify(convertedQuestions));
+        }
+    }
+
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
         console.log("File changed")
@@ -122,31 +146,30 @@ const EditLessonScreenComponent = ({newLesson}) => {
     };
 
 
-    const createLesson = () => {
+    const createLesson = async () => {
         const lessonArray = [];
         lessonArray.push(title);
         lessonArray.push(getDifficulty());
         lessonArray.push(achievementID);
         lessonArray.push(file.name);
-        console.log(lessonArray);
-
         try {
-          fetch('/api/methode/RegisterLesson', {
-                    method: 'POST', credentials: 'include',
-                    headers: { 
-                      'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
-                      'Content-Type': 'application/json',
-                   },
-                   body: JSON.stringify(lessonArray)
-              })
-              .then(response => response.text())
-              .then(data => {
-                  console.log("Response:", data);
-                  navigate('/lessonsOverview');
-              });
-      } catch (error) {
-          console.error('Error', error);
-      }
+            const response = await fetch('/api/methode/RegisterLesson', {
+                method: 'POST', credentials: 'include',
+                headers: {
+                    'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(lessonArray),
+            });
+            const result = await response.json();
+            console.log("Success creating: ", result);
+            idRef.current = result;
+            return result;
+        } catch (error) {
+            console.error("Error2:", error);
+            console.error("Error details:", error.message, error.response);
+            return false;
+        }
     }
 
     const editLesson = ({newName}) => {
@@ -156,7 +179,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
         lessonArray.push(getDifficulty());
         lessonArray.push(achievementID);
         console.log("Editing");
-        console.log(lessonArray);
         if (newName) {
             lessonArray.push(file.name);
             try {
@@ -171,7 +193,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 .then(response => response.text())
                 .then(data => {
                     console.log("Response:", data);
-                    navigate('/lessonsOverview');
                 });
             } catch (error) {
                 console.error('Error', error);
@@ -190,15 +211,15 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 .then(response => response.text())
                 .then(data => {
                     console.log("Response:", data);
-                    navigate('/lessonsOverview');
                 });
             } catch (error) {
                 console.error('Error', error);
+                console.error("Error details:", error.message, error.response);
             }
         }
     }
 
-    // upload spricht UploadLesson des Backends an
+    // upload spricht UploadLesson des Backends an, um ein File hochzuladen
     async function upload(formData) {
         try {
             const response = await fetch('/api/methode/UploadLesson', {
@@ -213,10 +234,13 @@ const EditLessonScreenComponent = ({newLesson}) => {
             return true;
         } catch (error) {
             console.error("Error2:", error);
+            console.error("Error details:", error.message, error.response);
             return false;
         }
     }
     
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
     const confirm = async () => {
         // Handle file upload logic here
@@ -226,12 +250,15 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 if (await upload(formData)) { // PDF wird getrennt von dem Registry hochgeladen bzw registriert
                     console.log("File uploaded");
                     if (newLesson) {
-                        createLesson();
+                        //await delay(3000);
+                        console.log("Trying to create new lesson");
+                        const newID = await createLesson();
+                        idRef.current = newID;
                     } else {
                         if (fileChanged) {
-                            editLesson({ newName: true });
+                            await editLesson({ newName: true });
                         } else {
-                            editLesson();
+                            await editLesson();
                         }
                     }
                 } else {
@@ -239,19 +266,35 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 }
         } else {
             if (newLesson) {
-                createLesson();
+                await createLesson();
             } else {
                 editLesson({ newName: false });
             }
         }
-        navigate('/lessonsOverview');
+        console.log("ID: ", idRef.current)
+        setShouldSubmit(true);
     };
 
-    
+    const convertArray = (inputArray) => {
+        return inputArray.map((item) => {
+          const [question, rightAnswer, ...wrongAnswers] = item;
+          return {
+            question,
+            right_answer: rightAnswer,
+            wrong_answers: wrongAnswers,
+          };
+        });
+      };
+
     const showQuestions = () => {
-        console.log(questions);
+        //console.log(questions);
         const string = JSON.stringify(questions);
-        console.log(string);
+        //console.log(string);
+        //console.log(questions[0]);
+        console.log(idRef.current)
+        const convertedQuestions = convertArray(questions);
+        console.log(JSON.stringify(convertedQuestions));
+        //console.log("First Entry:", convertedQuestions[0]);
     };
 
     const containerStyle = {
@@ -267,17 +310,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         const difficultySelect = document.getElementById('difficulty-select');
         const selectedValue = difficultySelect.value;
         return selectedValue;
-    }
-
-    const addAchievement = () => {
-        console.log("Add achievement pressed");
-    }
-
-    const createQuiz = () => {
-        console.log("Create quiz pressed");
-    }
-
-    
+    }   
     
     
     return (
@@ -319,6 +352,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
             </div>
             
             <Button onClick={showQuestions}>Show Questions</Button>
+            <Button onClick={() => navigate('/lessonsOverview')}>Back</Button>
         </div>
     );
 };

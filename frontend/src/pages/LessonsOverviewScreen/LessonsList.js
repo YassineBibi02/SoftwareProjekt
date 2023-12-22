@@ -96,7 +96,7 @@ const LessonsList = () => {
         return (
             <div>              
                 <h1 style={{marginLeft: '30px', marginBottom: '30px', fontWeight: 'bold'}}>Schulungen</h1>
-                <Container style={TableStyle} fluid="true">
+                <Container style={TableStyle} fluid>
                     <Row>
                         <Col style={HeaderStyle} lg={2}>Schiwerigkeit</Col>
                         <Col style={HeaderStyle} lg={4}>Titel</Col>
@@ -132,7 +132,7 @@ const LessonsList = () => {
         return (
             <div>              
                 <h1 style={{marginLeft: '30px', marginBottom: '30px', fontWeight: 'bold'}}>Schulungen</h1>
-                <Container style={TableStyle} fluid="true">
+                <Container style={TableStyle} fluid>
                     <Row>
                         <Col style={HeaderStyle} lg={2}>Difficulty</Col>
                         <Col style={HeaderStyle} lg={4}>Title</Col>

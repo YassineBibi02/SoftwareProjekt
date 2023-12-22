@@ -44,7 +44,7 @@ const UserList = ({ onUserCardSelect }) => {
     return (
         <div>
             <div style={ListStyle}>
-                <Container fluid="true" style={{ height: '600px', width: '100%'}}>
+                <Container fluid style={{ height: '600px', width: '100%'}}>
                     <Row>
                         {loadedUsers.map((user, index) => (
                             <Col key={index} xs={6} sm={6} md={6} lg={2} style={{marginBottom: '5px'}}>
