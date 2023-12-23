@@ -6,6 +6,7 @@ import { Button } from 'react-bootstrap';
 import SelectedUsers from './SelectedUsers';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import Form from "react-bootstrap/Form";
 
 const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -13,11 +14,12 @@ const SendMailScreenComponent = () => {
     const navigate = useNavigate();
 
 
-//THE LOGIN BLOCK
     const [cookies] = useCookies(['XSRF-TOKEN']); // Calls the CSRF token. VERY IMPORTANT
-    const [user, setUser] = useState(undefined);
+    const [user, setUser] = useState(undefined);    
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
-
+//THE LOGIN BLOCK
     useEffect(() => {
         fetch('api/user', { credentials: 'include' }) // <.>
         .then(response => response.text())
@@ -87,25 +89,34 @@ const SendMailScreenComponent = () => {
     };
 
     const login = () => {
-    navigate('/login');
+        navigate('/login');
     }
 
+    const showDates = () => {
+        console.log(startDate);
+        console.log(endDate);
+    }
 
 const Body = user ?
          ////// noramle page
         <div>
-                    <Header />
-                    <div style={DateContainerStyle}>
-                        <DateSetter title={"Start (proto)"} />
-                        <DateSetter title={"Ende (proto)"} />
-                    </div>
-                    <div>
-                        <UserList onUserCardSelect={handleUserSelectionChange} />
-                        <SelectedUsers id="SelectedUsers" usernames={selectedUsers} />
-                    </div>
+                <Header />
+                <div style={DateContainerStyle}>
+                    <DateSetter title={"Start (proto)"} setDateParent={setStartDate}/>
+                    <DateSetter title={"Ende (proto)"} setDateParent={setEndDate}/>
+                </div>
+                <div>
+                    <UserList onUserCardSelect={handleUserSelectionChange} />
+                    <SelectedUsers id="SelectedUsers" usernames={selectedUsers} />
+                </div>
+                <div>
                     <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
                         Bestätigen
                     </Button>
+                    <Button variant="primary" size="lg" onClick={showDates} >
+                        See Dates
+                    </Button>
+                </div>
         </div>:
 
         //// sicherheite , damit man nicht sieht was er nicht sehen soll BIS WIR EINE BESSERE LöSUNG HABEN

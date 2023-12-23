@@ -1,7 +1,11 @@
 import React from 'react';
 import Form from "react-bootstrap/Form";
 import { useState } from "react";
-const DateSetter = ({ title }) => { 
+
+const DateSetter = ({ title, setDateParent }) => { 
+
+    const [date, setDate] = useState(new Date());
+
     const ContainerStyle = {
         margin: '20px',
     };
@@ -9,7 +13,11 @@ const DateSetter = ({ title }) => {
     const TextStyle = {
         fontSize: '1.5em',
     };
-    const [date, setDate] = useState(new Date());
+
+    const updateDate = (e) => {
+        setDate(e);
+        setDateParent(e);
+    };
 
     return (
         <div style={ContainerStyle}>
@@ -20,7 +28,7 @@ const DateSetter = ({ title }) => {
                 name="datepic"
                 placeholder="DateRange"
                 value={date}
-                onChange={(e) => setDate(e.target.value)}
+                onChange={(e) => updateDate(e.target.value)}
                 width={100}
               />
         </div>
