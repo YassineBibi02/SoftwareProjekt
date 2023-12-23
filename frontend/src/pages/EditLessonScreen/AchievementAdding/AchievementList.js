@@ -17,13 +17,12 @@ const AchievementList = ({onSelection}) => {
             .then(body => {
                 setAchievements(JSON.parse(body));
             });
-        console.log("test1")
     }, []);
 
     return (
-        <div style={{ display: 'flex' }} class="A"> {/* Add flexbox style */}
+        <div style={{ display: 'flex' }}>
             {achievements.map(achievement => (
-                <AchievementEntry achievementData={achievement} onSelection={onSelection} class="AchievementEntry"/>
+                <AchievementEntry key={achievement.id} achievementData={achievement} onSelection={onSelection}/>
             ))}
         </div>
     );

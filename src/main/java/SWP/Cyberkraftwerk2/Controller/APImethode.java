@@ -156,9 +156,11 @@ public class APImethode {
         int difficulty = Integer.parseInt(input[1]);
         int achievement_id = Integer.parseInt(input[2]);
         String pdf_name = input[3];
-        return LessonControl.addLessonEntry(name, difficulty, achievement_id, pdf_name);
+        int res = LessonControl.addLessonEntry(name, difficulty, achievement_id, pdf_name);
+        System.out.println(res);
+        return res;
     }
-
+cd
     /**
      * Method for the Frontend to delete the registration and corresponding pdf file of a lesson.
      * @param input String array with the id of the lesson to be deleted

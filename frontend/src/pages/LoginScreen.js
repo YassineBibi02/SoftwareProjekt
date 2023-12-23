@@ -72,7 +72,7 @@ const {isLoggedIn, setLoggedIn , userV , setUserV} = useContext(LoginContext);
   return (
       <div>
         <Header/>
-        <Container fluid>
+        <Container fluid="true">
           {message}
           {button}
         </Container>
