@@ -5,7 +5,7 @@ function CreateQuizScreen({setQuizData, closePopup}) {
 
     const [question, setQuestion] = useState("");
     const [correctAnswer, setCorrectAnswer] = useState("");
-    const [wrongAnswers, setWrongAnswers] = useState([{id:1,},{id:2},{id:3}]);
+    const [wrongAnswers, setWrongAnswers] = useState([{id:0, value:""},{id:1, value:""},{id:2, value:""}]);
 
     const [questions, setQuestions] = useState([]);     // Here all the questions are stored
 
@@ -40,7 +40,7 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         } else {
             setQuestion("");
             setCorrectAnswer("");
-            setWrongAnswers([{ id: 1 }, { id: 2 }, { id: 3 }]);
+            setWrongAnswers([{ id: 0 , value:""}, { id: 1 , value:""}, { id: 2 , value:""}]);
         }
     }, [currentQuestionIndex, questions]);
 
@@ -56,7 +56,7 @@ function CreateQuizScreen({setQuizData, closePopup}) {
     }, [questions, setQuizData, shouldSubmit]);
 
     function addWrongAnswers() {
-        const newWrongAnswer = {id: wrongAnswers.length + 1};
+        const newWrongAnswer = {id: wrongAnswers.length + 1, value:""};
         setWrongAnswers([...wrongAnswers, newWrongAnswer]);
     }
 
@@ -66,14 +66,19 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         setWrongAnswers(updatedWrongAnswers);
     }
 
-    function handleInputChange(event) {
+    function handleInputChange(event, id) {
         event.preventDefault();
         const {name, value} = event.target;
+        
         if (name === "Question") {
             setQuestion(value);
         } else if (name === "CorrectAnswer") {
             setCorrectAnswer(value);
-        }
+        } else if (name === "WrongAnswer") {
+            const updatedWrongAnswers = [...wrongAnswers];
+            updatedWrongAnswers[id].value = value;
+            setWrongAnswers(updatedWrongAnswers);
+        }   
     }
 
     function handleSubmit(event) {
@@ -106,7 +111,7 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         } else {
             setQuestion("");
             setCorrectAnswer("");
-            setWrongAnswers([{id:1,},{id:2},{id:3}]);
+            setWrongAnswers([{id:1, value:""},{id:2, value:""},{id:3, value:""}]);
         }
     }
     
@@ -144,10 +149,16 @@ function CreateQuizScreen({setQuizData, closePopup}) {
                         />
                     </Form.Group>
                     {wrongAnswers.map((wrongAnswer, index) => (
-                        <div key={wrongAnswer.id}>
-                            <Form.Group className="mb-3" controlId={`WrongAnswer${index + 1}`}>
+                        <div key={index}>
+                            <Form.Group className="mb-3">
                                 <Form.Label style={FormLabelStyle}>Falsche Antwort {index + 1}</Form.Label>
-                                <Form.Control style={FormGroupStyle} name={`WrongAnswer${index + 1}`} />
+                                <Form.Control 
+                                    style={FormGroupStyle} 
+                                    name="WrongAnswer"
+                                    id={index}
+                                    value={wrongAnswers[index].value}
+                                    onChange={(event) => handleInputChange(event, index)}
+                                />
                             </Form.Group>
                         </div>
                     ))}
