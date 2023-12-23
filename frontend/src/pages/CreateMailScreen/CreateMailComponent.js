@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Header from '../../components/Header';
 import { Form, Button, Container} from 'react-bootstrap';
+import { useCookies } from 'react-cookie';
 
 function CreateMailComponent() {
 
@@ -9,6 +10,8 @@ function CreateMailComponent() {
     const [level, setLevel] = useState(''); // The level of the mail with its update function
 
     const mail = [];    // The mail, initially empty
+
+    const [cookies] = useCookies(['XSRF-TOKEN']);
 
     // The style of a text field
     const FormGroupStyle = {
@@ -43,13 +46,32 @@ function CreateMailComponent() {
     function handleSubmit(event) {
         event.preventDefault();
         createMail();
+
+        try {
+            fetch('/api/methode/NewMail', {
+                      method: 'POST', credentials: 'include',
+                      headers: { 
+                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                        'Content-Type': 'application/json',
+                     },
+                     body: JSON.stringify(mail)
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log("Response:", data);
+                });
+        } catch (error) {
+            console.error('Error', error);
+        }
+
         console.log("This is the mail:", mail);
+
     }
 
     // Push all the variables into the mail array
     function createMail() {
-        mail.push(subject);
         mail.push(text);
+        mail.push(subject);
         mail.push(level);
     }
     
@@ -59,16 +81,17 @@ function CreateMailComponent() {
             <Header/>
             <Container>
                 <Form>
-                    <Form.Group className="mb-3" controlId="Subject">
+                    <Form.Group className="mb-3" controlId="SubjectInput">
                         <Form.Label style={FormLabelStyle}>Betreff</Form.Label>
-                        <Form.Control 
+                        <Form.Control
+                            placeholder="Betreff"
                             style={FormGroupStyle} 
                             type="subject"
                             name="Subject"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                    <Form.Group className="mb-3" controlId="TextInput">
                         <Form.Label style={FormLabelStyle}>Textbereich</Form.Label>
                         <Form.Control 
                             style={FormGroupStyle} 
