@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState} from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
@@ -92,6 +93,8 @@ const EditLessonScreenComponent = ({newLesson}) => {
             return '';
         }
     });
+
+    const isButtonDisabled = !difficulty || (!file && newLesson) || !questions || !achievementID || !title;
 
     const [shouldSubmit, setShouldSubmit] = useState(false);
 
@@ -348,7 +351,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 
             </div>
             <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
-                    <Button onClick={confirm}>Bestätigen</Button>
+                    <Button onClick={confirm} disabled={isButtonDisabled}>Bestätigen</Button>
             </div>
             
             <Button onClick={showQuestions}>Show Questions</Button>
@@ -356,6 +359,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         </div>
     );
 };
+
 
 
 export default EditLessonScreenComponent;

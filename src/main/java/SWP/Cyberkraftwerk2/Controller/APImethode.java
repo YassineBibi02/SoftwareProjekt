@@ -159,7 +159,7 @@ public class APImethode {
         System.out.println(res);
         return res;
     }
-cd
+
     /**
      * Method for the Frontend to delete the registration and corresponding pdf file of a lesson.
      * @param input String array with the id of the lesson to be deleted
