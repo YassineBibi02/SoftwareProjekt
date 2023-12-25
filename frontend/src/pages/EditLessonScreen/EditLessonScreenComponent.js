@@ -7,6 +7,8 @@ import axios, { all } from 'axios';
 import AddAchievementPopup from './AchievementAdding/AddAchievementPopup';
 import { useCookies } from 'react-cookie';
 import AddQuizPopup from './QuizAdding/AddQuizPopup';
+import { FaCheck } from "react-icons/fa";
+import { RxCross1 } from "react-icons/rx";
 
 const EditLessonScreenComponent = ({newLesson}) => {
 
@@ -94,10 +96,15 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     });
 
+    const [errorMessageText, setErrorMessageText] = useState('');  
+
     const isButtonDisabled = !difficulty || (!file && newLesson) || !questions || !achievementID || !title;
 
     const [shouldSubmit, setShouldSubmit] = useState(false);
 
+    const showErrorMessages = ({text}) => {
+        setErrorMessageText(text);
+    }
 
     const setQuizData = (allQuestions) => {
         setQuestions(allQuestions);
@@ -136,6 +143,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
             const convertedQuestions = convertArray(questions);
             console.log(JSON.stringify(convertedQuestions));
         }
+        //Upload logic here
     }
 
     const handleFileChange = (event) => {
@@ -171,6 +179,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         } catch (error) {
             console.error("Error2:", error);
             console.error("Error details:", error.message, error.response);
+            showErrorMessages({text: "Error creating Lesson"});
             return false;
         }
     }
@@ -199,6 +208,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 });
             } catch (error) {
                 console.error('Error', error);
+                showErrorMessages({text: "Error editing Lesson"});
             }
 
         } else {
@@ -218,6 +228,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
             } catch (error) {
                 console.error('Error', error);
                 console.error("Error details:", error.message, error.response);
+                showErrorMessages({text: "Error editing Lesson"});
             }
         }
     }
@@ -238,6 +249,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         } catch (error) {
             console.error("Error2:", error);
             console.error("Error details:", error.message, error.response);
+            showErrorMessages({text: "Error uploading Lesson file"});
             return false;
         }
     }
@@ -315,7 +327,19 @@ const EditLessonScreenComponent = ({newLesson}) => {
         return selectedValue;
     }   
     
-    
+    const QuizCheckmark = () => {
+        if (questions.length > 0) {
+            return <FaCheck color='green'/>
+        } else {
+            return <RxCross1 color='red'/>
+        }
+    }
+
+
+
+
+
+
     return (
         <div>            
             <Header/>
@@ -341,6 +365,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
                 <div style={containerStyle}>
                     <p>Quiz:&nbsp;&nbsp;</p>
+                    <QuizCheckmark/>
                     <AddQuizPopup setQuizData={setQuizData}/>                
                 </div>
 
@@ -350,12 +375,17 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 </div>
                 
             </div>
-            <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
+            <div style={{ position: 'fixed', bottom: '50px', right: '20px' }}>
                     <Button onClick={confirm} disabled={isButtonDisabled}>Bestätigen</Button>
             </div>
             
             <Button onClick={showQuestions}>Show Questions</Button>
             <Button onClick={() => navigate('/lessonsOverview')}>Back</Button>
+            {errorMessageText && (
+                <div style={{ backgroundColor: 'red', padding: '10px', color: 'white', position: 'fixed', bottom: 0, left: 0, width: '100%' }}>
+                    {errorMessageText}
+                </div>
+            )}
         </div>
     );
 };
