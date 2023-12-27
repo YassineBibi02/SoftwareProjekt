@@ -256,22 +256,28 @@ public class APImethode {
     // Notiz ans Frontend: registerLesson() gibt bei der Registrierung einer Lesson die lesson_id ans Frontend zurück; diese muss daraufhin hier für addQuiz() verwendet werden
     @PostMapping("/AddQuiz")
     public void addQuiz(@RequestBody String[] input) {
+        System.out.println(Arrays.toString(input));
         int lesson_id = Integer.parseInt(input[0]);
         Quiz new_quiz = new Quiz(lesson_id);
-        for(int question_nmbr = 1; question_nmbr < input.length; question_nmbr++) {     // per provided question JSON a Question object gets created
-            JSONObject q = new JSONObject(input[question_nmbr]);
+        int number_of_qs = Integer.parseInt(input[1]);
+        int index = 2;
+        for (int current_q = 1; current_q <= number_of_qs; current_q++) {
             Question new_question = new Question();
-            new_question.setQuestion((String) q.get("question"));
-            new_question.setRightAnswer((String) q.get("right_answer"));
-            for(Object answer : (JSONArray) q.get("wrong_answers")) {
-                new_question.addWrongAnswer((String) answer);
+            new_question.setQuestion(input[index]);
+            index++;
+            int number_of_wrong_as = Integer.parseInt(input[index]);
+            index++;
+            new_question.setRightAnswer(input[index]);
+            index++;
+            for (int current_a = 1; current_a <= number_of_wrong_as; current_a++) {
+                new_question.addWrongAnswer(input[index]);
+                index++;
             }
+            new_quiz.addQuestion(new_question);
 
-            new_quiz.addQuestion(new_question);         // all generated Question objects are being gathered in one Quiz object
         }
-
-        LessonControl.setQuiz(lesson_id, new_quiz);                     // Quiz in die Registry uebertragen
-        this.quiz_completion_service.addQuizCompTracker(lesson_id);     // entsprechenden Fortschrittstracker fuer das Quiz einrichten
+        LessonControl.setQuiz(lesson_id, new_quiz);
+        //this.quiz_completion_service.addQuizCompTracker(lesson_id);
     }
 
     /**

@@ -85,6 +85,16 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     });
 
+    const [quizChanged, setQuizChanged] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return true;
+        } else {
+            // Setup Variables with lesson data
+            return false;
+        }
+    });
+
 
     const [questions, setQuestions] = useState(() => {
         if (newLesson) {
@@ -108,6 +118,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
     const setQuizData = (allQuestions) => {
         setQuestions(allQuestions);
+        setQuizChanged(true);
     }
 
     useEffect(() => {
@@ -140,10 +151,29 @@ const EditLessonScreenComponent = ({newLesson}) => {
     const uploadQuiz = () => {
         console.log("Uploading quiz with ID: ", idRef.current);
         if (questions.length > 0) {
-            const convertedQuestions = convertArray(questions);
+            const convertedQuestions = getQuizString(questions);
             console.log(JSON.stringify(convertedQuestions));
+        
+            try {
+                fetch('/api/methode/AddQuiz', {
+                    method: 'POST', credentials: 'include',
+                    headers: {
+                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(convertedQuestions),
+                })
+            } catch (error) {
+                console.error("Error2:", error);
+                console.error("Error details:", error.message, error.response);
+                showErrorMessages({text: "Error uploading Quiz"});
+                return false;
+            }
+        } else {
+            showErrorMessages({text: "No Quiz found"});
+            return false;
         }
-        //Upload logic here
+        return true;
     }
 
     const handleFileChange = (event) => {
@@ -290,24 +320,29 @@ const EditLessonScreenComponent = ({newLesson}) => {
         setShouldSubmit(true);
     };
 
-    const convertArray = (inputArray) => {
-        return inputArray.map((item) => {
-          const [question, rightAnswer, ...wrongAnswers] = item;
-          return {
-            question,
-            right_answer: rightAnswer,
-            wrong_answers: wrongAnswers,
-          };
+    const getQuizString = (inputArray) => {
+        const result = [];
+        result.push(idRef.current);
+        result.push(questions.length);
+
+        inputArray.forEach((item) => {
+            const [question, rightAnswer, ...wrongAnswers] = item;
+            result.push(question);
+            result.push(wrongAnswers[0].length);
+            result.push(rightAnswer);
+            console.log("Wrong Answers: ", wrongAnswers);
+            wrongAnswers[0].forEach((wrongAnswer) => {
+                console.log("Wrong Answer: ", wrongAnswer);
+                result.push(wrongAnswer.value);
+            });
         });
-      };
+
+        return result;
+    };
 
     const showQuestions = () => {
-        //console.log(questions);
-        const string = JSON.stringify(questions);
-        //console.log(string);
-        //console.log(questions[0]);
         console.log(idRef.current)
-        const convertedQuestions = convertArray(questions);
+        const convertedQuestions = getQuizString(questions);
         console.log(JSON.stringify(convertedQuestions));
         //console.log("First Entry:", convertedQuestions[0]);
     };
@@ -334,11 +369,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
             return <RxCross1 color='red'/>
         }
     }
-
-
-
-
-
 
     return (
         <div>            
@@ -381,6 +411,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
             
             <Button onClick={showQuestions}>Show Questions</Button>
             <Button onClick={() => navigate('/lessonsOverview')}>Back</Button>
+            <Button onClick={uploadQuiz}>Try Upload</Button>
             {errorMessageText && (
                 <div style={{ backgroundColor: 'red', padding: '10px', color: 'white', position: 'fixed', bottom: 0, left: 0, width: '100%' }}>
                     {errorMessageText}
