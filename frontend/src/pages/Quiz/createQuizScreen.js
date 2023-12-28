@@ -3,16 +3,19 @@ import { Form, Button, Container} from 'react-bootstrap';
 
 function CreateQuizScreen({setQuizData, closePopup}) {
 
-    const [question, setQuestion] = useState("");
-    const [correctAnswer, setCorrectAnswer] = useState("");
-    const [wrongAnswers, setWrongAnswers] = useState([{id:0, value:""},{id:1, value:""},{id:2, value:""}]);
+    const [question, setQuestion] = useState("");   // the question of a question, initially empty
+    const [correctAnswer, setCorrectAnswer] = useState(""); // the correct answer of the question, initially empty
+    const [wrongAnswers, setWrongAnswers] = useState([{id:0, value:""},{id:1, value:""},{id:2, value:""}]); // the wrong answers of the question, initially with 3 wrong answers and all empty
 
     const [questions, setQuestions] = useState([]);     // Here all the questions are stored
 
-    const currentQuestion = [question, correctAnswer, wrongAnswers];
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const currentQuestion = [question, correctAnswer, wrongAnswers];    // the question the user currently sees on the screen
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);    // the index of the current question
 
     const [shouldSubmit, setShouldSubmit] = useState(false); // This is used to submit the quiz data to the parent component
+
+    const maxQuestions = 10;    // maximum number of questions
+    const maxWrongAnswers = 6;  // maximum number of wrong answers
 
     const FormGroupStyle = {
         border: '1px solid grey',
@@ -28,12 +31,9 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         borderColor: 'grey'
     }
 
+    // Use "useEffect", so the updates are not asynchronised
     useEffect(() => {
-        console.log("index:", currentQuestionIndex);
-    }, [currentQuestionIndex]);
-
-    useEffect(() => {
-        if (currentQuestionIndex < questions.length) {
+        if (currentQuestionIndex < questions.length && currentQuestionIndex >= 0) {
             setQuestion(questions[currentQuestionIndex][0]);
             setCorrectAnswer(questions[currentQuestionIndex][1]);
             setWrongAnswers(questions[currentQuestionIndex][2]);
@@ -55,17 +55,23 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         console.log("These are the questions:", questions);
     }, [questions, setQuizData, shouldSubmit]);
 
+    // Adds a wrong answer field
     function addWrongAnswers() {
-        const newWrongAnswer = {id: wrongAnswers.length + 1, value:""};
+        const newWrongAnswer = {id: wrongAnswers.length, value:""};
         setWrongAnswers([...wrongAnswers, newWrongAnswer]);
     }
 
+    // Deletes a wrong answer field
     function deleteWrongAnswers() {
-        const id = wrongAnswers.length;
+        const id = wrongAnswers.length - 1;
+        for (var i = 0; i < wrongAnswers.length; i++) {
+            console.log(wrongAnswers[i].id);
+        }
         const updatedWrongAnswers = wrongAnswers.filter(answer => answer.id !== id);
         setWrongAnswers(updatedWrongAnswers);
     }
 
+    // Directly updates the values with the new inputs from user
     function handleInputChange(event, id) {
         event.preventDefault();
         const {name, value} = event.target;
@@ -81,9 +87,10 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         }   
     }
 
+    // Submits the quiz
     function handleSubmit(event) {
         event.preventDefault();
-        addQuestion(currentQuestionIndex);      // Aus irgendeinem Grund wird hier erst beim 2. submit hinzugefügt
+        addQuestion(currentQuestionIndex);
         setShouldSubmit(true);
         if (setQuizData != undefined) {
             setQuizData(question, correctAnswer, wrongAnswers);
@@ -94,12 +101,14 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         console.log("These are the questions:", questions);
     }
 
+    // Adds a new question
     function addQuestion(index) {
         if (index === questions.length) {
             setQuestions([...questions, currentQuestion]);
         }
     }
-      
+    
+    // Jumps to next question
     function nextQuestion() {
         const index = currentQuestionIndex;
         addQuestion(index);
@@ -115,20 +124,28 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         }
     }
     
+    // Jumps to previous question
     function prevQuestion() {
-        addQuestion(currentQuestionIndex);
-        const index = currentQuestionIndex - 1;
-        setCurrentQuestionIndex(index);
-        if (index >= 0 && index < questions.length) {
-            setQuestion(questions[index][0]);
-            setCorrectAnswer(questions[index][1]);
-            setWrongAnswers(questions[index][2]);
+        if (currentQuestionIndex >= 0) {
+            addQuestion(currentQuestionIndex);
+            const index = currentQuestionIndex - 1;
+            setCurrentQuestionIndex(index);
+            if (index >= 0 && index < questions.length) {
+                setQuestion(questions[index][0]);
+                setCorrectAnswer(questions[index][1]);
+                setWrongAnswers(questions[index][2]);
+            }
         }
     }
 
     return (
         <div>
             <Container>
+                <div className="mt-3 d-flex justify-content-center" style={{fontSize:'2em'}}>
+                    <p>
+                        Frage {currentQuestionIndex + 1}
+                    </p>
+                </div>
                 <Form>
                     <Form.Group className="mb-3" controlId="Question">
                         <Form.Label style={FormLabelStyle}>Frage</Form.Label>
@@ -156,18 +173,50 @@ function CreateQuizScreen({setQuizData, closePopup}) {
                                     style={FormGroupStyle} 
                                     name="WrongAnswer"
                                     id={index}
-                                    value={wrongAnswers[index].value}
+                                    value={wrongAnswer.value}
                                     onChange={(event) => handleInputChange(event, index)}
                                 />
                             </Form.Group>
                         </div>
                     ))}
-                    <Button style={ButtonStyle} className="mt-3" onClick={deleteWrongAnswers}>-</Button>
-                    <Button style={ButtonStyle} className="mt-3" onClick={addWrongAnswers}>+</Button>
+                    <Button 
+                        style={ButtonStyle} 
+                        className="mt-3" 
+                        onClick={deleteWrongAnswers}
+                        disabled={wrongAnswers.length === 1}
+                        >
+                            -
+                    </Button>
+                    <Button 
+                        style={ButtonStyle} 
+                        className="mt-3" 
+                        onClick={addWrongAnswers}
+                        disabled={wrongAnswers.length === maxWrongAnswers}
+                        >
+                            +
+                    </Button>
                 <div className="d-flex justify-content-end">
-                    <Button style={{...ButtonStyle, backgroundColor:'#ec6608'}} className="mt-3" onClick={prevQuestion}>Vorherige Frage</Button>
-                    <Button style={{...ButtonStyle, backgroundColor:'#ec6608'}} className="mt-3" onClick={nextQuestion}>Nächste Frage</Button>
-                    <Button style={{...ButtonStyle, backgroundColor:'#ec6608'}} className="mt-3" onClick={handleSubmit}>Quiz Hinzufügen</Button>
+                    <Button 
+                        style={{...ButtonStyle, backgroundColor:'#ec6608'}} 
+                        className="mt-3" onClick={prevQuestion}
+                        disabled={currentQuestionIndex === 0}
+                        >
+                            Vorherige Frage
+                    </Button>
+                    <Button 
+                        style={{...ButtonStyle, backgroundColor:'#ec6608'}} 
+                        className="mt-3" onClick={nextQuestion} 
+                        disabled={currentQuestionIndex === maxQuestions - 1}
+                        >
+                            Nächste Frage
+                    </Button>
+                    <Button 
+                        style={{...ButtonStyle, backgroundColor:'green'}} 
+                        className="mt-3" 
+                        onClick={handleSubmit}
+                        >
+                            Quiz Hinzufügen
+                    </Button>
                 </div>
                 </Form>
             </Container>
