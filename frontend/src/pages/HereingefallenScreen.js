@@ -4,13 +4,9 @@ import gifImage from "./../images/its_a_trap.gif";
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function HereingefallenScreen() {
-
-    const videos = [
-        {title: "Was ist Phishing?", url:"https://www.youtube.com/embed/DPjb0YWQXyo?si=BXq2RN6Frmy_7y21"},
-        {title: "Wie erkennt man Phishing?", url:"https://www.youtube.com/embed/XgF42Jb8jxo?si=u9BJL4M46INHLGNa"},
-    ];
 
     const FontStyle = {
         color: '#333',
@@ -96,6 +92,18 @@ function HereingefallenScreen() {
         margin: 'auto'
     }
 
+    const LinkStyle = {
+        fontSize: '1.5em',
+        display: 'inline-block',
+        textDecoration: 'underline',
+        color: '#ec6608'
+    }
+
+    const videos = [
+        {title: "Was ist Phishing?", url:"https://www.youtube.com/embed/DPjb0YWQXyo?si=BXq2RN6Frmy_7y21"},
+        {title: "Wie erkennt man Phishing?", url:"https://www.youtube.com/embed/XgF42Jb8jxo?si=u9BJL4M46INHLGNa"},
+    ];
+
     const [username, setUsername] = useState('');                           // State Variable um den Usernamen des Nutzers uebernehmen zu koennen
     const queryParams = new URLSearchParams(window.location.search);
     var user_payload = [queryParams.get("UID"), queryParams.get("MID")];    // Auslesen der Parameter in der URL
@@ -149,9 +157,11 @@ function HereingefallenScreen() {
                 </ul>
                 <p style={{...FontStyle, ...MarginTop}}>Um dazu mehr zu erfahren, schau dir eines der unteren Videos an.</p>
                 <p style={{...FontStyle}}>Vergiss auch nicht unsere zahlreichen Schulungen anzuschauen und dein Wissen mit den dazugehörigen Quizzes zu testen!</p>
-                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley" target="_blank" rel="noopener noreferrer">
-                    Zu den Schulungen
-                </a>
+                <div>
+                    <Link style={LinkStyle} to="/lessonsOverview">
+                            Zu den Schulungen
+                    </Link>
+                </div>
             </div>
             <div style={container3}>
                 {videos.map((video, index) => (
