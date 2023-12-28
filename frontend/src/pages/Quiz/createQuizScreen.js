@@ -64,9 +64,6 @@ function CreateQuizScreen({setQuizData, closePopup}) {
     // Deletes a wrong answer field
     function deleteWrongAnswers() {
         const id = wrongAnswers.length - 1;
-        for (var i = 0; i < wrongAnswers.length; i++) {
-            console.log(wrongAnswers[i].id);
-        }
         const updatedWrongAnswers = wrongAnswers.filter(answer => answer.id !== id);
         setWrongAnswers(updatedWrongAnswers);
     }
