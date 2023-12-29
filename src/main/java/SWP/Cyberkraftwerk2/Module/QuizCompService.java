@@ -1,5 +1,7 @@
 package SWP.Cyberkraftwerk2.Module;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -201,6 +203,64 @@ public class QuizCompService {
         }
 
         return targeted_qc.getAccomplishedIds();
+    }
+
+    /**
+     * Method to get a list of the attempted quizzes of a specific user.
+     * <p> The returned List<Integer> contains the ids of the lessons/quizzes the specified user has attempted.
+     * The List is sorted from lowest to highest.
+     * @param user_id Integer id of the user
+     * @return List<Integer> containing the quiz/lesson ids the user has attempted
+     */
+    public List<Integer> checkForAttempted(int user_id) {
+        List<QuizCompletion> qcs = this.qc_repo.findAll();              // alle Tracker abrufen
+        List<Integer> attempted_quizzes = new ArrayList<Integer>();
+        for(QuizCompletion qc : qcs) {
+            List<Integer> attempted_users = qc.getAttemptedList();
+            if(attempted_users.contains(user_id)) {                     // befindet sich der User in der attempted-Liste des Trackers, ID des Trackers aufnehmen
+                attempted_quizzes.add(qc.getID());
+            }
+        }
+        Collections.sort(attempted_quizzes);
+
+        return attempted_quizzes;
+    }
+
+    /**
+     * Method to get a list of the accomplished quizzes of a specific user.
+     * <p> The returned List<Integer> contains the ids of the lessons/quizzes the specified user has successfully accomplished. 
+     * The List is sorted from lowest to highest.
+     * @param user_id Integer ids of the user
+     * @return List<Integer> containing the quiz/lesson ids the user has successfully accomplished
+     */
+    public List<Integer> checkForAccomplished(int user_id) {
+        List<QuizCompletion> qcs = this.qc_repo.findAll();              // alle Tracker abrufen
+        List<Integer> accomplished_quizzes = new ArrayList<Integer>();
+        for(QuizCompletion qc : qcs) {
+            List<Integer> accomplished_users = qc.getAccomplishedList();
+            if(accomplished_users.contains(user_id)) {                  // befindet sich der User in der accomplished-Liste des Trackers, ID des Trackers aufnehmen
+                accomplished_quizzes.add(qc.getID());
+            }
+        }
+        Collections.sort(accomplished_quizzes);
+
+        return accomplished_quizzes;
+    }
+
+    /**
+     * Method to get a list of the ids of all registered QuizCompletion trackers.
+     * The List is sorted from lowest to highest.
+     * @return List<Integer> with the ids of all QuizCompletion trackers
+     */
+    public List<Integer> getAllQCIds() {
+        List<QuizCompletion> qcs = this.qc_repo.findAll();  // alle Tracker abrufen
+        List<Integer> qc_ids = new ArrayList<Integer>();
+        for(QuizCompletion qc : qcs) {
+            qc_ids.add(qc.getID());                         // ID der Tracker extrahieren und in eine neue Liste schreiben
+        }
+        Collections.sort(qc_ids);
+
+        return qc_ids;
     }
     
 }

@@ -1,6 +1,9 @@
 package SWP.Cyberkraftwerk2.Lessons;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 import org.json.JSONObject;
 
 import SWP.Cyberkraftwerk2.Module.QuizCompService;
@@ -96,12 +99,53 @@ public class QuizMaster {
         }
 
         User targeted_user = this.user_repo.findByid(user_id);
-        if(right_answer_counter >= question_count / 2) {
-            this.qc_service.addAccomplishedUser(user_id, targeted_user);    // ist mehr als die Hälfte richtig, User der accomplished-Liste hinzufügen
-            return true;
-        } else {
-            this.qc_service.addAttemptedUser(user_id, targeted_user);       // ist weniger als die Hälfte richtig, User der attempted-Liste hinzufügen
+        if(targeted_user == null) {
+            System.err.println("[QuizMaster - validateAnswer] Given user id returned no registered user. Aborting ...");
             return false;
         }
+        if(right_answer_counter >= question_count / 2) {
+            this.qc_service.addAccomplishedUser(lesson_id, targeted_user);    // ist mehr als oder genau die Hälfte richtig, User der accomplished-Liste hinzufügen
+            return true;
+        } else {
+            this.qc_service.addAttemptedUser(lesson_id, targeted_user);       // ist weniger als die Hälfte richtig, User der attempted-Liste hinzufügen
+            return false;
+        }
+    }
+
+    /**
+     * Function to compile an overview of a users progression over all the registered quizzes.
+     * <p> The funtion only needs the email of the user as an argument and returns a JSON structure representing the progression of the user.
+     * <p> Inside the JSON structure are Key-Value-Pairs using the lesson/quiz ids as keys and containing either a -1, 0 or 1 as values.
+     * A negative value of -1 means the user hasn't interacted with this quiz as of yet, 0 means the user has tried but failed the quiz and a value of 1 means the user passed the quiz.
+     * <p>  Example: <code> {"1": 1, "2": 1, "3": 0, "4": -1, "5": -1} </code>
+     * <p> Returns an empty string if the user couldn't be found in the databank.
+     * @param user_mail String of the target users email address
+     * @return JSON formatted String of the users quiz progression
+     */
+    public String getProgressionOf(String user_mail) {
+        JSONObject progression_json = new JSONObject();
+        User target_user = this.user_repo.findByEmail(user_mail);       // User anhand der Mail aus der Datenbank abrufen (falls moeglich)
+        if(target_user == null) {
+            return "";
+        }
+
+        int user_id = target_user.get_ID();                                                 // ID des User extrahieren
+        List<Integer> attempted_quizzes = this.qc_service.checkForAttempted(user_id);       // Liste der Quizzes die dieser User versucht hat abrufen
+        List<Integer> accomplished_quizzes = this.qc_service.checkForAccomplished(user_id); // Liste der Quizzes die dieser User absolviert hat abrufen
+        List<Integer> qc_ids = this.qc_service.getAllQCIds();
+
+        for(int qc_id : qc_ids) {                                   // nacheinander Eintraege in die JSON anhand der Listen hinzufuegen
+            if(accomplished_quizzes.contains(qc_id)) {
+                progression_json.put(Integer.toString(qc_id), 1);       // User hat das Quiz bestanden
+                continue;
+            }
+            if(attempted_quizzes.contains(qc_id)) {
+                progression_json.put(Integer.toString(qc_id), 0);       // User hat das Quiz nur versucht (aber nicht bestanden)
+                continue;
+            }
+            progression_json.put(Integer.toString(qc_id), -1);          // User hatte noch keine Interaktion mit diesem Quiz
+        }
+
+        return progression_json.toString();
     }
 }

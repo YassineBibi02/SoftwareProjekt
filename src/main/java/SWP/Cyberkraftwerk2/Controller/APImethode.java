@@ -179,6 +179,8 @@ public class APImethode {
         File to_be_deleted = new File(path);
         if (to_be_deleted.delete()) {               // PDF loeschen und bei Erfolg auch Registryeintrag entfernen
             System.out.println("[APImethode] Deletion of lesson file successful. Removing from registry ...");
+            String[] inp_arr = {input};
+            removeQuiz(inp_arr);
             return LessonControl.removeLessonEntry(target_id);
         } else {
             System.out.println("[APImethode] File to be deleted not found. Aborting ...");
@@ -247,11 +249,15 @@ public class APImethode {
 
     /**
      * Method for the Frontend to add/set a quiz for a registered lesson.
-     * The first entry of the String array must be an Integer id of the lesson that is supposed to get the new quiz attached to.
-     * The following entries (number may vary freely) must be JSON strings of the questions the quiz is supposed to have.
-     * <p> A question JSON string must adhere to the following structure: {question: "Question String", right_answer: "Right answer String", wrong_answers: String[] of the wrong answers}.
+     * <p> The input String array contains multiple Integers and Strings in a very specific order to correctly convey the quiz to be added.
+     * <p> The first entry of the input array must be the id of the lesson the quiz corresponds to while the second entry must be the number of questions the quiz will contain.
+     * The following entries contain the questions the quiz will have and follow a very specific order of arguments. First of all the question itself as a String, second of all comes an
+     * Integer representing how many false answers this question is supposed to show. The entry after that must be a String of the right answer to the question. The following entries must
+     * be filled with wrong answers equal to the Integer representing the number of wrong answers to the quiz.
+     * <p> [Lesson-ID, Number of questions, "Question", Number of wrong answers, "Right answer", "Wrong answer 1", "Wrong answer 2", ... , "Question 2", Number of wrong answers 2, ... ]
      * @param input String array containing an Integer id of the target lesson and JSON strings per question to be added to the quiz
      * @author Tristan Slodowski
+     * @author Soenke Harder
      */
     // Notiz ans Frontend: registerLesson() gibt bei der Registrierung einer Lesson die lesson_id ans Frontend zurück; diese muss daraufhin hier für addQuiz() verwendet werden
     @PostMapping("/AddQuiz")
@@ -277,7 +283,7 @@ public class APImethode {
 
         }
         LessonControl.setQuiz(lesson_id, new_quiz);
-        //this.quiz_completion_service.addQuizCompTracker(lesson_id);
+        this.quiz_completion_service.addQuizCompTracker(lesson_id);
     }
 
     /**
@@ -296,29 +302,58 @@ public class APImethode {
     /**
      * Function for the Frontend to evaluate the answers given by a user to a quiz.
      * <p>
-     * The input array must contain the id of the lesson/quiz (Integer), the id of the user giving the answers (Integer) and all the answer Strings.
-     * The function will return a boolean whether the user has successfully cleared the quiz and will automatically save the user in the corresponding quiz completion trackers 
-     * "accomplished" or "attempted" list.
+     * The input array must contain the id of the lesson/quiz (Integer), the Email of the user giving the answers (Integer) and all the answer Strings.
+     * The function will return an Integer representing if the operation was successful and whether the user cleared the quiz or failed.
+     * <p> A return value of Zero means that the user has failed the quiz. A positive return value means that the user successfully cleared the quiz.
+     * A negative return value means that the operation failed while executing and no changes to any database were made.
      * 
-     * @param input String array containing the lesson/quiz id (Integer), user id (Integer) and all the answers as Strings
-     * @return boolean whether the user has cleared the quiz successfully
+     * @param input String array containing the lesson/quiz id (Integer), user email address (String) and all the answers as Strings
+     * @return Integer; Zero -> User has failed the quiz, Positive -> User has cleared the quiz, Negative -> Operation failed while executing
      * @author Tristan Slodowski
      */
     @PostMapping("/EvaluateQuiz")
-    public boolean evaluateQuiz(@RequestBody String[] input) {
+    public int evaluateQuiz(@RequestBody String[] input) {
         if(input.length <= 2) {
             System.err.println("[APImethode - evaluateQuiz] No or not enough arguments given. Aborting ...");
-            return false;
+            return -1;
         }
         int lesson_id = Integer.parseInt(input[0]);
-        int user_id = Integer.parseInt(input[1]);
+        String user_email = input[1];                                                       // Email-zu-ID-Adapter um der Datenbank-Implementation zu entsprechen
+        User target_user = this.userRepository.findByEmail(user_email);
+        if(target_user == null) {
+            System.err.println("[APImethode - EvaluateQuiz] User not found! Aborting!");
+            return -1;
+        }
+        int user_id = target_user.get_ID();
         String[] given_answers = new String[input.length - 2];
         for(int i = 2; i < input.length; i++) {
             given_answers[i - 2] = input[i];
         }
 
-        return quiz_master.validateAnswers(lesson_id, user_id, given_answers);
+        boolean result = quiz_master.validateAnswers(lesson_id, user_id, given_answers);    // Antworten pruefen
+
+        if (result) {
+            return 1;       // User hat Quiz bestanden
+        } else {
+            return 0;       // User ist durchgefallen
+        }
     }    
+
+    /**
+     * Function for the Frontend to get an overview of the quiz completion progression for a specific user.
+     * <p> The funtion only needs the email of the user as an argument and returns a JSON structure representing the progression of the user.
+     * <p> Inside the JSON structure are Key-Value-Pairs using the lesson/quiz ids as keys and containing either a -1, 0 or 1 as values.
+     * A negative value of -1 means the user hasn't interacted with this quiz as of yet, 0 means the user has tried but failed the quiz and a value of 1 means the user passed the quiz.
+     * <p>  Example: <code> {"1": 1, "2": 1, "3": 0, "4": -1, "5": -1} </code>
+     * @param mail String of the email address of the user to be checked
+     * @return JSON-formatted string of the progression of the user
+     */
+    @PostMapping("/GetQuizProg")
+    public String getQuizProgression(@RequestBody String mail) {
+        String result = this.quiz_master.getProgressionOf(mail);    // QuizMaster erstellt die entsprechende JSON
+
+        return result;
+    }
 
 
     /**

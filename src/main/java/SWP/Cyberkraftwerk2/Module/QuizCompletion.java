@@ -20,6 +20,8 @@ public class QuizCompletion {
     @Id
     private int id;
 
+    private String name = "tracker_" + id;
+
     // List<Integer> of the user ids that have attempted the quiz but have not cleared it
     private List<Integer> users_attempted;
     // List<Integer> of the user ids that have successfully cleared the quiz
