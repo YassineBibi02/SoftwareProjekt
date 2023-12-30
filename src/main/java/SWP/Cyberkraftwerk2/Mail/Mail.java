@@ -297,6 +297,19 @@ public class Mail {
     }
 
 
+    public String[][] get_all(){
+        int mailcount = count_mails();
+        String[][] mails = new String[mailcount][4];
+        for(int i = 1; i <= mailcount; i++){
+            mails[i][0] = String.valueOf(i);
+            mails[i][1] = String.valueOf(get_level(i));
+            mails[i][2] = get_subject(i);
+            mails[i][3] = get_mail(i);
+            }
+        return mails;
+    }
+
+
     /**
     * gets the level of the mail specified with mail_id
     * @param  mail_id  the mail
