@@ -54,12 +54,16 @@ public class User {
         this.maillevel = maillevel;
     }
 
-    public User(String firstname, String lastname, String email) {
+    public User(String firstname, String lastname, String email){
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.maillevel = 1;
-        this.mailsreceived = new int[]{1, 2, 3};
+        int mailcount = Mail.count_mails();
+        this.mailsreceived = new int[mailcount + 1];
+        for (int i = 0; i < mailcount + 1; i++) {
+            this.mailsreceived[i] = 0;
+        }
     }
 
     public String get_firstname(){

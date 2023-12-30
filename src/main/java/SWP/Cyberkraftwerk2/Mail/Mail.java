@@ -361,7 +361,7 @@ public class Mail {
     * counts the mails in the database
     * @return number of mails in database
     */
-    public int count_mails(){
+    public static int count_mails(){
         String lastline = "";
         try{
             
