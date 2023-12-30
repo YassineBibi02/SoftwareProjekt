@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 
 import java.io.IOException;
+import SWP.Cyberkraftwerk2.Mail.Mail;
 
 @Entity
 @Table(
