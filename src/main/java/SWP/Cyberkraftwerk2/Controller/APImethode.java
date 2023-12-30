@@ -57,7 +57,7 @@ public class APImethode {
         this.userService = userService;
         this.achievementService = achievementService;
         this.quiz_completion_service = qcs;
-        this.quiz_master = new QuizMaster(this.quiz_completion_service, this.userRepository);
+        this.quiz_master = new QuizMaster(this.quiz_completion_service, this.userRepository, this.achievementRepository);
     }
 
 

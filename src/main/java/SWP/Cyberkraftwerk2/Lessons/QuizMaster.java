@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import SWP.Cyberkraftwerk2.Module.QuizCompService;
 import SWP.Cyberkraftwerk2.Module.User;
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
+import SWP.Cyberkraftwerk2.Databank.AchievementRepository;
+import SWP.Cyberkraftwerk2.Module.Achievement;
 
 /**
  * Service class to offer methods interacting with the quiz objects of the lesson registry.
@@ -21,6 +23,7 @@ public class QuizMaster {
     private QuizCompService qc_service;
     // UserRepository reference to get User information from the databank
     private UserRepository user_repo;
+    private AchievementRepository ach_repo;
 
     /**
      * Default constructor of the QuizMaster class.
@@ -29,9 +32,10 @@ public class QuizMaster {
      * @param user_rep UserRepository reference to interact with the User repository
      * @author Tristan Slodowski
      */
-    public QuizMaster(QuizCompService qc_serv, UserRepository user_rep) {
+    public QuizMaster(QuizCompService qc_serv, UserRepository user_rep, AchievementRepository a_rep) {
         this.qc_service = qc_serv;
         this.user_repo = user_rep;
+        this.ach_repo = a_rep;
     }
 
     /**
@@ -75,6 +79,7 @@ public class QuizMaster {
         JSONObject registry = new JSONObject(LessonControl.getJsonString());
         JSONObject target_lesson = (JSONObject) registry.get(Integer.toString(lesson_id));
         JSONObject quiz_object = (JSONObject) target_lesson.get("quiz");
+        int achievement_id = (Integer) target_lesson.get("achievement_id");
         if(quiz_object.isEmpty()) {
             System.err.println("[QuizMaster - validateAnswer] No quiz data to validate answers with found in registry! Aborting operation ...");
             return false;
@@ -105,6 +110,7 @@ public class QuizMaster {
         }
         if(right_answer_counter >= question_count / 2) {
             this.qc_service.addAccomplishedUser(lesson_id, targeted_user);    // ist mehr als oder genau die Hälfte richtig, User der accomplished-Liste hinzufügen
+            grantAchievement(user_id, achievement_id);
             return true;
         } else {
             this.qc_service.addAttemptedUser(lesson_id, targeted_user);       // ist weniger als die Hälfte richtig, User der attempted-Liste hinzufügen
@@ -147,5 +153,27 @@ public class QuizMaster {
         }
 
         return progression_json.toString();
+    }
+
+    /**
+     * Method to grant a user a specific achievement.
+     * 
+     * @param user_id Integer representing the id of the user
+     * @param achievement_id Integer representing the achievment to be given to the user
+     */
+    public void grantAchievement(int user_id, int achievement_id) {
+        User targeted_user = this.user_repo.findByid(user_id);
+        if(targeted_user == null) {
+            System.err.println("[QuizMaster - grantAchievement] User not found. No achievements were granted.");
+            return;    
+        }
+
+        Achievement target_achievement = this.ach_repo.findByid(achievement_id);
+        if(target_achievement == null) {
+            System.err.println("[QuizMaster - grantAchievement] Achievement not found! No achievements were granted.");
+            return;
+        }
+
+        target_achievement.addUser(targeted_user);
     }
 }
