@@ -1,0 +1,29 @@
+.template-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+  }
+  
+  .user-box {
+  
+  }
+  
+  .user-box p {
+  
+  }
+  
+  .user-box button {
+  
+  }
+  
+  .MainBox {
+   margin-top: 120px;
+   margin-left: 120px;
+  }
+  
+  .Welcome {
+    position: absolute;
+    top: 19%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }

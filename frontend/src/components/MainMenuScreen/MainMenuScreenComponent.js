@@ -100,7 +100,7 @@ const MainMenuScreenComponent = () => {
                     <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
                     <button style={ButtonStyle} onClick={redirectCreateAchievement}>{achievementErstellenText}</button>
                     <button style={ButtonStyle} onClick={redirectToCreateMail}>{mailErstellenText}</button>
-                    <button style={ButtonStyle} onClick={redirectToCreateMail}>{templateVerwaltenTextText}</button>
+                    <button style={ButtonStyle} onClick={redirectToCreateMail}>{templateVerwaltenText}</button>
                 </div>
             </div>
         </div>
