@@ -15,6 +15,7 @@ const MainMenuScreenComponent = () => {
     var nutzerVerwaltenText = "Nutzer Verwalten";
     var achievementErstellenText = "Achievement Erstellen";
     var mailErstellenText = "Mail Erstellen";
+    var templateVerwaltenText = "Template Verwalten";
 
     let roles = [];
 
@@ -99,6 +100,7 @@ const MainMenuScreenComponent = () => {
                     <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
                     <button style={ButtonStyle} onClick={redirectCreateAchievement}>{achievementErstellenText}</button>
                     <button style={ButtonStyle} onClick={redirectToCreateMail}>{mailErstellenText}</button>
+                    <button style={ButtonStyle} onClick={redirectToCreateMail}>{templateVerwaltenTextText}</button>
                 </div>
             </div>
         </div>
