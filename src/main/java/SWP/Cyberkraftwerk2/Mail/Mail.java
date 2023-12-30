@@ -389,9 +389,26 @@ public class Mail {
     * @return the formatted mail text
     */
     private String format_mail(User recipient, String mailtext, int mailid){
+        /*get 2 random User that are not the recipient*/
+        User random1 = recipient;
+        while(random1.get_ID() == recipient.get_ID()){
+            random1 = userservice.getRandomUser();
+            }
+        User random2 = recipient;
+        while(random2.get_ID() == recipient.get_ID() || random2.get_ID() == random1.get_ID()){
+            random2 = userservice.getRandomUser();
+            }
         String formatted_mail = mailtext;
         formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.get_firstname());
         formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.get_lastname());
+        formatted_mail = formatted_mail.replace("EMPFAENGEREMAIL", recipient.get_email());
+        formatted_mail = formatted_mail.replace("KOLLEGE1VORNAME ", random1.get_firstname());
+        formatted_mail = formatted_mail.replace("KOLLEGE1NACHNAME", random1.get_lastname());
+        formatted_mail = formatted_mail.replace("KOLLEGE1EMAIL", random1.get_email());
+        formatted_mail = formatted_mail.replace("KOLLEGE2VORNAME", random2.get_firstname());
+        formatted_mail = formatted_mail.replace("KOLLEGE2NACHNAME", random2.get_lastname());
+        formatted_mail = formatted_mail.replace("KOLLEGE2EMAIL", random2.get_email());
+        formatted_mail = formatted_mail.replace("COMPANY", "Kraftwerk Kraft-Wärme-Kopplung GmbH");
         /*format Link */
         mailtext = mailtext.replace("LINK", TIPPATH + "?UID=" + String.valueOf(recipient.get_ID()) + "&MID=" + String.valueOf(mailid));
         return formatted_mail;
