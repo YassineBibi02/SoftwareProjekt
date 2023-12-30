@@ -161,7 +161,7 @@ public class UserService {
      * Fetches a random user from the database
      * @return random User
      */
-    User getRandomUser(){
+    public User getRandomUser(){
         List<User> users = this.userRepository.findAll();
         int random = (int) (Math.random() * users.size());
         return users.get(random);
