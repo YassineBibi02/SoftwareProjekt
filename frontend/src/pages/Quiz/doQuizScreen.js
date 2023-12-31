@@ -1,9 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header';
 import { Button, Card, Form} from 'react-bootstrap';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 function DoQuizScreen() {
-  
+
+    const navigate = useNavigate();
+    const [cookies] = useCookies(['XSRF-TOKEN']);
+    const queryParameter = new URLSearchParams(window.location.search);
+
+    var lessonID = queryParameter.get("id");
+    const [userData, setUserData] = useState([]);
+    const lesson = getLesson();
+
+    async function getLesson() {
+      var lessonData = "";
+      try {
+          const response = await fetch('/api/methode/GetLessonRegistry', {
+              method: 'GET', credentials: 'include',
+              headers: {
+                  'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+              },
+          }).then(response => response.text()).then(body => {lessonData = JSON.parse(body)});
+          console.log("Success:", lessonData);
+          return lessonData;
+      } catch (error) {
+          console.error("Error2:", error);
+          console.error("Error details:", error.message, error.response);
+          return null;
+      }
+    }
+    
+    useEffect(() => {
+      fetch('api/user', { credentials: 'include' }) // <.>
+          .then(response => response.text())
+          .then(body => {
+              if (body === '') {
+                   navigate('/login');
+              } else {
+                  setUserData(JSON.parse(body));
+              }
+          });
+
+    }, []);
+
     const questions = [
       {
         question: "Was ist die richtige Antwort?",
@@ -49,8 +90,30 @@ function DoQuizScreen() {
     };
   
     function handleSubmit() {
-      console.log('Submitted Answers:', answers);
-      // TODO: Logik für angegebenen Antworten implementieren
+      var submit = [];
+      submit.push(lessonID);
+      submit.push(userData.email);
+      
+      for (var i = 0; i < answers.length; i++) {
+        submit.push(answers[i]);
+      }
+      
+      try {
+        fetch('/api/methode/EvaluateQuiz', {
+                  method: 'POST', credentials: 'include',
+                  headers: { 
+                    'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                    'Content-Type': 'application/json',
+                 },
+                 body: JSON.stringify(submit)
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log("Response:", data);
+            });
+      } catch (error) {
+          console.error('Error', error);
+      }
     };
 
     const NextButton = {
@@ -70,9 +133,7 @@ function DoQuizScreen() {
     }
 
     const CardStyle = {
-        maxWidth: "800px",
-        //backgroundColor: "lightgrey",
-        //borderColor: '#ec6608'
+        maxWidth: "800px"
     }
   
     return (

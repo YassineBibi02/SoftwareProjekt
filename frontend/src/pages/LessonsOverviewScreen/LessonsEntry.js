@@ -35,7 +35,7 @@ const LessonsEntry = ({lessonData, admin}) => {
         }
 
         function redirectToQuiz() {
-            navigate('/doQuiz');
+            navigate(`/doQuiz?id=${lessonData.id}`);
         }
 
         //Includes the edit and delete buttons
