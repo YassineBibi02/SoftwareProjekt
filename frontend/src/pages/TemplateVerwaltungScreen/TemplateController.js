@@ -34,7 +34,7 @@ const UserController = () => {
                       // If the user does not have Admin_Access, navigate to the home screen
                       navigate('/');
                   } else {
-                      // If the user has Admin_Access, continue with fetching achievements or other admin tasks
+                      // If the user has Admin_Access, continue
                       Initialize();
                   }
               }
@@ -79,19 +79,18 @@ const UserController = () => {
         <h2 className="Welcome">Templates</h2>
         <div className="template-grid">
           {templates.map((template) => (
-            <UserComponent
+            <TemplateComponent
               template={template}
-              onEdit={() => handleEdit(template)}
               onDelete={() => handleDelete(template)}
             />
           ))}
         </div>
       </div>
 
-      {/* Delete User Confirmation Modal */}
+      {/* Delete Template Confirmation Modal */}
       <Modal isOpen={isDeleteModalOpen} toggle={handleCloseModals}>
         <ModalHeader>Confirm Delete</ModalHeader>
-        <ModalBody>Are you sure you want to delete this user?</ModalBody>
+        <ModalBody>Are you sure you want to delete this template?</ModalBody>
         <ModalFooter>
           <Button color="danger" onClick={handleConfirmDelete}>
             Delete
