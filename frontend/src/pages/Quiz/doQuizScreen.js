@@ -14,7 +14,10 @@ function DoQuizScreen() {
     const [userData, setUserData] = useState([]);
     const [lessonData, setLessonData] = useState([]);
     const [quizData, setQuizData] = useState([]);
+
     const [questions, setQuestions] = useState([]);
+    const [currentQuestion, setCurrentQuestion] = useState(0);  // The current question the user sees and the function to update it, first initialised with 0
+    const [answers, setAnswers] = useState(Array(questions.length).fill(''));   // Array with all submitted answers, first initialised as empty
 
     // Gets all the necessary data for the quiz and stores it in the associated variables
     useEffect(() => {
@@ -69,7 +72,7 @@ function DoQuizScreen() {
       return array;
     }
     
-    // Fills the global questions variable with a all questions of the quiz
+    // Returns an array with all questions of the quiz
     function fillQuestions(quizData) {
       var result = [];
 
@@ -89,9 +92,6 @@ function DoQuizScreen() {
       }
       return result;
     }
-    
-    const [currentQuestion, setCurrentQuestion] = useState(0);  // The current question and the function to update it, first initialised with 0
-    const [answers, setAnswers] = useState(Array(questions.length).fill(''));   // Array with all submitted answers, first initialised as empty
 
     // Updates current question when going to next question. If its the last question, do nothing
     function handleNextQuestion() {
@@ -123,7 +123,7 @@ function DoQuizScreen() {
       for (var i = 0; i < answers.length; i++) {
         submit.push(answers[i]);
       }
-      
+      console.log(submit);
       try {
         fetch('/api/methode/EvaluateQuiz', {
                   method: 'POST', credentials: 'include',
