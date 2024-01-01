@@ -7,7 +7,7 @@ import TemplateComponent from './TemplateComponent';
 import { useNavigate } from 'react-router-dom';
 import './TemplateControl.css';
 
-const UserController = () => {
+const TemplateController = () => {
   const [cookies] = useCookies(['XSRF-TOKEN']);
   const { isLoggedIn, setLoggedIn, userV, setUserV } = useContext(LoginContext);
   const navigate = useNavigate();
