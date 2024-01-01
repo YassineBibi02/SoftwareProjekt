@@ -589,9 +589,12 @@ public class APImethode {
     }
 
 
-    @PostMapping("/GetAllMails")
+    @GetMapping("/GetAllMails")
     public String[][] getAllMails(){
         Mail mail = new Mail(userService);
-        return mail.get_all();
+        System.out.println("Test----------a--dwa-daw-");
+        String[][] result = mail.get_all();
+        System.out.println(Arrays.deepToString(result));
+        return result;
     }
 }

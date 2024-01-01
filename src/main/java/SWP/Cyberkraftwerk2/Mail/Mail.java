@@ -301,10 +301,10 @@ public class Mail {
         int mailcount = count_mails();
         String[][] mails = new String[mailcount][4];
         for(int i = 1; i <= mailcount; i++){
-            mails[i][0] = String.valueOf(i);
-            mails[i][1] = String.valueOf(get_level(i));
-            mails[i][2] = get_subject(i);
-            mails[i][3] = get_mail(i);
+            mails[i-1][0] = String.valueOf(i);
+            mails[i-1][1] = String.valueOf(get_level(i));
+            mails[i-1][2] = get_subject(i);
+            mails[i-1][3] = get_mail(i);
             }
         return mails;
     }

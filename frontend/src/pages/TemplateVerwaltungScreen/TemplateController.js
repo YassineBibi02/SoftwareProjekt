@@ -17,6 +17,18 @@ const TemplateController = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+
+  const fetchMails = async () => {
+    console.log("Fetching Mails");
+    const response = await fetch('api/methode/GetAllMails', { credentials: 'include' }) // <.>
+    //console.log("Response: ", await response.json());
+    setTemplates(await response.json());
+    console.log("Templates: ", templates);
+  }
+
+
+
+
   // Fetch all templates when the component mounts
   useEffect(() => {
       fetch('api/user', { credentials: 'include' }) // <.>
@@ -39,6 +51,8 @@ const TemplateController = () => {
                   }
               }
           });
+      
+      fetchMails();
 
 
   }, []);
@@ -82,11 +96,11 @@ const TemplateController = () => {
             <TemplateComponent
               template={template}
               onDelete={() => handleDelete(template)}
+              key={template[0]}
             />
           ))}
         </div>
-      </div>
-
+    </div>
       {/* Delete Template Confirmation Modal */}
       <Modal isOpen={isDeleteModalOpen} toggle={handleCloseModals}>
         <ModalHeader>Confirm Delete</ModalHeader>
