@@ -13,9 +13,10 @@ function DoQuizScreen() {
     var lessonID = queryParameter.get("id");
     const [userData, setUserData] = useState([]);
     const [lessonData, setLessonData] = useState([]);
-    const quizData = lessonData.quiz;
+    const [quizData, setQuizData] = useState([]);
+    const [questions, setQuestions] = useState([]);
 
-    // Gets the data of the lesson associated to the quiz and stores it in "lessonData"
+    // Gets all the necessary data for the quiz and stores it in the associated variables
     useEffect(() => {
       try {
         fetch('/api/methode/GetLessonRegistry', {
@@ -28,54 +29,65 @@ function DoQuizScreen() {
         })
         .then(response => response.json())
         .then(data => {
-          setLessonData(data[lessonID]);  // ToDO: Vielleicht sicherer zuerst nach der id zu überprüfen
+          setLessonData(data[lessonID]);
+          setQuizData(data[lessonID].quiz);
+          setQuestions(fillQuestions(data[lessonID].quiz));
         });
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Failed to retrieve quiz data:', error);
       }
     }, [])
     
     // Gets the data of the current user and stores it in "userData"
     useEffect(() => {
-      fetch('api/user', { credentials: 'include' }) // <.>
-          .then(response => response.text())
-          .then(body => {
-              if (body === '') {
-                   navigate('/login');
-              } else {
-                  setUserData(JSON.parse(body));
-              }
-          });
+      try {
+        fetch('api/user', { credentials: 'include' }) // <.>
+            .then(response => response.text())
+            .then(body => {
+                if (body === '') {
+                     navigate('/login');
+                } else {
+                    setUserData(JSON.parse(body));
+                }
+            });
+      } catch (error) {
+        console.error('Failed to retrieve user data:', error);
+      }
 
     }, []);
+
+    // Randomises the order of the elements in an array
+    function randomiseArray(array) {
+      var rnd;
+      var temp;
+      for (var i = 0; i < array.length; i++) {
+        rnd = Math.floor(Math.random() * (array.length - 1));
+        temp = array[i];
+        array[i] = array[rnd];
+        array[rnd] = temp;
+      }
+      return array;
+    }
     
     // Fills the global questions variable with a all questions of the quiz
-    function fillQuestions() {
-      var element;
-      var options = [];
-      var result = {};
+    function fillQuestions(quizData) {
+      var result = [];
 
       for (var i = 0; i < quizData.question_count; i++) {
         var name = "q" + i;
-        element = quizData[name];
+        var element = quizData[name];
+
+        var options = [];
         options.push(element.right_answer);
         for (var j = 0; j < element.wrong_answers.length; j++) {
           options.push(element.wrong_answers[j]);
         }
         // ToDo: Randomise the option order
-        result = {question: element.question, options: options}
-        questions.push(result);
-        options = [];
-        result = {};
+        options = randomiseArray(options);
+        var question = {question: element.question, options: options}
+        result.push(question);
       }
-    }
-    
-    // Array with all questions of the quiz
-    let questions = [];
-
-    // Fill the variable only when the quiz data is loaded
-    if (quizData) {
-      fillQuestions();
+      return result;
     }
     
     const [currentQuestion, setCurrentQuestion] = useState(0);  // The current question and the function to update it, first initialised with 0
@@ -159,9 +171,9 @@ function DoQuizScreen() {
             <Form>
               <Form.Group controlId="formQuestion">
                 <Form.Label style={QuestionStyle}>
-                    {lessonData && quizData && questions[currentQuestion].question}
+                    {lessonData && quizData && questions.length > 0 && questions[currentQuestion].question}
                 </Form.Label>
-                  {lessonData && quizData &&
+                  {lessonData && quizData && questions.length > 0 &&
                     questions[currentQuestion].options.map((option, index) => (
                       <Form.Check
                           className='mt-3'
