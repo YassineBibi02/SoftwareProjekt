@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import MainMenuScreenComponent from './components/MainMenuScreen/MainMenuScreenComponent';
 import AchievementsOverviewScreenComponent from './pages/AchievementsOverviewScreen/AchievementsOverviewScreeenComponent';
 import LessonsScreenComponent from './pages/LessonsOverviewScreen/LessonsScreenComponent';
+import TemplateComponent from './pages/TemplateVerwaltungScreen/TemplateComponent';
 import { BrowserRouter as Router, Route, Routes , Navigate} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';  
 import HereingefallenScreen from './pages/HereingefallenScreen';
@@ -17,6 +18,7 @@ import CreateAchievement from './pages/AchievementsPage/CreateAchievement';
 import CreateMailScreen from './pages/CreateMailScreen/CreateMailComponent';
 import DoQuizScreen from './pages/Quiz/doQuizScreen';
 import CreateQuizScreen from './pages/Quiz/createQuizScreen';
+import TemplateController from './pages/TemplateVerwaltungScreen/TemplateController';
 
 
 function App() {
@@ -36,6 +38,7 @@ function App() {
         <Route path="/achievements" element={<AchievementFrontend/>} />
         <Route path="/createAchievement" element={<CreateAchievement/>} />
         <Route path="/createMail" element={<CreateMailScreen/>}/>
+        <Route path="/templates" element={<TemplateController/>}/>
         <Route path="/doQuiz" element={<DoQuizScreen/>}/>
         <Route path="/createQuiz" element={<CreateQuizScreen/>}/>
         <Route path="*" element={<Navigate to="/" replace />} />

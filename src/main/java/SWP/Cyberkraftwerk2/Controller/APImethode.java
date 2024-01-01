@@ -57,7 +57,7 @@ public class APImethode {
         this.userService = userService;
         this.achievementService = achievementService;
         this.quiz_completion_service = qcs;
-        this.quiz_master = new QuizMaster(this.quiz_completion_service, this.userRepository);
+        this.quiz_master = new QuizMaster(this.quiz_completion_service, this.userRepository, this.achievementRepository);
     }
 
 
@@ -553,10 +553,48 @@ public class APImethode {
     public boolean newMail(@RequestBody String[] input) {
         String text = input[0];
         String subject = input[1];
-        int id = Integer.parseInt(input[2]);
+        int level = Integer.parseInt(input[2]);
 
         Mail mail = new Mail(userService);
-        return mail.new_mail(text, subject, id);
+        return mail.new_mail(text, subject, level);
     }
 
+    
+    @PostMapping("/SendMails")
+    public void sendMails(@RequestBody int[] UIDs, @RequestBody int[] start_date, @RequestBody int[] end_date){
+        Mail mail = new Mail(userService);
+        mail.send_mails(UIDs, start_date, end_date);
+    }
+
+
+    @PostMapping("/SaveMail")
+    public void saveMail(@RequestBody String[] input){
+        String text = input[0];
+        String subject = input[1];
+        int level = Integer.parseInt(input[2]);
+        int id = Integer.parseInt(input[3]);
+
+        Mail mail = new Mail(userService);
+        mail.save_mail(text, level, subject, id);
+    }
+
+
+    @PostMapping("/GetMail")
+    public String[] getMail(@RequestBody int id){
+        Mail mail = new Mail(userService);
+        String[] email = new String[2];
+        email[0] = mail.get_subject(id);
+        email[1] = mail.get_mail(id);
+        return email;
+    }
+
+
+    @GetMapping("/GetAllMails")
+    public String[][] getAllMails(){
+        Mail mail = new Mail(userService);
+        System.out.println("Test----------a--dwa-daw-");
+        String[][] result = mail.get_all();
+        System.out.println(Arrays.deepToString(result));
+        return result;
+    }
 }

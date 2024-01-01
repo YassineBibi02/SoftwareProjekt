@@ -156,4 +156,15 @@ public class UserService {
         this.userRepository.deleteByEmail(email);
     }
 
+    
+    /**
+     * Fetches a random user from the database
+     * @return random User
+     */
+    public User getRandomUser(){
+        List<User> users = this.userRepository.findAll();
+        int random = (int) (Math.random() * users.size());
+        return users.get(random);
+    }
+
 }
