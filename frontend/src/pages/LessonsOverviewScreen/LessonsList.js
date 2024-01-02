@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LessonsEntry from './LessonsEntry';
 import { IoMdAdd } from "react-icons/io";
+import LoginContext from '../../globals/globalContext';
 
 const LessonsList = () => {
     
@@ -16,6 +17,7 @@ const LessonsList = () => {
     const [loadedIDs, setLoadedIDs] = useState([]); 
     const [loadedLessons, setLoadedLessons] = useState([]);
 
+    const { isLoggedIn, setLoggedIn, userV , login, logout} = useContext(LoginContext);
     useEffect(() => {
         const fetchLessons = async () => {
             try {
@@ -38,6 +40,10 @@ const LessonsList = () => {
                      navigate('/login');
                 } else {
                     const userData = JSON.parse(body);
+                    if (userData.roles === undefined || userData.roles === null) {
+                        console.log("Bitte neu einloggen")
+                        logout();
+                    }
                     if (userData.roles.includes("Admin_Access")) {
                         setAdminStatus(true);
                     }

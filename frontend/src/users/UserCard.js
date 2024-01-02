@@ -25,7 +25,7 @@ const UserCard = ({ userData, onSelect }) => {
   const jsonData = JSON.parse(userData);
 
   return (
-    <Card style={CardStyle} name={jsonData._firstname} mail={jsonData._EMail}>
+    <Card style={CardStyle} name={jsonData._firstname} mail={jsonData._EMail} id={jsonData._ID}>
       <Card.Body>
         <Form>
           <div key="custom-checkbox">

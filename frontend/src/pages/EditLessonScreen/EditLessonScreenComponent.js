@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect, useState} from 'react';
+import React, { useRef, useEffect, useState, useContext} from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
 import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-dom';
@@ -9,9 +9,11 @@ import { useCookies } from 'react-cookie';
 import AddQuizPopup from './QuizAdding/AddQuizPopup';
 import { FaCheck } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
+import LoginContext from '../../globals/globalContext';
 
 const EditLessonScreenComponent = ({newLesson}) => {
-
+    
+    const { isLoggedIn, setLoggedIn, userV , login, logout} = useContext(LoginContext);
     const {state} = useLocation();
     let lesson = state?.lesson; // Read lesson passed on state for lesson edit
     const [cookies] = useCookies(['XSRF-TOKEN']);
@@ -130,7 +132,10 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 } else {
                     const userData = JSON.parse(body);
                     // Check for Admin_Access role
-
+                    if (userData.roles === undefined || userData.roles === null) {
+                        console.log("Bitte neu einloggen")
+                        logout();
+                    }
                     if (!userData.roles.includes("Admin_Access")) {
                         console.log("Access Denied. Admin Only Area")
                         // If the user does not have Admin_Access, navigate to the home screen

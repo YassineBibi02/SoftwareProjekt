@@ -1,7 +1,6 @@
 package SWP.Cyberkraftwerk2.Lessons;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
 //import SWP.Cyberkraftwerk2.Module.QuizCompService;
 
@@ -382,40 +381,4 @@ public class LessonControl {
         return result;
     }
 
-    public static void main(String[] args) {                // TODO die Main hier ist zum lokalen Testen der Methoden; am Ende bitte entfernen!
-        LessonControl.addLessonEntry("Passwortsicherheit", 1, 1, "test1.pdf");
-        LessonControl.addLessonEntry("Phishing", 1, 2, "test2.pdf");
-
-        LessonControl.removeLessonEntry(0);
-        LessonControl.addLessonEntry("Hashing", 3, 3, "test3.pdf");
-        LessonControl.addLessonEntry("Social Engineering", 2, 4, "test4.pdf");
-        LessonControl.updateLessonEntry(1, "FIDO2 Keys", 3, 5, "test5.pdf");
-
-        Quiz new_quiz = new Quiz(1);
-        Question q1 = new Question();
-        q1.setQuestion("Was ist ein FIDO2 Key?");
-        q1.setRightAnswer("ein physikalischer Schluessel um sich Authentifizieren zu koennen");
-        q1.addWrongAnswer("ein Weg um Hundehuetten abzuschliessen");
-        q1.addWrongAnswer("ein hunde-foermiger Schluessel");
-
-        Question q2 = new Question();
-        q2.setQuestion("Wie verwendet man einen FIDO2 Key?");
-        q2.setRightAnswer("An Rechner anschliessen und Treiber arbeiten lassen");
-        q2.addWrongAnswer("In Schluesselloch stecken und drehen");
-        q2.addWrongAnswer("Just use it 5head");
-
-        new_quiz.addQuestion(q1);
-        new_quiz.addQuestion(q2);
-
-        Question q3 = new Question("Warum", "Darum", "Nein", "Auch nicht", "Das hier erst recht nicht");
-        Question q4 = new Question("JA oder NEIN", "JA", "NEIN");
-        Quiz second_quiz = new Quiz(2, q3, q4);
-
-        LessonControl.setQuiz(1, new_quiz);
-        LessonControl.setQuiz(0, second_quiz);
-
-        Quiz extracted_quiz = LessonControl.getQuiz(0);
-        extracted_quiz.removeQuestion("Warum");
-        LessonControl.setQuiz(0, extracted_quiz);
-    }
 }
