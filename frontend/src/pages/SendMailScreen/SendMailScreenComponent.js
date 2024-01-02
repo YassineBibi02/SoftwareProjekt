@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useContext } from 'react';
 import Header from '../../components/Header';
 import UserList from '../../users/UserList';
 import DateSetter from './DateSetter';
@@ -6,6 +6,7 @@ import { Button } from 'react-bootstrap';
 import SelectedUsers from './SelectedUsers';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import LoginContext from '../../globals/globalContext';
 
 const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -18,7 +19,8 @@ const SendMailScreenComponent = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [startDateChanged, setStartDateChanged] = useState(false);
     const [endDateChanged, setEndDateChanged] = useState(false);
-
+    
+    const { isLoggedIn, setLoggedIn, userV , login, logout} = useContext(LoginContext);
 //THE LOGIN BLOCK
     useEffect(() => {
         fetch('api/user', { credentials: 'include' }) // <.>
@@ -30,6 +32,10 @@ const SendMailScreenComponent = () => {
             const userData = JSON.parse(body);
 
             // Check for Admin_Access role
+            if (userData.roles === undefined || userData.roles === null) {
+                console.log("Bitte neu einloggen")
+                logout();
+            }
             if (!userData.roles.includes("Admin_Access")) {
                 console.log("Access Denied. Admin Only Area")
                 // If the user does not have Admin_Access, navigate to the home screen
