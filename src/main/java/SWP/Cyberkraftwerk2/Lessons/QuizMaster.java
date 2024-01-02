@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import SWP.Cyberkraftwerk2.Module.QuizCompService;
 import SWP.Cyberkraftwerk2.Module.User;
@@ -47,8 +48,9 @@ public class QuizMaster {
      */
     public String getRightAnswerFrom(int lesson_id, int question_number) {
         JSONObject registry = new JSONObject(LessonControl.getJsonString());
-        int[] registered_ids = (int[]) registry.get("taken_ids");
-        for(int id : registered_ids) {
+        JSONArray registered_ids = registry.getJSONArray("taken_ids");
+        for(int i = 0; i < registered_ids.length(); i++) {
+            int id = registered_ids.getInt(i);
             if(id == lesson_id) {
                 JSONObject lesson = (JSONObject) registry.get(Integer.toString(lesson_id));
                 JSONObject quiz = (JSONObject) lesson.get("quiz");
