@@ -145,20 +145,25 @@ public class APImethode {
 
     /**
      * Method for the Frontend to register a newly uploaded lesson into the lesson registry
-     * Ideal Input: "{"name", difficulty_level, quiz_id, achievement_id, pdf_name}"
-     * @param input String array containing the name (as String), difficulty level (as Integer), an achievement ID (as Integer) and the name of the designated pdf (String)
+     * Ideal Input: "{"name", difficulty_level, quiz_id, achievement_id, pdf_name, quiz data...}"
+     * @param input String array containing the name (as String), difficulty level (as Integer), an achievement ID (as Integer) and the name of the designated pdf (String) followed by the quiz data
      * @return Integer representing the id of the newly registered lesson
      * @author Tristan Slodowski
      */
     @PostMapping("/RegisterLesson")                                         // TODO Auslesen der Argumente aus den Inputs für alle Lesson-Methoden sicherer machen
     public int registerLesson(@RequestBody String[] input) {
+        System.out.println("Input Array:" + Arrays.toString(input));
         String name = input[0];
         int difficulty = Integer.parseInt(input[1]);
         int achievement_id = Integer.parseInt(input[2]);
         String pdf_name = input[3];
-        int res = LessonControl.addLessonEntry(name, difficulty, achievement_id, pdf_name);
-        System.out.println(res);
-        return res;
+        int id = LessonControl.addLessonEntry(name, difficulty, achievement_id, pdf_name);
+        System.out.println(id);
+        //Call create Quiz with the id and the rest of the input array:
+        String[] quiz_input = Arrays.copyOfRange(input, 3, input.length);
+        quiz_input[0] = Integer.toString(id);
+        createQuiz(quiz_input);
+        return id;
     }
 
     /**
@@ -192,7 +197,7 @@ public class APImethode {
     /**
      * Method for the Frontend to update the values of a lesson registration.
      * The id dictates which lesson registration will be changed with the input arguments.
-     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), an achievement id (Integer) and the name of the designated pdf
+     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer), an achievement id (Integer) and the name of the designated pdf followed by quiz data
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
@@ -203,6 +208,7 @@ public class APImethode {
         int difficulty = Integer.parseInt(input[2]);
         int achievement_id = Integer.parseInt(input[3]);
         String new_pdf_name = input[4];
+        boolean success;
 
         JSONObject registry = new JSONObject(LessonControl.getJsonString());
         JSONObject entry = (JSONObject) registry.get(Integer.toString(id));
@@ -211,7 +217,11 @@ public class APImethode {
         File to_be_deleted = new File(path);
 
         if(to_be_deleted.delete()) {
-            return LessonControl.updateLessonEntry(id, name, difficulty, achievement_id, new_pdf_name);
+            success = LessonControl.updateLessonEntry(id, name, difficulty, achievement_id, new_pdf_name);
+            String[] quiz_input = Arrays.copyOfRange(input, 4, input.length);
+            quiz_input[0] = Integer.toString(id);
+            createQuiz(quiz_input);
+            return success;
         } else {
             System.out.println("[UpdateInRegistry] Error while trying to delete old PDF file! Aborting ...");
             return false;
@@ -221,7 +231,7 @@ public class APImethode {
     /**
      * Method for the Frontend to update the values of a lesson registration without changing the designated pdf.
      * The id dictates which lesson registration will be changed with the input arguments.
-     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer) and achievement id (Integer)
+     * @param input String array containing lesson id (Integer), name (String), difficulty (Integer) and achievement id (Integer) followed by quiz data
      * @return boolean whether the operation was successful
      * @author Tristan Slodowski
      */
@@ -231,7 +241,9 @@ public class APImethode {
         String name = input[1];
         int difficulty = Integer.parseInt(input[2]);
         int achievement_id = Integer.parseInt(input[3]);
-
+        String[] quiz_input = Arrays.copyOfRange(input, 3, input.length);
+        quiz_input[0] = Integer.toString(id);
+        createQuiz(quiz_input);
         return LessonControl.updateLessonEntry(id, name, difficulty, achievement_id);   
     }
 
@@ -247,21 +259,8 @@ public class APImethode {
         return LessonControl.getJsonString();
     }
 
-    /**
-     * Method for the Frontend to add/set a quiz for a registered lesson.
-     * <p> The input String array contains multiple Integers and Strings in a very specific order to correctly convey the quiz to be added.
-     * <p> The first entry of the input array must be the id of the lesson the quiz corresponds to while the second entry must be the number of questions the quiz will contain.
-     * The following entries contain the questions the quiz will have and follow a very specific order of arguments. First of all the question itself as a String, second of all comes an
-     * Integer representing how many false answers this question is supposed to show. The entry after that must be a String of the right answer to the question. The following entries must
-     * be filled with wrong answers equal to the Integer representing the number of wrong answers to the quiz.
-     * <p> [Lesson-ID, Number of questions, "Question", Number of wrong answers, "Right answer", "Wrong answer 1", "Wrong answer 2", ... , "Question 2", Number of wrong answers 2, ... ]
-     * @param input String array containing an Integer id of the target lesson and JSON strings per question to be added to the quiz
-     * @author Tristan Slodowski
-     * @author Soenke Harder
-     */
-    // Notiz ans Frontend: registerLesson() gibt bei der Registrierung einer Lesson die lesson_id ans Frontend zurück; diese muss daraufhin hier für addQuiz() verwendet werden
-    @PostMapping("/AddQuiz")
-    public void addQuiz(@RequestBody String[] input) {
+
+    private void createQuiz(String[] input) {
         System.out.println(Arrays.toString(input));
         int lesson_id = Integer.parseInt(input[0]);
         Quiz new_quiz = new Quiz(lesson_id);
@@ -280,10 +279,26 @@ public class APImethode {
                 index++;
             }
             new_quiz.addQuestion(new_question);
-
         }
         LessonControl.setQuiz(lesson_id, new_quiz);
         this.quiz_completion_service.addQuizCompTracker(lesson_id);
+    }
+    /**
+     * Method for the Frontend to add/set a quiz for a registered lesson.
+     * <p> The input String array contains multiple Integers and Strings in a very specific order to correctly convey the quiz to be added.
+     * <p> The first entry of the input array must be the id of the lesson the quiz corresponds to while the second entry must be the number of questions the quiz will contain.
+     * The following entries contain the questions the quiz will have and follow a very specific order of arguments. First of all the question itself as a String, second of all comes an
+     * Integer representing how many false answers this question is supposed to show. The entry after that must be a String of the right answer to the question. The following entries must
+     * be filled with wrong answers equal to the Integer representing the number of wrong answers to the quiz.
+     * <p> [Lesson-ID, Number of questions, "Question", Number of wrong answers, "Right answer", "Wrong answer 1", "Wrong answer 2", ... , "Question 2", Number of wrong answers 2, ... ]
+     * @param input String array containing an Integer id of the target lesson and JSON strings per question to be added to the quiz
+     * @author Tristan Slodowski
+     * @author Soenke Harder
+     */
+    // Notiz ans Frontend: registerLesson() gibt bei der Registrierung einer Lesson die lesson_id ans Frontend zurück; diese muss daraufhin hier für addQuiz() verwendet werden
+    @PostMapping("/AddQuiz")
+    public void addQuiz(@RequestBody String[] input) {
+        createQuiz(input);
     }
 
     /**

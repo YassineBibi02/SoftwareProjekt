@@ -10,10 +10,10 @@ import { useNavigate } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from './ConfirmDeletionPopup';
 
-const LessonsEntry = ({lessonData, admin}) => {    
+const LessonsEntry = ({lessonData, admin, completed}) => {    
         
         const navigate = useNavigate();
-        
+        console.log("Completed" ,completed)
         const EntryStyle = {
             textAlign: 'center',
             fontSize: '2em',
@@ -22,8 +22,20 @@ const LessonsEntry = ({lessonData, admin}) => {
             padding: '10px',
             margin: '0px',
         };        
-      
-        const completionPercentage = parseInt(lessonData.completion); // Parse the completion string into a number
+        
+        const CompletionIndicator = () => {
+            if (completed.includes(lessonData.achievement_id)) {
+                return (
+                    <div style={{color: 'green'}}>✔</div>
+                );
+            } else {
+                return (
+                    <div>
+                        <div style={{color: 'red'}}>✘</div>
+                    </div>
+                );
+            }
+        }
         
         const watchLesson = (lessonData) => {
             console.log("Navigating to lesson: " + lessonData.id)
@@ -49,8 +61,7 @@ const LessonsEntry = ({lessonData, admin}) => {
                         <Button onClick={() => watchLesson(lessonData)} variant="link" style={{ padding: 0, textDecoration: 'underline', fontSize: '1em' }}>{lessonData.name}</Button>
                     </Col>
                     <Col style={EntryStyle} xs={3} sm={3} md={3} lg={3}>
-                        {lessonData.completion}
-                        <ProgressBar now={completionPercentage} />
+                        <CompletionIndicator />
                     </Col>
                     <Col style={EntryStyle} xs={6} sm={6} md={6} lg={2}>
                         <Button onClick={redirectToQuiz} variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
@@ -76,8 +87,7 @@ const LessonsEntry = ({lessonData, admin}) => {
                         <Button onClick={() => watchLesson(lessonData)} variant="link" style={{ padding: 0, textDecoration: 'underline' , fontSize: '1em'}}>{lessonData.name}</Button>
                     </Col>
                     <Col style={EntryStyle} xs={3} sm={3} md={3} lg={3}>
-                        {lessonData.completion}
-                        <ProgressBar now={completionPercentage} />
+                        <CompletionIndicator />
                     </Col>
                     <Col style={EntryStyle} xs={6} sm={6} md={6} lg={3}>
                         <Button onClick={redirectToQuiz} variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>

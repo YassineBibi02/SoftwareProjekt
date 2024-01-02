@@ -13,11 +13,12 @@ const LessonsList = () => {
     
     const navigate = useNavigate();
     const [adminStatus, setAdminStatus] = useState(false); 
-
+    const [user, setUser] = useState(undefined);
+    const achievementIds = user?.achievements || [];
     const [loadedIDs, setLoadedIDs] = useState([]); 
     const [loadedLessons, setLoadedLessons] = useState([]);
-
     const { isLoggedIn, setLoggedIn, userV , login, logout} = useContext(LoginContext);
+
     useEffect(() => {
         const fetchLessons = async () => {
             try {
@@ -43,9 +44,14 @@ const LessonsList = () => {
                     if (userData.roles === undefined || userData.roles === null) {
                         console.log("Bitte neu einloggen")
                         logout();
-                    }
-                    if (userData.roles.includes("Admin_Access")) {
+                    } else if (userData.roles.includes("Admin_Access")) {
                         setAdminStatus(true);
+                        setUser(userData);
+                        console.log("User: ", userData);
+                    } else {
+                        setAdminStatus(false);
+                        setUser(userData);
+                        console.log("User: ", userData);
                     }
                 }
             });
@@ -106,12 +112,12 @@ const LessonsList = () => {
                     <Row>
                         <Col style={HeaderStyle} lg={2}>Schiwerigkeit</Col>
                         <Col style={HeaderStyle} lg={4}>Titel</Col>
-                        <Col style={HeaderStyle} lg={3}>Fortschritt</Col>
+                        <Col style={HeaderStyle} lg={3}>Abgeschlossen</Col>
                         <Col style={HeaderStyle} lg={2}>Quiz</Col>
                         <Col style={HeaderStyle} lg={1}>Aktion</Col>
                     </Row>
                     {loadedLessons.map((lesson) => (
-                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={adminStatus}/>
+                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={adminStatus} completed={achievementIds}/>
                     ))}
                 </Container>
                 <Button style={{
@@ -140,13 +146,13 @@ const LessonsList = () => {
                 <h1 style={{marginLeft: '30px', marginBottom: '30px', fontWeight: 'bold'}}>Schulungen</h1>
                 <Container style={TableStyle} fluid>
                     <Row>
-                        <Col style={HeaderStyle} lg={2}>Difficulty</Col>
-                        <Col style={HeaderStyle} lg={4}>Title</Col>
-                        <Col style={HeaderStyle} lg={3}>Completion</Col>
+                        <Col style={HeaderStyle} lg={2}>Schiwerigkeit</Col>
+                        <Col style={HeaderStyle} lg={4}>Titel</Col>
+                        <Col style={HeaderStyle} lg={3}>Abgeschlossen</Col>
                         <Col style={HeaderStyle} lg={3}>Quiz</Col>
                     </Row>
                     {loadedLessons.map((lesson) => (
-                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={adminStatus}/>
+                        <LessonsEntry key={lesson.id} lessonData={lesson} admin={adminStatus} completed={achievementIds}/>
                     ))}
                 </Container>
             </div>

@@ -145,14 +145,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
             });
     });
 
-    useEffect(() => {
-        console.log("ID changed: ", idRef.current);
-        if(shouldSubmit) {
-            uploadQuiz();
-            console.log("Navigating to lessonsOverview");            
-        }
-    }, [shouldSubmit]);
-
     const uploadQuiz = () => {
         console.log("Uploading quiz with ID: ", idRef.current);
         if (questions.length > 0) {
@@ -198,6 +190,11 @@ const EditLessonScreenComponent = ({newLesson}) => {
         lessonArray.push(getDifficulty());
         lessonArray.push(achievementID);
         lessonArray.push(file.name);
+        const convertedQuestions = getQuizString(questions);
+        console.log(JSON.stringify(convertedQuestions));
+        const unitedArray = lessonArray.concat(convertedQuestions);
+        console.log("United Array: ", unitedArray);
+        await delay(300);
         try {
             const response = await fetch('/api/methode/RegisterLesson', {
                 method: 'POST', credentials: 'include',
@@ -205,7 +202,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                     'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(lessonArray),
+                body: JSON.stringify(unitedArray),
             });
             const result = await response.json();
             console.log("Success creating: ", result);
@@ -228,6 +225,10 @@ const EditLessonScreenComponent = ({newLesson}) => {
         console.log("Editing");
         if (newName) {
             lessonArray.push(file.name);
+        }        
+        const convertedQuestions = getQuizString(questions);
+        const unitedArray = lessonArray.concat(convertedQuestions);
+        if (newName) {
             try {
                 fetch('/api/methode//UpdateInRegistry', {
                     method: 'POST', credentials: 'include',
@@ -235,7 +236,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                         'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(lessonArray)
+                    body: JSON.stringify(unitedArray)
                 })
                 .then(response => response.text())
                 .then(data => {
@@ -254,7 +255,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                         'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(lessonArray)
+                    body: JSON.stringify(unitedArray)
                 })
                 .then(response => response.text())
                 .then(data => {
@@ -300,7 +301,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 if (await upload(formData)) { // PDF wird getrennt von dem Registry hochgeladen bzw registriert
                     console.log("File uploaded");
                     if (newLesson) {
-                        //await delay(3000);
                         console.log("Trying to create new lesson");
                         const newID = await createLesson();
                         idRef.current = newID;
@@ -327,7 +327,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
     const getQuizString = (inputArray) => {
         const result = [];
-        result.push(idRef.current);
         result.push(questions.length);
 
         inputArray.forEach((item) => {
@@ -344,14 +343,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
         return result;
     };
-
-    const showQuestions = () => {
-        console.log(idRef.current)
-        const convertedQuestions = getQuizString(questions);
-        console.log(JSON.stringify(convertedQuestions));
-        //console.log("First Entry:", convertedQuestions[0]);
-    };
-
+    
     const containerStyle = {
         fontSize: '20px',
         display: 'flex',
@@ -414,9 +406,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                     <Button onClick={confirm} disabled={isButtonDisabled}>Bestätigen</Button>
             </div>
             
-            <Button onClick={showQuestions}>Show Questions</Button>
             <Button onClick={() => navigate('/lessonsOverview')}>Back</Button>
-            <Button onClick={uploadQuiz}>Try Upload</Button>
             {errorMessageText && (
                 <div style={{ backgroundColor: 'red', padding: '10px', color: 'white', position: 'fixed', bottom: 0, left: 0, width: '100%' }}>
                     {errorMessageText}
