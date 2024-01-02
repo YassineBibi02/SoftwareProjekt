@@ -4,19 +4,21 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Class accessing the JavaMail and JakartaMail packages to send Emails
  * @author Tristan Slodowski
- * @version 20.11.2023
+ * @version 02.01.2024
  */
 @Configuration
+@PropertySource("classpath:application.properties")
 @Service
 @RestController
 public class EmailService {
@@ -25,14 +27,31 @@ public class EmailService {
     @Autowired
     private JavaMailSenderImpl mailSender;
 
+    // String hostname of the mail server
+    @Value("${spring.mail.host}")
+    private String host_name;
+    // Integer port number of the mail server
+    @Value("${spring.mail.port}")
+    private int port;
+    // String password of the account accessing the mail server
+    @Value("${spring.mail.password}")
+    private String password;
+    // String username of the account accessing the mail server
+    @Value("${spring.mail.username}")
+    private String username;
 
-    public EmailService() {                                     // TODO Properties aus der application.properties auslesen koennen
+    /**
+     * Default constructor of the EmailService class.
+     * <p> Derives all needed values from the respecting entries in the application.properties file.
+     * @author Tristan Slodowski
+     */
+    public EmailService() {
         this.mailSender = new JavaMailSenderImpl();             // Standard Implementation des JavaMailSenders; erfuellt unsere Zwecke ausreichend
-        this.mailSender.setHost("smtp.office365.com");
-        this.mailSender.setPort(587);
-        this.mailSender.setPassword("mX3LlqFnO0QwzxRIM9eSChP0lrDfALwK");
-        this.mailSender.setUsername("cyber.kraftwerk2@outlook.com");
-        this.mailSender.getJavaMailProperties().put("mail.smtp.starttls.enable", "true");
+        this.mailSender.setHost(this.host_name);
+        this.mailSender.setPort(this.port);
+        this.mailSender.setPassword(this.password);
+        this.mailSender.setUsername(this.username);
+        this.mailSender.getJavaMailProperties().put("mail.smtp.starttls.enable", "true");   // TLS aktivieren; fuer manche Dienste fest benoetigt
 
         this.mailSender.getJavaMailProperties().put("mail.debug","true");       // TODO Debugging-Option: deaktivieren wenn nicht mehr benötigt!
 
@@ -104,7 +123,3 @@ public class EmailService {
     }
 
 }
-
-/*
- * Attribute des Sender-Servers und der Verbindung werden in der application.properties eingestellt
- */

@@ -14,7 +14,6 @@ import SWP.Cyberkraftwerk2.Module.QuizCompService;
 import SWP.Cyberkraftwerk2.Module.User;
 import SWP.Cyberkraftwerk2.Module.UserService;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -96,7 +95,7 @@ public class APImethode {
         int mid = Integer.parseInt(ids[1]);
         ObjectMapper objMapper = new ObjectMapper();
 
-        //User.mail_clicked(uid, mid);    // User fuer das Anklicken der Mail anschwaerzen
+        this.userService.mail_clicked(uid, mid);    // User fuer das Anklicken der Mail anschwaerzen
 
         User gotcha = this.userRepository.findByid(uid);        // Abrufen des passenden Nutzers aus der Datenbank
         if(gotcha == null) {
@@ -127,6 +126,9 @@ public class APImethode {
         }
 
         try {
+            if(file.getOriginalFilename() == null) {
+                throw new Exception("Original Filename may not be null!");
+            }
             String normal_orig_path = file.getOriginalFilename().replace(" ", "_");     // PDF-Namen von Leerstellen befreien
             Path dest_path = Path.of("frontend","public", normal_orig_path);
 
