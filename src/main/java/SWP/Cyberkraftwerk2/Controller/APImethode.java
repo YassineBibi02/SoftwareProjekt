@@ -63,8 +63,6 @@ public class APImethode {
 
     @GetMapping("/GetUsers")
     public String[] getAllUsers (){
-        //User test1 = new User("Soenke", "Harder", "soenke_harder@gmx.de", new int[]{1, 2}, 0);
-        //User test2 = new User("Aaron", "Sava", "testest@fakemail.de", new int[]{1, 2}, 0);
         List<User> UserList = this.userRepository.findAll();
         String[] result = new String[UserList.size()];
         int i = 0;
@@ -561,9 +559,16 @@ public class APImethode {
 
     
     @PostMapping("/SendMails")
-    public void sendMails(@RequestBody int[] UIDs, @RequestBody int[] start_date, @RequestBody int[] end_date){
+    public void sendMails(@RequestBody Map<String, int[]> data){
+        int[] UIDs = data.get("UIDs");
+        int[] start_date = data.get("start_date");
+        int[] end_date = data.get("end_date");
+        System.out.println(Arrays.toString(UIDs));
+        System.out.println(Arrays.toString(start_date));
+        System.out.println(Arrays.toString(end_date));
         Mail mail = new Mail(userService);
         mail.send_mails(UIDs, start_date, end_date);
+
     }
 
 

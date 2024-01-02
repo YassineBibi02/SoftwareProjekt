@@ -6,18 +6,18 @@ import { Button } from 'react-bootstrap';
 import SelectedUsers from './SelectedUsers';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import Form from "react-bootstrap/Form";
 
 const SendMailScreenComponent = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
     //const [buttonText, setButtonText] = useState('');
     const navigate = useNavigate();
 
-
     const [cookies] = useCookies(['XSRF-TOKEN']); // Calls the CSRF token. VERY IMPORTANT
     const [user, setUser] = useState(undefined);    
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    const [startDateChanged, setStartDateChanged] = useState(false);
+    const [endDateChanged, setEndDateChanged] = useState(false);
 
 //THE LOGIN BLOCK
     useEffect(() => {
@@ -42,7 +42,18 @@ const SendMailScreenComponent = () => {
         }
             });
     }, []);
-//THE LOGIN BLOCK
+
+
+
+    const setNewStartDate = (e) => {   
+        setStartDate(e);
+        setStartDateChanged(true);
+    };
+
+    const setNewEndDate = (e) => {
+        setEndDate(e);
+        setEndDateChanged(true);
+    };
 
     const ButtonStyle = {
         margin: '20px',
@@ -69,52 +80,48 @@ const SendMailScreenComponent = () => {
     const SendMail = async () => {        
         console.log("SendMailPressed");
         const checkedCards = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'));
-        var checkedCardNames = checkedCards.map(card => card.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('mail'));
-        console.log(checkedCardNames);        
+        var checkedCardIDs = checkedCards.map(card => card.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('id'));
+        const startDateArray = startDate.split('-');
+        const endDateArray = endDate.split('-');
+        console.log("startDateArray", startDateArray);
+        console.log("endDateArray", endDateArray);
+        const data = {
+            UIDs: checkedCardIDs,
+            start_date: startDateArray,
+            end_date: endDateArray
+        }
         try {
-            //const response = await axios.post('http://localhost:8080/api/methode/SendEmail', checkedCardNames);
-            fetch('/api/methode/SendEmail', {
+            fetch('/api/methode/SendMails', {
                       method: 'POST', credentials: 'include',
                       headers: { 
                         'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
                         'Content-Type': 'application/json',
                      }, // <.>
-                    body: JSON.stringify(checkedCardNames)
+                    body: JSON.stringify(data)
                 })
                .then(response => response.text()).then(data => console.log("Response:",data));
             console.log('Email sent successfully');
         } catch (error) {
             console.error('Error sending email:', error);
-        }        
+        }
     };
 
-    const login = () => {
-        navigate('/login');
-    }
-
-    const showDates = () => {
-        console.log(startDate);
-        console.log(endDate);
-    }
 
 const Body = user ?
          ////// noramle page
         <div>
                 <Header />
                 <div style={DateContainerStyle}>
-                    <DateSetter title={"Start (proto)"} setDateParent={setStartDate}/>
-                    <DateSetter title={"Ende (proto)"} setDateParent={setEndDate}/>
+                    <DateSetter title={"Start"} setDateParent={setNewStartDate}/>
+                    <DateSetter title={"Ende"} setDateParent={setNewEndDate}/>
                 </div>
                 <div>
                     <UserList onUserCardSelect={handleUserSelectionChange} />
                     <SelectedUsers id="SelectedUsers" usernames={selectedUsers} />
                 </div>
                 <div>
-                    <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0}>
+                    <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0 || !startDateChanged || !endDateChanged || (endDate < startDate)}>
                         Bestätigen
-                    </Button>
-                    <Button variant="primary" size="lg" onClick={showDates} >
-                        See Dates
                     </Button>
                 </div>
         </div>:
