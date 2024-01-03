@@ -431,7 +431,7 @@ public class Mail {
         formatted_mail = formatted_mail.replace("KOLLEGE2EMAIL", random2.get_email());
         formatted_mail = formatted_mail.replace("COMPANY", "Kraftwerk Kraft-Wärme-Kopplung GmbH");
         /*format Link */
-        mailtext = mailtext.replace("LINK", TIPPATH + "?UID=" + String.valueOf(recipient.get_ID()) + "&MID=" + String.valueOf(mailid));
+        mailtext = mailtext.replace("LINK", "<a href=" + '"' + TIPPATH + "?UID=" + String.valueOf(recipient.get_ID()) + "&MID=" + String.valueOf(mailid) + '"' + ">Link</a>");
         return formatted_mail;
     }
 
