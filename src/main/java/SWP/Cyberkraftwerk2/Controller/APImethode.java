@@ -576,7 +576,7 @@ public class APImethode {
 
     
     @PostMapping("/SendMails")
-    public void sendMails(@RequestBody Map<String, int[]> data){
+    public boolean sendMails(@RequestBody Map<String, int[]> data){
         int[] UIDs = data.get("UIDs");
         int[] start_date = data.get("start_date");
         int[] end_date = data.get("end_date");
@@ -584,8 +584,7 @@ public class APImethode {
         System.out.println(Arrays.toString(start_date));
         System.out.println(Arrays.toString(end_date));
         Mail mail = new Mail(userService);
-        mail.send_mails(UIDs, start_date, end_date);
-
+        return mail.send_mails(UIDs, start_date, end_date);
     }
 
 
