@@ -23,15 +23,34 @@ public class UserService {
         this.achievementRepository = achievementRepository;
     }
 
-    public User getUserByID(int ID){
+
+    /**
+     * This function returns a user referenced by their ID
+     * @param ID ID of the user
+     * @return the user
+    */
+    public User getUserByID(int ID) {
         return this.userRepository.findByid(ID);
     }
 
+
+    /**
+     * This function returns a user referenced by their email
+     * @param email email of the user
+     * @return the user
+    */
     public User getUserByEmail(String email) {
         return this.userRepository.findByEmail(email);
     }
 
-    public void mail_received(int ID, int mailID){
+
+    /**
+     * This function logs a mail as received for the specified user
+     * @param ID ID of the user
+     * @param mailID ID of the mail
+     * @return void
+    */
+    public void mail_received(int ID, int mailID) {
         /*sets receivedmails[mailID] to 1*/
         Optional<User> user_optional = Optional.ofNullable(this.userRepository.findByid(ID));
         if(user_optional.isPresent()) {
@@ -45,7 +64,13 @@ public class UserService {
     }
 
 
-    public void mail_clicked(int ID, int mailID){
+    /**
+     * This function logs a mail as clicked for the specified user
+     * @param ID ID of the user
+     * @param mailID ID of the mail
+     * @return void
+    */
+    public void mail_clicked(int ID, int mailID) {
         /*sets receivedmails[mailID] to 0*/
         Optional<User> user_optional = Optional.ofNullable(this.userRepository.findByid(ID));
         if(user_optional.isPresent()) {
@@ -59,7 +84,12 @@ public class UserService {
     }
 
 
-    public void raise_userlevel(int ID){
+    /**
+     * This function raies the userlevel of the specified user
+     * @param ID ID of the user
+     * @return void
+    */
+    public void raise_userlevel(int ID) {
         /*raise Userlevel by one*/
         Optional<User> user_optional = Optional.ofNullable(this.userRepository.findByid(ID));
         if(user_optional.isPresent()) {
@@ -75,7 +105,11 @@ public class UserService {
     }
 
 
-    public void new_mail(){
+    /**
+     * This function logs a new mail for all users
+     * @return void
+    */
+    public void new_mail() {
         /*adds a new mail to the receivedmails array*/
         User[] users = this.userRepository.findAll().toArray(new User[0]);
         for (User user : users) {
@@ -128,6 +162,7 @@ public class UserService {
         return achievements;
     }
 
+
     /**
      * this function creates a new user
      *
@@ -140,6 +175,7 @@ public class UserService {
         this.userRepository.save(user);
     }
 
+
     /**
      * this function deletes a user
      *
@@ -148,6 +184,7 @@ public class UserService {
     public void removeUserByID(int ID) {
         this.userRepository.deleteById(ID);
     }
+
 
     /**
      * this function deletes a user
@@ -163,7 +200,7 @@ public class UserService {
      * Fetches a random user from the database
      * @return random User
      */
-    public User getRandomUser(){
+    public User getRandomUser() {
         List<User> users = this.userRepository.findAll();
         int random = (int) (Math.random() * users.size());
         return users.get(random);
