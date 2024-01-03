@@ -68,6 +68,14 @@ public class Mail {
     }
 
 
+    private static class UnlockService extends TimerTask{
+        public void run()
+            {
+                unlock_service();
+            }
+    }
+
+
     /**
     * saves a new mail
     * Mail MUST at least contain placeholder "LINK" to be valid
@@ -452,10 +460,18 @@ public class Mail {
         /*calculate difference in days between startdate and enddate */
         long difference = enddate.getTime() - startdate.getTime();
         long differencedays = difference / (24 * 60 * 60 * 1000);
+        if (differencedays < 0){
+            Date[] datesfallback = new Date[1];
+            calendar.setTime(startdate);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            datesfallback[0] = calendar.getTime();
+            return datesfallback;
+            }
         Date[] dates = new Date[(int)differencedays + 1];
-        dates[0] = startdate;
+        //dates[0] = startdate;
         for(int i = 0; i < dates.length; i++){
-            /*get startdate + 1 day*/
+            /*get startdate + i days*/
             calendar.setTime(startdate);
             calendar.add(Calendar.DATE, i);
             calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -465,6 +481,65 @@ public class Mail {
         return dates;
     }
 
+
+    /**
+    * locks the mail service until all mails are sent
+    * @return void
+    */
+    private void lock_service() {
+        //writes a 1 in file lock.txt
+        try{
+            FileWriter lockwriter = new FileWriter(MAILPATH + "lock.txt");
+            lockwriter.write("0");
+            lockwriter.close();
+            }
+        catch(Exception e){
+            return;
+            }
+    }
+
+
+    /**
+    * checks if the mail service is locked
+    * @ return true if locked, false if not
+    */
+    private boolean is_locked() {
+        //checks if lock.txt contains a 1
+        try{
+            File lock = new File(MAILPATH + "lock.txt");
+            Scanner lockscan = new Scanner(lock);
+            String line = lockscan.nextLine();
+            lockscan.close();
+            if(line.equals("1")){
+                return false;
+                }
+            else{
+                return true;
+                }
+            }
+        catch(Exception e){
+            return false;
+            }
+    }
+
+
+    /**
+    * unlocks the mail service
+    * @return void
+    */
+    private static void unlock_service() {
+        //writes a 0 in file lock.txt
+        try{
+            FileWriter lockwriter = new FileWriter(MAILPATH + "lock.txt");
+            lockwriter.write("1");
+            lockwriter.close();
+            }
+        catch(Exception e){
+            return;
+            }
+    }
+
+
     /**
     * takes an array of users and sends each of them one mail per day from start date to end date
     * @param recipients the recipients
@@ -472,7 +547,13 @@ public class Mail {
     * @param end_date to keep it easy, length 3 int array with year, month, day in that order
     * @return void
     */
-    public void send_mails(int[] recipients, int[] start_date, int[] end_date){
+    public boolean send_mails(int[] recipients, int[] start_date, int[] end_date){
+        if (is_locked()){
+            return false;
+            }
+        else{
+            lock_service();
+            }
         /*get days*/
         Date[] dates = get_days(start_date, end_date);
         /*timed send*/
@@ -482,6 +563,7 @@ public class Mail {
         for(int i = 0; i < recipients.length; i++){
             first_iteration[i] = true;
             }
+        int mailssent_lastday = 0;
         /*for each date*/
         for(int d = 0; d < dates.length; d++){
             int mailssent = 0;
@@ -537,9 +619,16 @@ public class Mail {
                         break;
                         }
                     }
-                    
                 }
-            }    
+            if (d + 1 == dates.length){
+                mailssent_lastday = mailssent;
+                }
+            }
+        calendar.setTime(dates[dates.length - 1]);
+        calendar.set(Calendar.MINUTE, mailssent_lastday + 1);
+        Date senddate = calendar.getTime();  
+        sendtimer.schedule(new UnlockService(), senddate);
+        return true;
     }
 
 
