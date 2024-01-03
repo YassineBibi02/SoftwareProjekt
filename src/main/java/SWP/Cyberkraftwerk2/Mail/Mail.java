@@ -552,7 +552,7 @@ public class Mail {
      * @param recipients the recipients
      * @param start_date to keep it easy, length 3 int array with year, month, day in that order
      * @param end_date to keep it easy, length 3 int array with year, month, day in that order
-     * @return void
+     * @return true if succesfull, false if mails are still being sent
     */
     public boolean send_mails(int[] recipients, int[] start_date, int[] end_date) {
         if (is_locked()) {
