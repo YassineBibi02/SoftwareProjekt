@@ -110,7 +110,7 @@ public class QuizMaster {
             System.err.println("[QuizMaster - validateAnswer] Given user id returned no registered user. Aborting ...");
             return false;
         }
-        if(right_answer_counter >= question_count / 2) {
+        if(right_answer_counter >= ((double) question_count) / 2.0) {
             this.qc_service.addAccomplishedUser(lesson_id, targeted_user);    // ist mehr als oder genau die Hälfte richtig, User der accomplished-Liste hinzufügen
             grantAchievement(user_id, achievement_id);
             return true;
