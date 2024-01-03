@@ -110,7 +110,7 @@ const LessonsList = () => {
                 <h1 style={{marginLeft: '30px', marginBottom: '30px', fontWeight: 'bold'}}>Schulungen</h1>
                 <Container style={TableStyle} fluid>
                     <Row>
-                        <Col style={HeaderStyle} lg={2}>Schiwerigkeit</Col>
+                        <Col style={HeaderStyle} lg={2}>Schwierigkeit</Col>
                         <Col style={HeaderStyle} lg={4}>Titel</Col>
                         <Col style={HeaderStyle} lg={3}>Abgeschlossen</Col>
                         <Col style={HeaderStyle} lg={2}>Quiz</Col>
@@ -146,7 +146,7 @@ const LessonsList = () => {
                 <h1 style={{marginLeft: '30px', marginBottom: '30px', fontWeight: 'bold'}}>Schulungen</h1>
                 <Container style={TableStyle} fluid>
                     <Row>
-                        <Col style={HeaderStyle} lg={2}>Schiwerigkeit</Col>
+                        <Col style={HeaderStyle} lg={2}>Schwierigkeit</Col>
                         <Col style={HeaderStyle} lg={4}>Titel</Col>
                         <Col style={HeaderStyle} lg={3}>Abgeschlossen</Col>
                         <Col style={HeaderStyle} lg={3}>Quiz</Col>

@@ -41,7 +41,7 @@ const UserCard = ({ userData, onSelect }) => {
           </div>
         </Form>
         <Card.Title style={{ fontSize: '1rem' }}>{jsonData._firstname}</Card.Title>
-        <Card.Text>Aktuelles Level: 1</Card.Text>
+        <Card.Text>Aktuelles Level: {jsonData._maillevel}</Card.Text>
       </Card.Body>
     </Card>
   );
