@@ -65,7 +65,9 @@ public class UserService {
         if(user_optional.isPresent()) {
             User user = user_optional.get();
             int templevel = user.get_maillevel();
-            templevel++;
+            if (templevel < 3){
+                templevel++;
+                }
             user.setMaillevel(templevel);
             // Save the user back to the database
             userRepository.save(user);
