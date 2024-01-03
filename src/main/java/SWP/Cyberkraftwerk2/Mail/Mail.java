@@ -508,7 +508,7 @@ public class Mail {
 
     /**
      * checks if the mail service is locked
-     * @ return true if locked, false if not
+     * @return true if locked, false if not
     */
     private boolean is_locked() {
         //checks if lock.txt contains a 1
