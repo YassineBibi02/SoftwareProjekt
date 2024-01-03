@@ -22,6 +22,7 @@ const LessonsList = () => {
     useEffect(() => {
         const fetchLessons = async () => {
             try {
+                //es muss keine axios request sein. bitte andern
                 const response = await axios.get('http://localhost:8080/api/methode/GetLessonRegistry');
                 console.log('Raw data: ', response.data)
                 const LessonArray = Object.values(response.data);
