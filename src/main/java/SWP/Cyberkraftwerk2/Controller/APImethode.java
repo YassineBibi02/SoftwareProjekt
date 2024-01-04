@@ -18,6 +18,8 @@ import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +52,10 @@ public class APImethode {
     private QuizCompService quiz_completion_service;
     private QuizMaster quiz_master;
 
+    // autowired email service instance; needs to be autowired to inject the login credentials properly
+    @Autowired
+    private EmailService mservice;
+
     public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService, AchievementService achievementService, QuizCompService qcs) {
         this.userRepository = rep;
         this.achievementRepository = achievementRepository;
@@ -75,8 +81,7 @@ public class APImethode {
 
     @PostMapping(value="/SendEmail", consumes = "application/json")
     public String sendEmail(@RequestBody String[] Subject) {
-        EmailService mail = new EmailService();
-        mail.sendEmail(Subject[0], "Test", "Hello World");
+        mservice.sendEmail(Subject[0], "Test", "Hello World");
         System.out.println(Arrays.toString(Subject));
         return "Received : " + Arrays.toString(Subject) + "";
     }

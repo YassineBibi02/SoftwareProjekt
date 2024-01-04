@@ -3,6 +3,8 @@ package SWP.Cyberkraftwerk2.Mail;
 
 import SWP.Cyberkraftwerk2.Module.User;
 import SWP.Cyberkraftwerk2.Module.UserService;
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -30,6 +32,21 @@ public class Mail {
         this.userservice = userService;
     }
 
+    // autowired EmailService instance to establish the injecting of the mail provider details
+    @Autowired
+    private EmailService service;
+    // static EmailService instance to be used with the static functions
+    private static EmailService static_service;
+
+    /**
+     * Initializer to register the established EmailService instance as a static instance.
+     * @author Tristan Slodowski
+     */
+    // the Mail class needs an autowired instance of EmailService to properly work. @Autowired can't be used with static fields though, so this workaround is needed to work anyway.
+    @PostConstruct
+    private void init() {
+        this.static_service = service;
+    }
 
     /**
     * internal method, wraps the call to EmailService for timed sending, attempts HTML first, then falls back to plain text
@@ -39,12 +56,11 @@ public class Mail {
     * @return void
     */
     private static void actual_sendmail(String mailtext, String subject, String recipient_email){
-        EmailService service = new EmailService();
         try{
-            service.sendHtmlMessage(recipient_email, subject, mailtext);
+            static_service.sendHtmlMessage(recipient_email, subject, mailtext);
             }
         catch(Exception e){
-            service.sendEmail(recipient_email, subject, mailtext);
+            static_service.sendEmail(recipient_email, subject, mailtext);
             }
     }
 
