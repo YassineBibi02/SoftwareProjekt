@@ -1,1 +1,73 @@
-LINK Test2222
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.56);
+            margin-top: 50px;
+        }
+        header {
+            background: #347cdb;
+            color: white;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #2980b9 4px solid;
+            border-radius: 10px 10px 0 0;
+        }
+        h1 {
+            font-weight: 200;
+            padding: 20px;
+            margin: 0;
+        }
+        body .main-content {
+            padding: 20px;
+        }
+        body .main-content p {
+            font-size: 1.1em;
+            line-height: 1.6em;
+            color: #555;
+        }
+        body .main-content .btn {
+            display: inline-block;
+            padding: 10px;
+            background-color: #347cdb;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>Passwort zurücksetzen</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <p>Hallo,</p>
+            <p>Um mit dem Zurücksetzen Ihres Passworts fortzufahren, klicken Sie auf den folgenden Link:</p>
+            <p>LINK</p>
+            <p>Wenn Sie kein Zurücksetzen beantragt habem, klicken Sie bitte hier: LINK</p>
+            <p>Freundliche Grüße,<br>Ihr App Team</p>
+        </div>
+    </div>
+
+</body>
+</html>
