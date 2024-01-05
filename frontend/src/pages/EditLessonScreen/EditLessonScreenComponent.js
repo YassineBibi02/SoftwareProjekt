@@ -155,33 +155,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
             });
     });
 
-    const uploadQuiz = () => {
-        console.log("Uploading quiz with ID: ", idRef.current);
-        if (questions.length > 0) {
-            const convertedQuestions = getQuizString(questions);
-            console.log(JSON.stringify(convertedQuestions));
-        
-            try {
-                fetch('/api/methode/AddQuiz', {
-                    method: 'POST', credentials: 'include',
-                    headers: {
-                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(convertedQuestions),
-                })
-            } catch (error) {
-                console.error("Error2:", error);
-                console.error("Error details:", error.message, error.response);
-                showErrorMessages({text: "Error uploading Quiz"});
-                return false;
-            }
-        } else {
-            showErrorMessages({text: "No Quiz found"});
-            return false;
-        }
-        return true;
-    }
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -227,6 +200,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
     }
 
     const editLesson = ({newName}) => {
+        console.log("Quiz:" , questions)
         const lessonArray = [];
         lessonArray.push(lesson.id)
         lessonArray.push(title);
@@ -344,9 +318,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
             result.push(question);
             result.push(wrongAnswers[0].length);
             result.push(rightAnswer);
-            console.log("Wrong Answers: ", wrongAnswers);
             wrongAnswers[0].forEach((wrongAnswer) => {
-                console.log("Wrong Answer: ", wrongAnswer);
                 result.push(wrongAnswer.value);
             });
         });
@@ -403,7 +375,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 <div style={containerStyle}>
                     <p>Quiz:&nbsp;&nbsp;</p>
                     <QuizCheckmark/>
-                    <AddQuizPopup setQuizData={setQuizData} oldQuizData={oldQuizData}/>                
+                    <AddQuizPopup setQuizData={setQuizData} oldQuizData={oldQuizData} editing={!newLesson}/>                
                 </div>
 
                 <div style={containerStyle}>
