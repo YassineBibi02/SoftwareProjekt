@@ -27,6 +27,16 @@ const EditLessonScreenComponent = ({newLesson}) => {
         idRef.current = newLesson ? '' : lesson.id;
     },[]);
 
+    const [oldQuizData, setOldQuizData] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return [];
+        } else {
+            // Setup Variables with lesson data
+            return lesson.quiz;
+        }
+    });
+
     const [initialPath, setInitialPath] = useState(() => {
         if (newLesson) {
             // Handle initial state for new lesson
@@ -393,7 +403,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 <div style={containerStyle}>
                     <p>Quiz:&nbsp;&nbsp;</p>
                     <QuizCheckmark/>
-                    <AddQuizPopup setQuizData={setQuizData}/>                
+                    <AddQuizPopup setQuizData={setQuizData} oldQuizData={oldQuizData}/>                
                 </div>
 
                 <div style={containerStyle}>

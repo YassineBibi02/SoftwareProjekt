@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Form, Button, Container} from 'react-bootstrap';
 
-function CreateQuizScreen({setQuizData, closePopup}) {
+function CreateQuizScreen({setQuizData, closePopup, oldQuizData}) {
 
     const [question, setQuestion] = useState("");   // the question of a question, initially empty
     const [correctAnswer, setCorrectAnswer] = useState(""); // the correct answer of the question, initially empty
@@ -16,6 +16,25 @@ function CreateQuizScreen({setQuizData, closePopup}) {
 
     const maxQuestions = 10;    // maximum number of questions
     const maxWrongAnswers = 6;  // maximum number of wrong answers
+
+    console.log("This is the oldQuizData:", oldQuizData);
+    /*"quiz":
+        {
+            "question_count":2,
+            "q1":
+            {
+                "wrong_answers":["In Schluesselloch stecken und drehen","Just use it 5head"],
+                "question":"Wie verwendet man einen FIDO2 Key?",
+                "right_answer":"An Rechner anschliessen und Treiber arbeiten lassen"
+            },
+            "id":1,
+            "q0":
+            {
+                "wrong_answers":["ein Weg um Hundehuetten abzuschliessen","ein hunde-foermiger Schluessel"],
+                "question":"Was ist ein FIDO2 Key?",
+                "right_answer":"ein physikalischer Schluessel um sich Authentifizieren zu koennen"
+            }
+    */
 
     const FormGroupStyle = {
         border: '1px solid grey',

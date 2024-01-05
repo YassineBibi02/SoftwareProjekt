@@ -6,7 +6,7 @@ import { useCookies } from 'react-cookie';
 import { Navigate } from 'react-router-dom';
 import CreateQuizScreen from '../../Quiz/createQuizScreen';
 
-const AddQuizPopup = ({lessonTitle, setQuizData}) => {
+const AddQuizPopup = ({lessonTitle, setQuizData, oldQuizData}) => {
     const [cookies] = useCookies(['XSRF-TOKEN']);
     const [show, setShow] = useState(false);
   
@@ -24,7 +24,7 @@ const AddQuizPopup = ({lessonTitle, setQuizData}) => {
             <Modal.Header closeButton>
             </Modal.Header>
             <Modal.Body>
-              <CreateQuizScreen setQuizData={setQuizData} closePopup={handleClose}/>
+              <CreateQuizScreen setQuizData={setQuizData} closePopup={handleClose} oldQuizData={oldQuizData}/>
             </Modal.Body>
           </Modal>
         </div>
