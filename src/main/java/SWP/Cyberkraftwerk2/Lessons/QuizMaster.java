@@ -103,7 +103,7 @@ public class QuizMaster {
                 
                 // compare the list of right answers with the list of given answers
                 int right_answer_counter = 0;
-                for(int j = 0; i < question_count; j++) {
+                for(int j = 0; j < question_count; j++) {
                     if(answers[j].equals(right_answers[j])) {       // if the given answers is also the right answer, increment the right answer counter
                         right_answer_counter++;
                     }
