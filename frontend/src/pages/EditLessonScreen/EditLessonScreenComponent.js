@@ -195,7 +195,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         lessonArray.push(getDifficulty());
         lessonArray.push(achievementID);
         lessonArray.push(file.name);
-        const convertedQuestions = getQuizString(questions);
+        const convertedQuestions = getQuizArray(questions);
         console.log(JSON.stringify(convertedQuestions));
         const unitedArray = lessonArray.concat(convertedQuestions);
         console.log("United Array: ", unitedArray);
@@ -232,7 +232,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         if (newName) {
             lessonArray.push(file.name);
         }        
-        const convertedQuestions = getQuizString(questions);
+        const convertedQuestions = getQuizArray(questions);
         const unitedArray = lessonArray.concat(convertedQuestions);
         if (newName) {
             try {
@@ -332,40 +332,23 @@ const EditLessonScreenComponent = ({newLesson}) => {
         navigate('/lessonsOverview');
     };
 
-    /*
-    inputJSON:
-        {
-            "question_count":2,
-            "q1":
-            {
-                "wrong_answers":["In Schluesselloch stecken und drehen","Just use it 5head"],
-                "question":"Wie verwendet man einen FIDO2 Key?",
-                "right_answer":"An Rechner anschliessen und Treiber arbeiten lassen"
-            },
-            "id":1,
-            "q0":
-            {
-                "wrong_answers":["ein Weg um Hundehuetten abzuschliessen","ein hunde-foermiger Schluessel"],
-                "question":"Was ist ein FIDO2 Key?",
-                "right_answer":"ein physikalischer Schluessel um sich Authentifizieren zu koennen"
-            }
-        }
-    */
-    
-    const getQuizString = (inputArray) => {
+    const getQuizArray = (inputArray) => {
         const result = [];
-        result.push(questions.length);
+        result.push(inputArray.length);
 
         inputArray.forEach((item) => {
             const [question, rightAnswer, ...wrongAnswers] = item;
-            result.push(question);
-            result.push(wrongAnswers[0].length);
-            result.push(rightAnswer);
-            wrongAnswers[0].forEach((wrongAnswer) => {
-                result.push(wrongAnswer.value);
-            });
+            if (question != "" && rightAnswer != "" && wrongAnswers[0].length != 0) {
+                result.push(question);
+                result.push(wrongAnswers[0].length);
+                result.push(rightAnswer);
+                wrongAnswers[0].forEach((wrongAnswer) => {
+                    result.push(wrongAnswer.value);
+                });
+            } else {
+                result[0] = result[0] - 1;
+            }
         });
-
         return result;
     };
     
