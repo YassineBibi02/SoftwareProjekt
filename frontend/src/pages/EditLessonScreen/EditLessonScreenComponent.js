@@ -21,7 +21,29 @@ const EditLessonScreenComponent = ({newLesson}) => {
     const navigate = useNavigate();
 
     const idRef = useRef('');
-    
+
+    function createWrongAnswers(wrongAnswers) {
+        const wrongAnswersArray = [];
+        for (let i = 0; i < wrongAnswers.length; i++) {
+            const wrongAnswer = {id: i, value: wrongAnswers[i]};
+            wrongAnswersArray.push(wrongAnswer);
+        }
+        return wrongAnswersArray;
+    }
+
+    const getQuestionsFromJSON = (inputJSON) => {
+        const result = [];
+        const questionCount = inputJSON.question_count;
+        for (let i = 0; i < questionCount; i++) {
+            const question = inputJSON["q" + i];
+            const wrongAnswers = createWrongAnswers(question.wrong_answers);
+            const rightAnswer = question.right_answer;
+            const questionText = question.question;
+            const questionArray = [questionText, rightAnswer, wrongAnswers];
+            result.push(questionArray);
+        }
+        return result;
+    }
 
     useEffect(() => {
         idRef.current = newLesson ? '' : lesson.id;
@@ -114,7 +136,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
             return '';
         } else {
             // TODO Load from LessonEntry
-            return '';
+            return getQuestionsFromJSON(lesson.quiz);
         }
     });
 
@@ -307,8 +329,29 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
         console.log("ID: ", idRef.current)
         setShouldSubmit(true);
+        navigate('/lessonsOverview');
     };
 
+    /*
+    inputJSON:
+        {
+            "question_count":2,
+            "q1":
+            {
+                "wrong_answers":["In Schluesselloch stecken und drehen","Just use it 5head"],
+                "question":"Wie verwendet man einen FIDO2 Key?",
+                "right_answer":"An Rechner anschliessen und Treiber arbeiten lassen"
+            },
+            "id":1,
+            "q0":
+            {
+                "wrong_answers":["ein Weg um Hundehuetten abzuschliessen","ein hunde-foermiger Schluessel"],
+                "question":"Was ist ein FIDO2 Key?",
+                "right_answer":"ein physikalischer Schluessel um sich Authentifizieren zu koennen"
+            }
+        }
+    */
+    
     const getQuizString = (inputArray) => {
         const result = [];
         result.push(questions.length);
