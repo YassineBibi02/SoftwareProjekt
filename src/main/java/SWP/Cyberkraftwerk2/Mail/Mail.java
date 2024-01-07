@@ -513,7 +513,7 @@ public class Mail {
         //writes a 1 in file lock.txt
         try{
             FileWriter lockwriter = new FileWriter(MAILPATH + "lock.txt");
-            lockwriter.write("0");
+            lockwriter.write("1");
             lockwriter.close();
             }
         catch(Exception e) {
@@ -534,10 +534,10 @@ public class Mail {
             String line = lockscan.nextLine();
             lockscan.close();
             if(line.equals("1")) {
-                return false;
+                return true;
                 }
             else{
-                return true;
+                return false;
                 }
             }
         catch(Exception e) {
@@ -554,7 +554,7 @@ public class Mail {
         //writes a 0 in file lock.txt
         try{
             FileWriter lockwriter = new FileWriter(MAILPATH + "lock.txt");
-            lockwriter.write("1");
+            lockwriter.write("0");
             lockwriter.close();
             }
         catch(Exception e) {
