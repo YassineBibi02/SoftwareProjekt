@@ -45,9 +45,6 @@ const TemplateController = () => {
                       console.log("Access Denied. Admin Only Area")
                       // If the user does not have Admin_Access, navigate to the home screen
                       navigate('/');
-                  } else {
-                      // If the user has Admin_Access, continue
-                      Initialize();
                   }
               }
           });
@@ -57,32 +54,13 @@ const TemplateController = () => {
 
   }, []);
 
-  function Initialize () {
-
-  }
 
   // Handle deleting a template
-  const handleDelete = (template) => {
+  const handleEdit = (template) => {
+    navigate('/editTemplate', {state: {template: template}});
     /*
     setSelectedTemplate(template);
     setIsDeleteModalOpen(true);
-    */
-  };
-
-  // Handle confirming a template deletion
-  const handleConfirmDelete = () => {
-    // Perform the deletion logic here
-    // Close the delete confirmation modal
-    /*
-    setIsDeleteModalOpen(false);
-    */
-  };
-
-  // Handle closing modals
-  const handleCloseModals = () => {
-    /*
-    setIsEditModalOpen(false);
-    setIsDeleteModalOpen(false);
     */
   };
 
@@ -95,25 +73,12 @@ const TemplateController = () => {
           {templates.map((template) => (
             <TemplateComponent
               template={template}
-              onDelete={() => handleDelete(template)}
+              onEdit={() => handleEdit(template)}
               key={template[0]}
             />
           ))}
         </div>
-    </div>
-      {/* Delete Template Confirmation Modal */}
-      <Modal isOpen={isDeleteModalOpen} toggle={handleCloseModals}>
-        <ModalHeader>Confirm Delete</ModalHeader>
-        <ModalBody>Are you sure you want to delete this template?</ModalBody>
-        <ModalFooter>
-          <Button color="danger" onClick={handleConfirmDelete}>
-            Delete
-          </Button>
-          <Button color="secondary" onClick={handleCloseModals}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
+      </div>
     </div>
   );
 };

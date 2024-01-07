@@ -19,6 +19,7 @@ import CreateMailScreen from './pages/CreateMailScreen/CreateMailComponent';
 import DoQuizScreen from './pages/Quiz/doQuizScreen';
 import CreateQuizScreen from './pages/Quiz/createQuizScreen';
 import TemplateController from './pages/TemplateVerwaltungScreen/TemplateController';
+import EditMailComponent from './pages/EditMailScreen/EditMailComponent';
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
         <Route path="/templates" element={<TemplateController/>}/>
         <Route path="/doQuiz" element={<DoQuizScreen/>}/>
         <Route path="/createQuiz" element={<CreateQuizScreen/>}/>
+        <Route path="/editTemplate" element={<EditMailComponent/>}/>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>

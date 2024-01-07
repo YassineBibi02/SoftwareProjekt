@@ -594,14 +594,14 @@ public class APImethode {
 
 
     @PostMapping("/SaveMail")
-    public void saveMail(@RequestBody String[] input){
+    public boolean saveMail(@RequestBody String[] input){
         String text = input[0];
         String subject = input[1];
         int level = Integer.parseInt(input[2]);
         int id = Integer.parseInt(input[3]);
 
         Mail mail = new Mail(userService);
-        mail.save_mail(text, level, subject, id);
+        return mail.save_mail(text, level, subject, id);
     }
 
 

@@ -1,18 +1,23 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Header from '../../components/Header';
 import { Form, Button, Container, Modal} from 'react-bootstrap';
+import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
-function CreateMailComponent() {
+function EditMailComponent() {
+    const {state} = useLocation();
+    let oldTemplate = state?.template;
+    const navigate = useNavigate();
+    //console.log("Old Template: ", oldTemplate);
     const [cookies] = useCookies(['XSRF-TOKEN']);
 
-    const [subject, setSubject] = useState(''); // The subject of the mail with its update function
-    const [text, setText] = useState('');   // The text body of the mail with its update function
-    const [level, setLevel] = useState(''); // The level of the mail with its update function
+    const [subject, setSubject] = useState(oldTemplate[2]); // The subject of the mail with its update function
+    const [text, setText] = useState(oldTemplate[3]);   // The text body of the mail with its update function
+    const [level, setLevel] = useState(oldTemplate[1]); // The level of the mail with its update function
 
     const [showPopup, setShowPopup] = useState(false); // Sets if the popup is currently shown or not
 
-    const mail = [];    // The mail, initially empty
+    const [mail, setMail] = useState([])    // The mail, initially empty
 
     // The style of a text field
     const FormGroupStyle = {
@@ -49,13 +54,13 @@ function CreateMailComponent() {
         }
     }
 
-    // Creates the mail after the user clicks on the submit button
+    // Edits the mail after the user clicks on the submit button
     function handleSubmit(event) {
         event.preventDefault();
-        createMail();
+  
 
         try {
-            fetch('/api/methode/NewMail', {
+            fetch('/api/methode/SaveMail', {
                       method: 'POST', credentials: 'include',
                       headers: { 
                         'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
@@ -70,16 +75,21 @@ function CreateMailComponent() {
         } catch (error) {
             console.error('Error', error);
         }
-
-        console.log("This is the mail:", mail);
-
+        navigate('/templates')
     }
 
+    useEffect(() => {
+        EditMail();
+    }, [subject, text, level])
+
     // Push all the variables into the mail array
-    function createMail() {
-        mail.push(text);
-        mail.push(subject);
-        mail.push(level);
+    function EditMail() {
+        const newMail = [];
+        newMail.push(text);
+        newMail.push(subject);
+        newMail.push(level);
+        newMail.push(oldTemplate[0]);
+        setMail(newMail)
     }
 
     function openPopup() {
@@ -106,6 +116,7 @@ function CreateMailComponent() {
                             type="subject"
                             name="Subject"
                             onChange={handleInputChange}
+                            value={subject}
                         />
                     </Form.Group>
 
@@ -118,6 +129,7 @@ function CreateMailComponent() {
                             rows={10}
                             name="Text"
                             onChange={handleInputChange} 
+                            value={text}
                         />
                     </Form.Group>
 
@@ -132,7 +144,7 @@ function CreateMailComponent() {
                     {/* Popup for the legend */}
                     <Modal show={showPopup} onHide={closePopup} backdrop="static">
                         <Modal.Header closeButton>
-                            Mailtext sollte HTML-Format haben. Beim Erstellen von Mails stehen folgende Variablen zur Verfügung, die vom System automatisch ersetzt werden:
+                            Beim Erstellen von Mails stehen folgende Variablen zur Verfügung, die vom System automatisch ersetzt werden:
                         </Modal.Header>
                         <Modal.Body>
                             <p>-LINK (muss in jeder Mail enthalten sein)</p>
@@ -162,6 +174,7 @@ function CreateMailComponent() {
                                     id={1}
                                     size="lg"
                                     onChange={handleInputChange}
+                                    checked={level == 1}
                                 />
                                 <Form.Check
                                     inline
@@ -171,6 +184,7 @@ function CreateMailComponent() {
                                     id={2}
                                     size="lg"
                                     onChange={handleInputChange}
+                                    checked={level == 2}
                                 />
                                 <Form.Check
                                     inline
@@ -180,6 +194,7 @@ function CreateMailComponent() {
                                     id={3}
                                     size="lg"
                                     onChange={handleInputChange}
+                                    checked={level == 3}
                                 />
                             </div>
                         ))}
@@ -195,4 +210,4 @@ function CreateMailComponent() {
       );
 }
 
-export default CreateMailComponent;
+export default EditMailComponent;
