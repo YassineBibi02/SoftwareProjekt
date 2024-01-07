@@ -472,6 +472,7 @@ public class APImethode {
     @PostMapping("/DeleteAchievement")
     public ResponseEntity<?> deleteAchievement(@RequestBody Integer achievementID) {
         achievementService.removeAchievement(achievementID);
+        LessonControl.invalidateAchievementId(achievementID);       // remove all references to this achievement from the registry
         return ResponseEntity.ok().body("Achievement deleted");
     }
 

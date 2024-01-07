@@ -367,6 +367,31 @@ public class LessonControl {
         return null;
     }
 
+    /**
+     * Method to delete a specific achievement id from all lesson entries.
+     * <p> Every occurence of the specified achievement id will get replaced with an empty string, thus nullifying the reference to the achievement. 
+     * @param achievement_id Integer achievement id that is supposed to completely deleted from all the entries' achievement references
+     */
+    public static void invalidateAchievementId(int achievement_id) {
+        JSONObject registry = parseRegistry();
+        JSONArray registered_ids = (JSONArray) registry.get("taken_ids");
+
+        for(int i = 0; i < registered_ids.length(); i++) {
+            JSONObject lesson_entry = (JSONObject) registry.get(Integer.toString(i));
+            String may_be_null_id = (String) lesson_entry.get("achievement_id");        // if the id has already been deleted here might be an empty string instead of an integer
+            if(may_be_null_id.equals("")) {
+                continue;
+            }
+            int current_achievement_id = (Integer) lesson_entry.get("achievement_id");  // parse the achievement id from the lesson entry and compare with the given achievement_id
+            if(achievement_id == current_achievement_id) {
+                lesson_entry.put("achievement_id", "");                 // replace with an empty string and save it to the registry
+                registry.put(Integer.toString(i), lesson_entry);
+            }
+        }
+
+        writeRegistry(registry);            // save all changes to the registry.json file
+    }
+
 
     /**
      * Static method to get a Json String representation of the whole registry
