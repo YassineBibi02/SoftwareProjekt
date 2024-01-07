@@ -232,7 +232,7 @@ public class Mail {
         /*count lines in subjects.txt*/
         total_lines = 0;
         try{    
-            File subjects = new File(MAILPATH + "subjcts.txt");
+            File subjects = new File(MAILPATH + "subjects.txt");
             Scanner subjectsscan = new Scanner(subjects);
             while(subjectsscan.hasNextLine()) {
                 subjectsscan.nextLine();
