@@ -156,7 +156,7 @@ public class APImethode {
      * @author Tristan Slodowski
      */
     @PostMapping("/RegisterLesson")                                         // TODO Auslesen der Argumente aus den Inputs für alle Lesson-Methoden sicherer machen
-    public int registerLesson(@RequestBody String[] input) {
+    public boolean registerLesson(@RequestBody String[] input) {
         System.out.println("Input Array:" + Arrays.toString(input));
         String name = input[0];
         int difficulty = Integer.parseInt(input[1]);
@@ -168,7 +168,7 @@ public class APImethode {
         String[] quiz_input = Arrays.copyOfRange(input, 3, input.length);
         quiz_input[0] = Integer.toString(id);
         createQuiz(quiz_input);
-        return id;
+        return true;
     }
 
     /**
