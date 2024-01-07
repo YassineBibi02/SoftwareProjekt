@@ -22,8 +22,10 @@ import java.util.*;
 @Repository
 public class Mail {
 
-    private static String MAILPATH = "src\\main\\resources\\mails\\"; // relativer Datenpfad zum mails-Verzeichnis
-    private static String TIPPATH = "actualpath";
+    //path to mail directory
+    private static String MAILPATH = "src\\main\\resources\\mails\\"; 
+    //path for hyperlink to tip page
+    private static String TIPPATH = "http:/23.88.113.199:3000/hereingefallen";
 
     private UserService userservice;
 
