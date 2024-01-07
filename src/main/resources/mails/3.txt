@@ -32,7 +32,7 @@
     </p>
     <p><strong>Datum:</strong> DATELASTWEEK</p>
     <p><strong>To:</strong><br>
-      EMPFÄNGERVORNAME EMPFÄNGERNACHNAME<br>
+      EMPFAENGERVORNAME EMPFAENGERNACHNAME<br>
     </p>
 
     <table>

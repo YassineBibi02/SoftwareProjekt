@@ -22,8 +22,10 @@ import java.util.*;
 @Repository
 public class Mail {
 
-    private static String MAILPATH = "src\\main\\resources\\mails\\"; // relativer Datenpfad zum mails-Verzeichnis
-    private static String TIPPATH = "actualpath";
+    //path to mail directory
+    private static String MAILPATH = "src\\main\\resources\\mails\\"; 
+    //path for hyperlink to tip page
+    private static String TIPPATH = "http:/23.88.113.199:3000/hereingefallen";
 
     private UserService userservice;
 
@@ -446,7 +448,7 @@ public class Mail {
         formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.get_firstname());
         formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.get_lastname());
         formatted_mail = formatted_mail.replace("EMPFAENGEREMAIL", recipient.get_email());
-        formatted_mail = formatted_mail.replace("KOLLEGE1VORNAME ", random1.get_firstname());
+        formatted_mail = formatted_mail.replace("KOLLEGE1VORNAME", random1.get_firstname());
         formatted_mail = formatted_mail.replace("KOLLEGE1NACHNAME", random1.get_lastname());
         formatted_mail = formatted_mail.replace("KOLLEGE1EMAIL", random1.get_email());
         formatted_mail = formatted_mail.replace("KOLLEGE2VORNAME", random2.get_firstname());
@@ -454,7 +456,7 @@ public class Mail {
         formatted_mail = formatted_mail.replace("KOLLEGE2EMAIL", random2.get_email());
         formatted_mail = formatted_mail.replace("COMPANY", "Kraftwerk Kraft-Wärme-Kopplung GmbH");
         /*format Link */
-        mailtext = mailtext.replace("LINK", "<a href=" + '"' + TIPPATH + "?UID=" + String.valueOf(recipient.get_ID()) + "&MID=" + String.valueOf(mailid) + '"' + ">Link</a>");
+        format_mail = format_mail.replace("LINK", "<a href=" + '"' + TIPPATH + "?UID=" + String.valueOf(recipient.get_ID()) + "&MID=" + String.valueOf(mailid) + '"' + ">Link</a>");
         return formatted_mail;
     }
 
@@ -513,7 +515,7 @@ public class Mail {
         //writes a 1 in file lock.txt
         try{
             FileWriter lockwriter = new FileWriter(MAILPATH + "lock.txt");
-            lockwriter.write("0");
+            lockwriter.write("1");
             lockwriter.close();
             }
         catch(Exception e) {
@@ -534,10 +536,10 @@ public class Mail {
             String line = lockscan.nextLine();
             lockscan.close();
             if(line.equals("1")) {
-                return false;
+                return true;
                 }
             else{
-                return true;
+                return false;
                 }
             }
         catch(Exception e) {
@@ -554,7 +556,7 @@ public class Mail {
         //writes a 0 in file lock.txt
         try{
             FileWriter lockwriter = new FileWriter(MAILPATH + "lock.txt");
-            lockwriter.write("1");
+            lockwriter.write("0");
             lockwriter.close();
             }
         catch(Exception e) {
