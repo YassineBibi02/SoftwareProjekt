@@ -456,7 +456,7 @@ public class Mail {
         formatted_mail = formatted_mail.replace("KOLLEGE2EMAIL", random2.get_email());
         formatted_mail = formatted_mail.replace("COMPANY", "Kraftwerk Kraft-Wärme-Kopplung GmbH");
         /*format Link */
-        format_mail = format_mail.replace("LINK", "<a href=" + '"' + TIPPATH + "?UID=" + String.valueOf(recipient.get_ID()) + "&MID=" + String.valueOf(mailid) + '"' + ">Link</a>");
+        formatted_mail = formatted_mail.replace("LINK", "<a href=" + '"' + TIPPATH + "?UID=" + String.valueOf(recipient.get_ID()) + "&MID=" + String.valueOf(mailid) + '"' + ">Link</a>");
         return formatted_mail;
     }
 
