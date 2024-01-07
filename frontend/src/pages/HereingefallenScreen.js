@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 
 function HereingefallenScreen() {
 
@@ -104,23 +105,35 @@ function HereingefallenScreen() {
         {title: "Wie erkennt man Phishing?", url:"https://www.youtube.com/embed/XgF42Jb8jxo?si=u9BJL4M46INHLGNa"},
     ];
 
-    const [username, setUsername] = useState('');                           // State Variable um den Usernamen des Nutzers uebernehmen zu koennen
+    const [cookies] = useCookies(['XSRF-TOKEN']);
+    const [username, setUsername] = useState('');                           // state variables to set the username correctly
     const queryParams = new URLSearchParams(window.location.search);
-    var user_payload = [queryParams.get("UID"), queryParams.get("MID")];    // Auslesen der Parameter in der URL
-    let ignore = false;                 // Boolean zum Umgehen der Doppel-Ausfuehrung von useEffect() im React-Dev-Mode
+    var user_payload = [queryParams.get("UID"), queryParams.get("MID")];    // read the user parameters from the used URL
+    let ignore = false;                 // boolean lock to prevent a double execution
 
     useEffect(() => {
         const blameUser = async (user_params) => {
-            if(user_params[0] == null || user_params[1] == null) {              // ohne Parameter kann man sich den POST sparen
+            if(user_params[0] == null || user_params[1] == null) {              // only try to blame if both parameters are available
                 console.log("No payload to read from! Did you access the site without UID and/or MID?");
                 return
             }
             if(!ignore) {
                 try {
                     console.log("Blaming user with UID " + user_params[0] + " for clicking the Link of Mail with MID " + user_params[1] + ".");
-                    const response = await axios.post('http://localhost:8080/api/methode/BlameUser', user_params);      // Uebergeben der Parameter an das Java-Backend
-                    console.log('Response: ', response.data)
-                    setUsername(response.data);             // Java-Backend antwortet mit Namen des Nutzers
+                    let user_parameters = [];                                   // preparing the payload for the backend
+                    user_parameters.push(user_params[0]);
+                    user_parameters.push(user_params[1]);
+                    const response = await fetch('/api/methode/BlameUser', {
+                        method: 'POST', credentials: 'include',
+                        headers: {
+                            'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(user_parameters),
+                    });
+                    let answer = await response.json();
+                    console.log('Response: ', answer)
+                    setUsername(answer.name);             // Java-Backend provides the firstname of the user
                 } catch (error) {
                     console.error(error);
                 }

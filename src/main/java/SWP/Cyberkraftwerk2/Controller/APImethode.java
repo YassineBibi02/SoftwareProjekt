@@ -98,7 +98,6 @@ public class APImethode {
         String name = "NOT AVAILABLE";
         int uid = Integer.parseInt(ids[0]);
         int mid = Integer.parseInt(ids[1]);
-        ObjectMapper objMapper = new ObjectMapper();
 
         this.userService.mail_clicked(uid, mid);    // blame the user for clicking the mail link
 
@@ -107,13 +106,13 @@ public class APImethode {
             return "[APImethode - BlameUser] User not found! Aborting ...";
         }
         try{
-            Map<String, Object> map = objMapper.readValue(gotcha.toJson(), new TypeReference<Map<String, Object>>(){}); // map the received user information into a more usable format
-            name = (String)map.get("firstname");
+            name = gotcha.get_firstname();
+            JSONObject response = new JSONObject();             // preparing the response json payload
+            response.put("name", name);
+            return response.toString();                        // returns the name from the user who clicked the link
         } catch(Exception e) {
             return "[APImethode - BlameUser] Firstname could not be retrieved.";
         }
-
-        return name;        // return the firstname of the user for use in the Frontend
     }
 
     /**
