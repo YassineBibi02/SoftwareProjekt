@@ -132,7 +132,7 @@ function CreateMailComponent() {
                     {/* Popup for the legend */}
                     <Modal show={showPopup} onHide={closePopup} backdrop="static">
                         <Modal.Header closeButton>
-                            Beim Erstellen von Mails stehen folgende Variablen zur Verfügung, die vom System automatisch ersetzt werden:
+                            Mailtext sollte HTML-Format haben. Beim Erstellen von Mails stehen folgende Variablen zur Verfügung, die vom System automatisch ersetzt werden:
                         </Modal.Header>
                         <Modal.Body>
                             <p>-LINK (muss in jeder Mail enthalten sein)</p>
