@@ -1,24 +1,23 @@
 import React from 'react';
 import './TemplateComponent.css'; // Import the CSS file
 
-const TemplateComponent = ({ template, onDelete }) => {
+const TemplateComponent = ({ template, onEdit }) => {
   console.log("Template given: " , {template});
 
   if (template === undefined) {
     return (
       <div className="template-card">
-        <h3>No template selected</h3>
+        <h3>Kein Template gefunden</h3>
       </div>
     );
   }
   return (
     <div className="template-card">
-      <h3>Subject: {template[2]}</h3>
-      <p>Text: {template[3]}</p>
+      <h3>Betreff:    {template[2]}</h3>
       <p>Level: {template[1]}</p>
       {/* Add other user information here */}
       <div className="template-actions">
-        <button onClick={onDelete}>Delete</button>
+        <button onClick={onEdit}>Bearbeiten</button>
       </div>
     </div>
   );
