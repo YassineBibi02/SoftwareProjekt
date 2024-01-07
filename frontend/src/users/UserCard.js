@@ -25,7 +25,7 @@ const UserCard = ({ userData, onSelect }) => {
   const jsonData = JSON.parse(userData);
 
   return (
-    <Card style={CardStyle} name={jsonData._firstname} mail={jsonData._EMail} id={jsonData._ID}>
+    <Card style={CardStyle} firstname={jsonData._firstname} lastname={jsonData._lastname} mail={jsonData._EMail} id={jsonData._ID} name={jsonData._firstname + " " + jsonData._lastname}>
       <Card.Body>
         <Form>
           <div key="custom-checkbox">
@@ -35,12 +35,13 @@ const UserCard = ({ userData, onSelect }) => {
               label=""
               style={CheckmarkStyle}
               size={1}
-              name={jsonData._firstname}
+              firstname={jsonData._firstname}
+              lastname={jsonData._lastname}
               onChange={onSelect}
             />
           </div>
         </Form>
-        <Card.Title style={{ fontSize: '1rem' }}>{jsonData._firstname}</Card.Title>
+        <Card.Title style={{ fontSize: '1rem' }}>{jsonData._firstname} {jsonData._lastname}</Card.Title>
         <Card.Text>Aktuelles Level: {jsonData._maillevel}</Card.Text>
       </Card.Body>
     </Card>

@@ -20,7 +20,7 @@ const SelectedUsers = ({ usernames }) => {
 
     return (
         <div style={ListStyle}>
-            <h1>Ausgewählt</h1>
+            <h1>Empfänger</h1>
             {usernames.map((name, index) => (
                 <p key={index}>{name}</p>
             ))}

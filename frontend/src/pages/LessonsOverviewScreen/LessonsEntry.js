@@ -13,7 +13,6 @@ import DeleteButton from './ConfirmDeletionPopup';
 const LessonsEntry = ({lessonData, admin, completed}) => {    
         
         const navigate = useNavigate();
-        console.log("Completed" ,completed)
         const EntryStyle = {
             textAlign: 'center',
             fontSize: '2em',

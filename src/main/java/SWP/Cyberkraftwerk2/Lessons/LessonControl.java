@@ -36,18 +36,18 @@ public class LessonControl {
     private static boolean createRegistry() {
         File directory = new File(res_directory);
         File[] contents = directory.listFiles();
-        for(File current_file : contents) {
+        for(File current_file : contents) {                                 	    // search for a "registry.json" file in the resource directory and instantly return "true" if found
             if(current_file.getName().equals("registry.json")) {
                 System.out.println("[LessonControl] Registry already present.");
                 return true;
             }
         }
         System.out.println("[LessonControl] No registry found. Creating one.");
-        JSONObject new_registry = new JSONObject();
+        JSONObject new_registry = new JSONObject();                                 // the base empty registry only consists of a json object with an empty "taken_ids" json array
         JSONArray empty_id_list = new JSONArray();
         new_registry.put("taken_ids", empty_id_list);
         try {
-            FileWriter fw = new FileWriter(res_directory + "\\registry.json");
+            FileWriter fw = new FileWriter(res_directory + "\\registry.json");      // FileWriter tries to create the new empty registry, closes itself and returns true
             fw.write(new_registry.toString());
             fw.close();
             return true;
@@ -67,18 +67,18 @@ public class LessonControl {
     private static int searchNewID(JSONArray assigned_ids) {
         List<Object> taken_ids = assigned_ids.toList();
         List<Integer> int_ids = new ArrayList<>();
-        for(Object o: taken_ids) {                      // Inhalt der List<Object> zu einer ArrayList<Integer> umarbeiten
+        for(Object o: taken_ids) {                      // translate the contents from the List<Object> into an ArrayList<Integer>
             int_ids.add((Integer) o );
         }
-        Collections.sort(int_ids);                      // Sortieren um schneller die kleinsten IDs zu finden
+        Collections.sort(int_ids);                      // sort the list of ids to find the smallest id faster
 
         for(int last = 0; last < int_ids.size(); last++) {
-            if(last != int_ids.get(last)) {             // befindet sich eine ID an einer "falschen" Indexposition in der Liste, wurde eine neue "freie" gefunden
+            if(last != int_ids.get(last)) {             // if there is an id at a "wrong" index (id != index), a new "free" id has been found
                 return last;
             }
         }
 
-        return int_ids.size();          // fehlt keine ID in der natuerlich aufsteigenden Reihenfolge, entspricht die Arraygroesse der neuen ID
+        return int_ids.size();          // if there is no id at a "wrong" index, the new index will be the size of the array
     }
 
     /**
@@ -98,13 +98,13 @@ public class LessonControl {
      * @author Tristan Slodowski
      */
     private static JSONObject parseRegistry() {
-        if(!checkForRegistry()) {
+        if(!checkForRegistry()) {                       // if no registry can be currently found, a new one will be created
             System.out.println("[LessonControl] Parsing failed. No Registry present.");
             createRegistry();
         }
         try{
             Path json_path = Path.of(res_directory + "\\registry.json");
-            JSONObject out = new JSONObject(Files.readString(json_path));
+            JSONObject out = new JSONObject(Files.readString(json_path)); // parse the contents of the registry and return the resulting JSONObject
 
             return out;
         } catch (Exception e) {
@@ -124,7 +124,7 @@ public class LessonControl {
     private static boolean writeRegistry(JSONObject new_registry) {
         try {
             FileWriter writer = new FileWriter(res_directory + "\\registry.json");
-            writer.write(new_registry.toString());
+            writer.write(new_registry.toString());                  // if possible save/overwrite the given JSONObject as the new registry file
 
             writer.close();
             return true;
@@ -147,25 +147,25 @@ public class LessonControl {
      */
     public static int addLessonEntry(String name, int difficulty_level, int achievement_id, String pdf_name) {
         JSONObject obj = new JSONObject();
-        obj.put("name", name);
+        obj.put("name", name);                                                  // setting the different values of the new entry from the inputs
         obj.put("difficulty", difficulty_level);
         JSONObject quiz = new JSONObject();
-        obj.put("quiz", quiz);                                                  // leerer Slot fuer das dazugehoerige Quiz
+        obj.put("quiz", quiz);                                                  // up until a quiz gets added to the entry, it will stay empty
         obj.put("achievement_id", achievement_id);
-        String file_name = pdf_name.replace(" ", "_");
-        obj.put("path", res_directory + "/" + file_name);
+        String file_name = pdf_name.replace(" ", "_");      // replace all empty spaces " " of the file name with underscores "_"
+        obj.put("path", res_directory + "/" + file_name);                       // the file path for the entry get put together from the resource directory, a slash and the file name
 
         JSONObject registry = parseRegistry();
         JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
 
-        int new_id = searchNewID(assigned_ids);
+        int new_id = searchNewID(assigned_ids);                 // get a new unused id for the new entry
         obj.put("id", new_id);
 
-        registry.put(Integer.toString(new_id), obj);
-        assigned_ids.put(new_id);
+        registry.put(Integer.toString(new_id), obj);            // insert the new entry json object into the registry
+        assigned_ids.put(new_id);                               // insert the now used id into the array of used ids
         registry.put("taken_ids", assigned_ids);
 
-        writeRegistry(registry);
+        writeRegistry(registry);                                // save the registry json with the new entry
         return new_id;
     }
 
@@ -179,13 +179,13 @@ public class LessonControl {
     private static int addLessonEntry(JSONObject new_obj) {
         JSONObject registry = parseRegistry();
         JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
-        int new_id = searchNewID(assigned_ids);
+        int new_id = searchNewID(assigned_ids);                 // get a new unused id for the new entry
 
-        registry.put(Integer.toString(new_id), new_obj);
-        assigned_ids.put(new_id);
+        registry.put(Integer.toString(new_id), new_obj);        // insert the new entry json object into the registry
+        assigned_ids.put(new_id);                               // insert the now used id into the array of used ids
         registry.put("taken_ids", assigned_ids);
 
-        writeRegistry(registry);
+        writeRegistry(registry);                                // save the registry json with the new entry
         return new_id;
     }
 
@@ -200,12 +200,12 @@ public class LessonControl {
         JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
 
         for(int i = 0; i < assigned_ids.length(); i++) {
-            if((assigned_ids.get(i)).equals(target_id)) {
-                registry.remove(Integer.toString(target_id));
+            if((assigned_ids.get(i)).equals(target_id)) {           // check if the desired entry id exists in the "taken_ids" array
+                registry.remove(Integer.toString(target_id));           // delete the entry from the registry json
 
-                assigned_ids.remove(i);
+                assigned_ids.remove(i);                                 // delete the id from the id array
                 registry.put("taken_ids", assigned_ids);
-                return writeRegistry(registry);
+                return writeRegistry(registry);                         // save the changes made to the registry and return whether that was successful
             }
         }
         return false;
@@ -226,17 +226,17 @@ public class LessonControl {
         JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
 
         for(int i = 0; i < assigned_ids.length(); i++) {
-            if((assigned_ids.get(i)).equals(id)) {
-                JSONObject chosen_entry = (JSONObject) registry.get(Integer.toString(id));
+            if((assigned_ids.get(i)).equals(id)) {                      // check if the desired entry id exists in the "taken_ids" array
+                JSONObject chosen_entry = (JSONObject) registry.get(Integer.toString(id));      // parse the entry to be changed from the registry
 
-                chosen_entry.put("name", name);
-                String file_name = pdf_name.replace(" ", "_");
+                chosen_entry.put("name", name);                                         // change the values to the new settings
+                String file_name = pdf_name.replace(" ", "_");       // replace all empty spaces " " of the file name with underscores "_"
                 chosen_entry.put("path", res_directory + "/" + file_name);
                 chosen_entry.put("difficulty", difficulty);
                 chosen_entry.put("achievement_id", achievement_id);
 
-                registry.put(Integer.toString(id), chosen_entry);
-                return writeRegistry(registry);
+                registry.put(Integer.toString(id), chosen_entry);           // overwrite the changes to the entry
+                return writeRegistry(registry);                             // overwrite the changes to the registry file
             }
         }
         return false;
@@ -256,15 +256,15 @@ public class LessonControl {
         JSONArray assigned_ids = (JSONArray) registry.get("taken_ids");
 
         for(int i = 0; i < assigned_ids.length(); i++) {
-            if((assigned_ids.get(i)).equals(id)) {
-                JSONObject chosen_entry = (JSONObject) registry.get(Integer.toString(id));
+            if((assigned_ids.get(i)).equals(id)) {                  // check if the desired id exists in the "taken_ids" array
+                JSONObject chosen_entry = (JSONObject) registry.get(Integer.toString(id));      // parse the entry to be changed from the registry
 
-                chosen_entry.put("name", name);
+                chosen_entry.put("name", name);                             // change the values to the new settings
                 chosen_entry.put("difficulty", difficulty);
                 chosen_entry.put("achievement_id", achievement_id);
 
-                registry.put(Integer.toString(id), chosen_entry);
-                return writeRegistry(registry);
+                registry.put(Integer.toString(id), chosen_entry);           // overwrite the changes to the entry
+                return writeRegistry(registry);                             // overwrite the changes to the registry
             }
         }
         return false;

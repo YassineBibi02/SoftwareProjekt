@@ -1,1 +1,93 @@
-LINK Test test
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        header {
+            background: #000000;
+            color: white;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #e87f1d 4px solid;
+            border-radius: 10px 10px 0 0;
+        }
+        header ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            overflow: hidden;
+        }
+        header #logo {
+            text-align: center;
+            margin: 0;
+        }
+        header #logo span {
+            color: #e87f1d;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8em; 
+            }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div id="logo">
+            <h1><span> PowerConnect Insights</span></h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Liebe Strombegeisterte,</h2>
+        <p>
+            willkommen zur neuesten Ausgabe von PowerConnect Insights! In dieser Ausgabe werfen wir einen Blick auf die dynamische Landschaft der Stromversorgungsbranche und stellen Ihnen aktuelle Entwicklungen, Branchentrends und spannende Innovationen vor.
+        </p>
+        <p>
+            Ausgewählter Artikel: Revolutionierung der erneuerbaren Energien <br> Entdecken Sie, wie Fortschritte bei den Energiespeichertechnologien die Integration erneuerbarer Energiequellen revolutionieren. Unsere eingehende Analyse untersucht die Auswirkungen auf die Netzstabilität, die Skalierbarkeit und die Zukunft der nachhaltigen Energieversorgung.
+        </p>
+        <p>
+            Industrie Spotlight: Smart Grid-Lösungen <br>
+            Erforschen Sie die transformative Kraft von Smart-Grid-Technologien. Von der Echtzeitüberwachung bis zur vorausschauenden Wartung zeigen wir, wie intelligente Netze die Effizienz und Zuverlässigkeit von Stromverteilungsnetzen verbessern.
+        </p>
+        <p>
+            Produktvorstellung: Leistungswandler der nächsten Generation <br>
+            Werfen Sie einen exklusiven Blick auf die neueste Generation von Stromrichtern zur Optimierung der Energieeffizienz und Minimierung der Umweltauswirkungen. Erfahren Sie, wie diese Innovationen die Art und Weise, wie wir Energie nutzen und verteilen, neu gestalten.
+        </p>
+        <p>
+            Kundenerfolgsgeschichte: Stärkung der Gemeinden <br>
+            Lesen Sie über eine bemerkenswerte Initiative, bei der unsere Energielösungen abgelegene Gemeinden mit zuverlässiger und nachhaltiger Elektrizität versorgen konnten. Entdecken Sie die positiven Auswirkungen auf Bildung, Gesundheitswesen und wirtschaftliche Entwicklung.
+        </p>
+        <p>
+            Kommende Veranstaltungen: Stromversorgungs-Symposium 2024 <br> Merken Sie sich das Power Symposium 2024 vor, bei dem Branchenführer, Innovatoren und Experten zusammenkommen, um die Zukunft der Stromversorgung zu diskutieren. Verpassen Sie nicht die aufschlussreichen Präsentationen, Networking-Möglichkeiten und praktischen Vorführungen.
+        </p>
+        <p>
+            Verbinden Sie sich mit uns <br> Bleiben Sie mit PowerConnect Insights in Verbindung, um die neuesten Updates, Nachrichten und Erkenntnisse zu erhalten. Folgen Sie uns in den sozialen Medien und beteiligen Sie sich an der Diskussion unter #PowerConnectInsights.
+        </p>
+        <p>
+           Vielen Dank für Ihr Interesse an PowerConnect Insights. 
+        </p>
+    </div>
+    <footer>
+        <p>Falls Sie diesen Newsletter nicht mehr erhalten möchten, können Sie sich hier jederzeit abmelden: LINK</p>
+    </footer>
+</body>
+</html>

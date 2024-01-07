@@ -18,6 +18,8 @@ import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +52,10 @@ public class APImethode {
     private QuizCompService quiz_completion_service;
     private QuizMaster quiz_master;
 
+    // autowired email service instance; needs to be autowired to inject the login credentials properly
+    @Autowired
+    private EmailService mservice;
+
     public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService, AchievementService achievementService, QuizCompService qcs) {
         this.userRepository = rep;
         this.achievementRepository = achievementRepository;
@@ -75,8 +81,7 @@ public class APImethode {
 
     @PostMapping(value="/SendEmail", consumes = "application/json")
     public String sendEmail(@RequestBody String[] Subject) {
-        EmailService mail = new EmailService();
-        mail.sendEmail(Subject[0], "Test", "Hello World");
+        mservice.sendEmail(Subject[0], "Test", "Hello World");
         System.out.println(Arrays.toString(Subject));
         return "Received : " + Arrays.toString(Subject) + "";
     }
@@ -95,20 +100,20 @@ public class APImethode {
         int mid = Integer.parseInt(ids[1]);
         ObjectMapper objMapper = new ObjectMapper();
 
-        this.userService.mail_clicked(uid, mid);    // User fuer das Anklicken der Mail anschwaerzen
+        this.userService.mail_clicked(uid, mid);    // blame the user for clicking the mail link
 
-        User gotcha = this.userRepository.findByid(uid);        // Abrufen des passenden Nutzers aus der Datenbank
+        User gotcha = this.userRepository.findByid(uid);        // get the user from the user databank
         if(gotcha == null) {
-            return "[USER NOT FOUND]";
+            return "[APImethode - BlameUser] User not found! Aborting ...";
         }
         try{
-            Map<String, Object> map = objMapper.readValue(gotcha.toJson(), new TypeReference<Map<String, Object>>(){}); // Informationen des Nutzers zu einer nutzbaren Map umwandeln
+            Map<String, Object> map = objMapper.readValue(gotcha.toJson(), new TypeReference<Map<String, Object>>(){}); // map the received user information into a more usable format
             name = (String)map.get("firstname");
         } catch(Exception e) {
-            return "ERROR WHILE GETTING NAME FROM DB";
+            return "[APImethode - BlameUser] Firstname could not be retrieved.";
         }
 
-        return name;
+        return name;        // return the firstname of the user for use in the Frontend
     }
 
     /**
@@ -120,19 +125,19 @@ public class APImethode {
      */
     @PostMapping("/UploadLesson")
     public boolean uploadLesson(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-        if(file.isEmpty()) {                                                                    // Ablehnen wenn keine Datei gewählt wurde
+        if(file.isEmpty()) {                                                                    // deny the upload if no file was selected
             System.out.println("[uploadLesson] No file provided. Please try again.");
             return false;
         }
 
         try {
-            if(file.getOriginalFilename() == null) {
+            if(file.getOriginalFilename() == null) {                                // check if the original name of the file is not null
                 throw new Exception("Original Filename may not be null!");
             }
-            String normal_orig_path = file.getOriginalFilename().replace(" ", "_");     // PDF-Namen von Leerstellen befreien
+            String normal_orig_path = file.getOriginalFilename().replace(" ", "_");     // replace all spaces " " with underscores "_" to avoid file system problems
             Path dest_path = Path.of("frontend","public", normal_orig_path);
 
-            file.transferTo(dest_path);                                     // PDF an entsprechenden Ort im Filesystem speichern
+            file.transferTo(dest_path);                                     // save the uploaded pdf in the designated pdf folder
             System.out.println("[uploadLesson] Upload successful.");
             return true;
         } catch (Exception e) {
@@ -157,7 +162,7 @@ public class APImethode {
         int difficulty = Integer.parseInt(input[1]);
         int achievement_id = Integer.parseInt(input[2]);
         String pdf_name = input[3];
-        int id = LessonControl.addLessonEntry(name, difficulty, achievement_id, pdf_name);
+        int id = LessonControl.addLessonEntry(name, difficulty, achievement_id, pdf_name);  // registering the new entry into the registry; returns the id of the new entry
         System.out.println(id);
         //Call create Quiz with the id and the rest of the input array:
         String[] quiz_input = Arrays.copyOfRange(input, 3, input.length);
@@ -177,19 +182,19 @@ public class APImethode {
         int target_id = Integer.parseInt(input);
 
         JSONObject registry = new JSONObject(LessonControl.getJsonString());
-        JSONObject entry = (JSONObject) registry.get(Integer.toString(target_id));
-        String path = (String) entry.get("path");               // genauen Speicherpfad der zu loeschenden PDF abrufen
+        JSONObject entry = (JSONObject) registry.get(Integer.toString(target_id));      // parse the entry json object to be deleted
+        String path = (String) entry.get("path");                                       // extract the path to the corresponding pdf file
 
         
         File to_be_deleted = new File(path);
-        if (to_be_deleted.delete()) {               // PDF loeschen und bei Erfolg auch Registryeintrag entfernen
+        if (to_be_deleted.delete()) {               // deleting the pdf file
             System.out.println("[APImethode] Deletion of lesson file successful. Removing from registry ...");
             String[] inp_arr = {input};
-            removeQuiz(inp_arr);
-            return LessonControl.removeLessonEntry(target_id);
+            removeQuiz(inp_arr);                                // the quiz of the entry gets deleted seperately to ensure deletion of the quiz tracker
+            return LessonControl.removeLessonEntry(target_id);  // deleting the entry in the registry
         } else {
-            System.out.println("[APImethode] File to be deleted not found. Aborting ...");
-            //LessonControl.removeLessonEntry(target_id);
+            System.out.println("[APImethode] File could not be deleted. Removing from registry ...");
+            LessonControl.removeLessonEntry(target_id);         // deleting the entry in the registry
             return false;
         }
     }
@@ -211,16 +216,16 @@ public class APImethode {
         boolean success;
 
         JSONObject registry = new JSONObject(LessonControl.getJsonString());
-        JSONObject entry = (JSONObject) registry.get(Integer.toString(id));
-        String path = (String) entry.get("path");
+        JSONObject entry = (JSONObject) registry.get(Integer.toString(id));     // parse the entry json object from the registry
+        String path = (String) entry.get("path");                               // get the path to the corresponding pdf from the entry json
 
         File to_be_deleted = new File(path);
 
-        if(to_be_deleted.delete()) {
-            success = LessonControl.updateLessonEntry(id, name, difficulty, achievement_id, new_pdf_name);
+        if(to_be_deleted.delete()) {                            // deleting the old pdf file
+            success = LessonControl.updateLessonEntry(id, name, difficulty, achievement_id, new_pdf_name);      // updating the old entry with the new values and register a new pdf file
             String[] quiz_input = Arrays.copyOfRange(input, 4, input.length);
             quiz_input[0] = Integer.toString(id);
-            createQuiz(quiz_input);
+            createQuiz(quiz_input);                 // overwrite the quiz object with new values
             return success;
         } else {
             System.out.println("[UpdateInRegistry] Error while trying to delete old PDF file! Aborting ...");
@@ -243,7 +248,7 @@ public class APImethode {
         int achievement_id = Integer.parseInt(input[3]);
         String[] quiz_input = Arrays.copyOfRange(input, 3, input.length);
         quiz_input[0] = Integer.toString(id);
-        createQuiz(quiz_input);
+        createQuiz(quiz_input);             // overwrite the quiz object with the new values
         return LessonControl.updateLessonEntry(id, name, difficulty, achievement_id);   
     }
 
@@ -310,8 +315,8 @@ public class APImethode {
     public void removeQuiz(@RequestBody String[] lesson_id) {
         int target_id = Integer.parseInt(lesson_id[0]);
 
-        LessonControl.removeQuiz(target_id);                                // Quiz aus der Registry entfernen
-        this.quiz_completion_service.removeQuizCompTracker(target_id);      // entsprechenden Fortschrittstracker fuer das Quiz entfernen
+        LessonControl.removeQuiz(target_id);                                // remove the quiz from the entry of the given id
+        this.quiz_completion_service.removeQuizCompTracker(target_id);      // delete the quiz completion tracker of this id
     }
     
     /**
@@ -328,29 +333,29 @@ public class APImethode {
      */
     @PostMapping("/EvaluateQuiz")
     public int evaluateQuiz(@RequestBody String[] input) {
-        if(input.length <= 2) {
+        if(input.length <= 2) {                             // Less or equal two given arguments means not enough or no answers were transmitted; immediate termination of the process
             System.err.println("[APImethode - evaluateQuiz] No or not enough arguments given. Aborting ...");
             return -1;
         }
         int lesson_id = Integer.parseInt(input[0]);
-        String user_email = input[1];                                                       // Email-zu-ID-Adapter um der Datenbank-Implementation zu entsprechen
-        User target_user = this.userRepository.findByEmail(user_email);
+        String user_email = input[1];                                                       // Email-to-ID-Adapter to adhere to the databank conventions
+        User target_user = this.userRepository.findByEmail(user_email);                     // get the user from the user databank
         if(target_user == null) {
             System.err.println("[APImethode - EvaluateQuiz] User not found! Aborting!");
             return -1;
         }
-        int user_id = target_user.get_ID();
+        int user_id = target_user.get_ID();                                                 // extract the user id from the user object
         String[] given_answers = new String[input.length - 2];
         for(int i = 2; i < input.length; i++) {
-            given_answers[i - 2] = input[i];
+            given_answers[i - 2] = input[i];                                                // transfer the given answers to a new array
         }
 
-        boolean result = quiz_master.validateAnswers(lesson_id, user_id, given_answers);    // Antworten pruefen
+        boolean result = quiz_master.validateAnswers(lesson_id, user_id, given_answers);    // validate the answers with the registered right answers in the registry
 
         if (result) {
-            return 1;       // User hat Quiz bestanden
+            return 1;       // User has cleared the quiz
         } else {
-            return 0;       // User ist durchgefallen
+            return 0;       // User has failed the quiz
         }
     }    
 
@@ -365,7 +370,7 @@ public class APImethode {
      */
     @PostMapping("/GetQuizProg")
     public String getQuizProgression(@RequestBody String mail) {
-        String result = this.quiz_master.getProgressionOf(mail);    // QuizMaster erstellt die entsprechende JSON
+        String result = this.quiz_master.getProgressionOf(mail);    // QuizMaster prepares the json object depicting the progression of the user
 
         return result;
     }
@@ -576,7 +581,7 @@ public class APImethode {
 
     
     @PostMapping("/SendMails")
-    public void sendMails(@RequestBody Map<String, int[]> data){
+    public boolean sendMails(@RequestBody Map<String, int[]> data){
         int[] UIDs = data.get("UIDs");
         int[] start_date = data.get("start_date");
         int[] end_date = data.get("end_date");
@@ -584,8 +589,7 @@ public class APImethode {
         System.out.println(Arrays.toString(start_date));
         System.out.println(Arrays.toString(end_date));
         Mail mail = new Mail(userService);
-        mail.send_mails(UIDs, start_date, end_date);
-
+        return mail.send_mails(UIDs, start_date, end_date);
     }
 
 

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Form, Button, Container} from 'react-bootstrap';
 
-function CreateQuizScreen({setQuizData, closePopup}) {
+function CreateQuizScreen({setQuizData, closePopup, oldQuizData, editing}) {
 
     const [question, setQuestion] = useState("");   // the question of a question, initially empty
     const [correctAnswer, setCorrectAnswer] = useState(""); // the correct answer of the question, initially empty
@@ -13,9 +13,29 @@ function CreateQuizScreen({setQuizData, closePopup}) {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);    // the index of the current question
 
     const [shouldSubmit, setShouldSubmit] = useState(false); // This is used to submit the quiz data to the parent component
+    const [loading, setLoading] = useState(true);   
 
     const maxQuestions = 10;    // maximum number of questions
     const maxWrongAnswers = 6;  // maximum number of wrong answers
+
+    //console.log("This is the oldQuizData:", oldQuizData);
+    /*
+        {
+            "question_count":2,
+            "q1":
+            {
+                "wrong_answers":["In Schluesselloch stecken und drehen","Just use it 5head"],
+                "question":"Wie verwendet man einen FIDO2 Key?",
+                "right_answer":"An Rechner anschliessen und Treiber arbeiten lassen"
+            },
+            "id":1,
+            "q0":
+            {
+                "wrong_answers":["ein Weg um Hundehuetten abzuschliessen","ein hunde-foermiger Schluessel"],
+                "question":"Was ist ein FIDO2 Key?",
+                "right_answer":"ein physikalischer Schluessel um sich Authentifizieren zu koennen"
+            }
+    */
 
     const FormGroupStyle = {
         border: '1px solid grey',
@@ -31,16 +51,43 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         borderColor: 'grey'
     }
 
+    function createWrongAnswers(wrongAnswers) {
+        const wrongAnswersArray = [];
+        for (let i = 0; i < wrongAnswers.length; i++) {
+            const wrongAnswer = {id: i, value: wrongAnswers[i]};
+            wrongAnswersArray.push(wrongAnswer);
+        }
+        return wrongAnswersArray;
+    }
+
     // Use "useEffect", so the updates are not asynchronised
     useEffect(() => {
-        if (currentQuestionIndex < questions.length && currentQuestionIndex >= 0) {
-            setQuestion(questions[currentQuestionIndex][0]);
-            setCorrectAnswer(questions[currentQuestionIndex][1]);
-            setWrongAnswers(questions[currentQuestionIndex][2]);
+        if(oldQuizData !== undefined && loading && oldQuizData !== null && editing) {
+            //console.log("This is the oldQuizData:", oldQuizData);
+            const newArray = [];
+            for (let i = 0; i < oldQuizData.question_count; i++) {
+                const oldQuestionData = oldQuizData["q" + i];
+                const newQuestion = [oldQuestionData.question, oldQuestionData.right_answer, createWrongAnswers(oldQuestionData.wrong_answers)];
+                newArray.push(newQuestion);
+                //questions.push(newQuestion);
+                //setQuestions([...questions, newQuestion]);
+                //console.log("This is the new question:", newQuestion);
+            }
+            setCorrectAnswer(oldQuizData["q0"].right_answer)
+            setWrongAnswers(createWrongAnswers(oldQuizData["q0"].wrong_answers));
+            setQuestion(oldQuizData["q0"].question);
+            setQuestions(newArray);
+            setLoading(false);
         } else {
-            setQuestion("");
-            setCorrectAnswer("");
-            setWrongAnswers([{ id: 0 , value:""}, { id: 1 , value:""}, { id: 2 , value:""}]);
+            if (currentQuestionIndex < questions.length && currentQuestionIndex >= 0) {
+                setQuestion(questions[currentQuestionIndex][0]);
+                setCorrectAnswer(questions[currentQuestionIndex][1]);
+                setWrongAnswers(questions[currentQuestionIndex][2]);
+            } else {
+                setQuestion("");
+                setCorrectAnswer("");
+                setWrongAnswers([{ id: 0 , value:""}, { id: 1 , value:""}, { id: 2 , value:""}]);
+            }
         }
     }, [currentQuestionIndex, questions]);
 
@@ -50,9 +97,9 @@ function CreateQuizScreen({setQuizData, closePopup}) {
             closePopup();
             setShouldSubmit(false); // Reset the flag
         } else if (setQuizData === undefined) {
-            console.log("setQuizData is undefined");
+            //console.log("setQuizData is undefined");
         }
-        console.log("These are the questions:", questions);
+        //console.log("These are the questions:", questions);
     }, [questions, setQuizData, shouldSubmit]);
 
     // Adds a wrong answer field
@@ -75,12 +122,27 @@ function CreateQuizScreen({setQuizData, closePopup}) {
         
         if (name === "Question") {
             setQuestion(value);
+            if (currentQuestionIndex < questions.length) {
+                const updatedQuestions = [...questions]; //What does this do? 
+                updatedQuestions[currentQuestionIndex][0] = value;
+                setQuestions(updatedQuestions);
+            }
         } else if (name === "CorrectAnswer") {
             setCorrectAnswer(value);
+            if (currentQuestionIndex < questions.length) {
+                const updatedQuestions = [...questions];
+                updatedQuestions[currentQuestionIndex][1] = value;
+                setQuestions(updatedQuestions);
+            }
         } else if (name === "WrongAnswer") {
             const updatedWrongAnswers = [...wrongAnswers];
             updatedWrongAnswers[id].value = value;
             setWrongAnswers(updatedWrongAnswers);
+            if (currentQuestionIndex < questions.length) {
+                const updatedQuestions = [...questions];
+                updatedQuestions[currentQuestionIndex][2] = updatedWrongAnswers;
+                setQuestions(updatedQuestions);
+            }
         }   
     }
 
@@ -93,9 +155,9 @@ function CreateQuizScreen({setQuizData, closePopup}) {
             setQuizData(question, correctAnswer, wrongAnswers);
             closePopup();
         } else {
-            console.log("setQuizData is undefined");
+            //console.log("setQuizData is undefined");
         }
-        console.log("These are the questions:", questions);
+        //console.log("These are the questions:", questions);
     }
 
     // Adds a new question
