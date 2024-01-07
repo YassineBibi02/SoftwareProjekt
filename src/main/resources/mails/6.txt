@@ -42,7 +42,7 @@
 
 <body>
     <div class="container">
-        <h1>Lieber EMPFÄNGERVORNAME EMPFÄNGERNACHNAME,</h1>
+        <h1>Lieber EMPFAENGERVORNAME EMPFAENGERNACHNAME,</h1>
 
         <p>Wir schreiben diese Mail schweren Herzens, aber Ihre Arbeitsmoral lässt uns keine Wahl. Wir schätzen alle unsere Mitarbeiter und unterstützen sie, wo wir können, aber wir sehen, dass Sie weiterhin Schwierigkeiten haben, unsere Unternehmensstandards zu erfüllen.</p>
 

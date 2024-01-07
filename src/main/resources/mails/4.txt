@@ -48,7 +48,7 @@
 <body>
     <div class="container">
         <h1>REWE<br>DEIN MARKT</h1>
-        <p>Lieber EMPFÄNGERVORNAME EMPFÄNGERNACHNAME,</p>
+        <p>Lieber EMPFAENGERVORNAME EMPFAENGERNACHNAME,</p>
         <p>Zu unserer großen Freude können wir ihnen mitteilen, dass Sie einen Gutschein im Wert von 100€ für Lieferungen gewonnen haben!</p>
         <p>Klicken SIe einfach auf den folgenden Link und bestätigen Sie Ihre Kontaktdaten, dann kann das Einkaufen losgehen!</p>
         <a class="button" LINK>Gutschein erhalten</a>
