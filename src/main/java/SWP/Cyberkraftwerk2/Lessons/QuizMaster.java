@@ -115,11 +115,11 @@ public class QuizMaster {
                     return false;
                 }
                 if(right_answer_counter >= ((double) question_count) / 2.0) {           // compute if enough right answers were given
-                    this.qc_service.addAccomplishedUser(lesson_id, targeted_user);      // if half or more answers were correct, the user gets added to the list of user who cleared the quiz and receives the corresponding achievement
+                    //this.qc_service.addAccomplishedUser(lesson_id, targeted_user);      // if half or more answers were correct, the user gets added to the list of user who cleared the quiz and receives the corresponding achievement
                     grantAchievement(user_id, achievement_id);
                     return true;
                 } else {
-                    this.qc_service.addAttemptedUser(lesson_id, targeted_user);         // if less than half of the answers were correct, the user gets added to the list of user who attempted but failed the quiz
+                    //this.qc_service.addAttemptedUser(lesson_id, targeted_user);         // if less than half of the answers were correct, the user gets added to the list of user who attempted but failed the quiz
                     return false;
                 }
             }
@@ -184,5 +184,6 @@ public class QuizMaster {
         }
 
         target_achievement.addUser(targeted_user);      // evoke the method to grant the user the specified achievement
+        this.ach_repo.save(target_achievement);
     }
 }
