@@ -448,7 +448,7 @@ public class Mail {
         formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.get_firstname());
         formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.get_lastname());
         formatted_mail = formatted_mail.replace("EMPFAENGEREMAIL", recipient.get_email());
-        formatted_mail = formatted_mail.replace("KOLLEGE1VORNAME ", random1.get_firstname());
+        formatted_mail = formatted_mail.replace("KOLLEGE1VORNAME", random1.get_firstname());
         formatted_mail = formatted_mail.replace("KOLLEGE1NACHNAME", random1.get_lastname());
         formatted_mail = formatted_mail.replace("KOLLEGE1EMAIL", random1.get_email());
         formatted_mail = formatted_mail.replace("KOLLEGE2VORNAME", random2.get_firstname());
