@@ -231,6 +231,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
             const result = await response.json();
             console.log("Success creating: ", result);
             idRef.current = result;
+            alert("Schulung erfolgreich hinzugefügt");
             return result;
         } catch (error) {
             console.error("Error2:", error);

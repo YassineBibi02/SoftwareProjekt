@@ -98,19 +98,33 @@ const SendMailScreenComponent = () => {
         }
         try {
             fetch('/api/methode/SendMails', {
-                      method: 'POST', credentials: 'include',
-                      headers: { 
-                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
-                        'Content-Type': 'application/json',
-                     }, // <.>
-                    body: JSON.stringify(data)
-                })
-               .then(response => response.text()).then(data => console.log("Response:",data));
+                method: 'POST', credentials: 'include',
+                headers: { 
+                    'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log("Response:", data);
+                showSuccessOrError({ success: data === 'true' });
+            });
             console.log('Email sent successfully');
         } catch (error) {
             console.error('Error sending email:', error);
+            showSuccessOrError({ success: false });
         }
     };
+
+    const showSuccessOrError = ({success}) => { 
+        if (success) {
+            alert('Email-Operation erfolgreich gestartet.');
+        } else {
+            alert('Emails konnten nicht versendet werden. Eventuell ist schon eine Email-Operation am Laufen.');
+        }
+    };
+
 
 
 const Body = user ?
@@ -118,8 +132,8 @@ const Body = user ?
         <div>
                 <Header />
                 <div style={DateContainerStyle}>
-                    <DateSetter title={"Start"} setDateParent={setNewStartDate}/>
-                    <DateSetter title={"Ende"} setDateParent={setNewEndDate}/>
+                    <DateSetter title={"Startzeitpunkt"} setDateParent={setNewStartDate}/>
+                    <DateSetter title={"Endzeitpunkt"} setDateParent={setNewEndDate}/>
                 </div>
                 <div>
                     <UserList onUserCardSelect={handleUserSelectionChange} />
@@ -127,7 +141,7 @@ const Body = user ?
                 </div>
                 <div>
                     <Button variant="primary" size="lg" style={ButtonStyle} onClick={SendMail} disabled={selectedUsers.length == 0 || !startDateChanged || !endDateChanged || (endDate < startDate)}>
-                        Bestätigen
+                        Prozess starten
                     </Button>
                 </div>
         </div>:
