@@ -14,7 +14,7 @@ const MainMenuScreenComponent = () => {
     var achievementButtonText = "Archievementsübersicht";
     var nutzerVerwaltenText = "Nutzer Verwalten";
     var achievementErstellenText = "Achievement Erstellen";
-    var mailErstellenText = "Mail Erstellen";
+    var mailErstellenText = "Template Hinzufügen";
     var templateVerwaltenText = "Template Verwalten";
 
     let roles = [];
