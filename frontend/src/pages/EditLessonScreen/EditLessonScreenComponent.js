@@ -2,8 +2,7 @@
 import React, { useRef, useEffect, useState, useContext} from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
-import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-dom';
-import axios, { all } from 'axios';
+import { useParams, useNavigate, useLocation  } from 'react-router-dom';
 import AddAchievementPopup from './AchievementAdding/AddAchievementPopup';
 import { useCookies } from 'react-cookie';
 import AddQuizPopup from './QuizAdding/AddQuizPopup';
@@ -109,17 +108,17 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     });
 
-    const [fileChanged, setFileChanged] = useState(() => {
+    const [achievementName, setAchievementName] = useState(() => {
         if (newLesson) {
             // Handle initial state for new lesson
-            return true;
+            return "";
         } else {
             // Setup Variables with lesson data
-            return false;
+            return "Platzhalter";
         }
     });
 
-    const [quizChanged, setQuizChanged] = useState(() => {
+    const [fileChanged, setFileChanged] = useState(() => {
         if (newLesson) {
             // Handle initial state for new lesson
             return true;
@@ -144,16 +143,34 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
     const isButtonDisabled = !difficulty || (!file && newLesson) || !questions || !achievementID || !title;
 
-    const [shouldSubmit, setShouldSubmit] = useState(false);
-
     const showErrorMessages = ({text}) => {
         setErrorMessageText(text);
     }
 
     const setQuizData = (allQuestions) => {
         setQuestions(allQuestions);
-        setQuizChanged(true);
     }
+
+    useEffect(() => {
+        const fetchAchievementName = async () => {
+            try {
+                const response = await fetch('/api/methode/AchievementDetails', {
+                    method: 'POST', credentials: 'include',
+                    headers: {
+                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                        'Content-Type': 'application/json',
+                    },
+                    body: achievementID,
+                });
+                const result = await response.json();
+                setAchievementName(result.name);
+            } catch (error) {
+                console.log("Error fetching achievement name: ", error)
+            }
+        };
+        fetchAchievementName();
+    }, [achievementID]);
+
 
     useEffect(() => {
         fetch('/api/user', { credentials: 'include' }) // <.>
@@ -177,6 +194,8 @@ const EditLessonScreenComponent = ({newLesson}) => {
             });
     });
 
+    
+                    
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -216,7 +235,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         } catch (error) {
             console.error("Error2:", error);
             console.error("Error details:", error.message, error.response);
-            showErrorMessages({text: "Error creating Lesson"});
+            showErrorMessages({text: "Error creating Lesson. If using Firefox, this error is likely inconsequential. Please check the Lessons Overview to see if the lesson was created."});
             return false;
         }
     }
@@ -328,7 +347,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
             }
         }
         console.log("ID: ", idRef.current)
-        setShouldSubmit(true);
         navigate('/lessonsOverview');
     };
 
@@ -338,7 +356,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
         inputArray.forEach((item) => {
             const [question, rightAnswer, ...wrongAnswers] = item;
-            if (question != "" && rightAnswer != "" && wrongAnswers[0].length != 0) {
+            if (question !== "" && rightAnswer !== "" && wrongAnswers[0].length !== 0) {
                 result.push(question);
                 result.push(wrongAnswers[0].length);
                 result.push(rightAnswer);
@@ -385,13 +403,8 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 </div>
 
                 <div style={containerStyle}>
-                    <p>PDF: {initialPath}</p>                
-                    <input type="file" onChange={handleFileChange}  style={{margin: '20px'}}/>
-                </div>
-
-                <div style={containerStyle}>
-                    <p>Level:</p>
-                    <select style={{margin: '20px'}} id='difficulty-select' value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
+                    <p>Level: &emsp;&emsp;</p>
+                    <select style={{ ...containerStyle, position: 'fixed', left: '200px' }} id='difficulty-select' value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -399,22 +412,42 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 </div>
 
                 <div style={containerStyle}>
-                    <p>Quiz:&nbsp;&nbsp;</p>
-                    <QuizCheckmark/>
-                    <AddQuizPopup setQuizData={setQuizData} oldQuizData={oldQuizData} editing={!newLesson}/>                
+                    <p>PDF:</p>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '200px' }}>
+                        <p>{initialPath}</p>   
+                    </div>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '600px' }}>             
+                        <input type="file" onChange={handleFileChange} />
+                    </div>
                 </div>
 
                 <div style={containerStyle}>
-                    <p>Achievement:&nbsp;&nbsp; {achievementID}</p>
-                    <AddAchievementPopup lessonTitle={title} setLessonAchievementID={setAchievementID}/>                 
+                    <p>Quiz:</p>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '200px' }}>
+                        <QuizCheckmark/>
+                    </div>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '600px' }}>
+                        <AddQuizPopup setQuizData={setQuizData} oldQuizData={oldQuizData} editing={!newLesson}/>                       
+                    </div>         
+                </div>
+
+                <div style={containerStyle}>
+                    <p>Achievement:</p>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '200px' }}>
+                        <p>{achievementName}</p>
+                    </div>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '600px' }}>
+                        <AddAchievementPopup lessonTitle={title} setLessonAchievementID={setAchievementID}/>                 
+                    </div>
                 </div>
                 
             </div>
             <div style={{ position: 'fixed', bottom: '50px', right: '20px' }}>
                     <Button onClick={confirm} disabled={isButtonDisabled}>Bestätigen</Button>
             </div>
-            
-            <Button onClick={() => navigate('/lessonsOverview')}>Back</Button>
+            <div style={containerStyle}>
+                <Button onClick={() => navigate('/lessonsOverview')}>Abbrechen</Button>
+            </div>
             {errorMessageText && (
                 <div style={{ backgroundColor: 'red', padding: '10px', color: 'white', position: 'fixed', bottom: 0, left: 0, width: '100%' }}>
                     {errorMessageText}
