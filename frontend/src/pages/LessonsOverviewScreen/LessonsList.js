@@ -22,11 +22,12 @@ const LessonsList = () => {
     useEffect(() => {
         const fetchLessons = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/methode/GetLessonRegistry');
-                console.log('Raw data: ', response.data)
-                const LessonArray = Object.values(response.data);
+                const response = await fetch('http://localhost:8080/api/methode/GetLessonRegistry');
+                const data = await response.json();
+                console.log('Raw data: ', data);
+                const LessonArray = Object.values(data);
                 LessonArray.pop(); // Remove the last element
-                setLoadedIDs(response.data.taken_ids);
+                setLoadedIDs(data.taken_ids);
                 setLoadedLessons(LessonArray);
             } catch (error) {
                 console.error(error);
