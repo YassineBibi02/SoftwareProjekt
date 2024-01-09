@@ -56,6 +56,17 @@ public class UserController {
         if (user == null) {
             return new ResponseEntity<>("", HttpStatus.OK);
         } else {
+            // Extract user details from OAuth2 token
+            String email = user.getAttribute("email");
+            String firstName = user.getAttribute("given_name");
+            String lastName = user.getAttribute("family_name");
+
+            // Check if user exists in the database, and if not, create a new user
+            User existingUser = userService.getUserByEmail(email);
+            if (existingUser == null) {
+                userService.create_user(firstName, lastName, email);
+            }
+
             Map<String, Object> userAttributes = new HashMap<>();
             userAttributes.put("email", user.getAttribute("email"));
             userAttributes.put("email_verified", user.getAttribute("email_verified"));
@@ -71,8 +82,6 @@ public class UserController {
             } catch (Exception e) {
                 userAttributes.put("roles", new ArrayList<>());
             }
-
-            String email = user.getAttribute("email");
 
             try {
                 List<Integer> achievements = (List<Integer>) getUserAchievements(email).getBody();
