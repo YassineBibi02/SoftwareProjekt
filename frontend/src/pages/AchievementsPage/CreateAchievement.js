@@ -155,10 +155,10 @@ const CreateAchievement = () => {
             </div>
             {/* Modal for adding new achievement */}
             <Modal isOpen={modal} toggle={toggleModal}>
-                <ModalHeader toggle={toggleModal}>Add New Achievement</ModalHeader>
+                <ModalHeader toggle={toggleModal}>Füge neues Achievement hinzu</ModalHeader>
                 <ModalBody>
                     <FormGroup>
-                        <Label for="achievementName">Name</Label>
+                        <Label for="achievementName">Titel</Label>
                         <Input
                             type="text"
                             name="name"
@@ -168,7 +168,7 @@ const CreateAchievement = () => {
                         />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="achievementDescription">Description</Label>
+                        <Label for="achievementDescription">Beschreibung</Label>
                         <Input
                             type="textarea"
                             name="description"
@@ -178,7 +178,7 @@ const CreateAchievement = () => {
                         />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="achievementWeight">Weight</Label>
+                        <Label for="achievementWeight">Gewicht</Label>
                         <Input
                             type="number"
                             name="weight"
@@ -190,16 +190,16 @@ const CreateAchievement = () => {
                     </FormGroup>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={handleAddAchievement}>Add Achievement</Button>{' '}
-                    <Button color="secondary" onClick={toggleModal}>Cancel</Button>
+                    <Button color="primary" onClick={handleAddAchievement}>Achievement hinzufügen</Button>{' '}
+                    <Button color="secondary" onClick={toggleModal}>Abbrechen</Button>
                 </ModalFooter>
             </Modal>
             {/* Modal for editing achievement */}
             <Modal isOpen={editModal} toggle={() => setEditModal(!editModal)}>
-                <ModalHeader toggle={() => setEditModal(!editModal)}>Edit Achievement</ModalHeader>
+                <ModalHeader toggle={() => setEditModal(!editModal)}>Achievemet bearbeiten</ModalHeader>
                 <ModalBody>
                     <FormGroup>
-                        <Label for="achievementName">Name</Label>
+                        <Label for="achievementName">Titel</Label>
                         <Input
                             type="text"
                             name="name"
@@ -210,7 +210,7 @@ const CreateAchievement = () => {
                         />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="achievementDescription">Description</Label>
+                        <Label for="achievementDescription">Beschreibung</Label>
                         <Input
                             type="textarea"
                             name="description"
@@ -221,7 +221,7 @@ const CreateAchievement = () => {
                         />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="achievementWeight">Weight</Label>
+                        <Label for="achievementWeight">Gewicht</Label>
                         <Input
                             type="number"
                             name="weight"
@@ -233,8 +233,8 @@ const CreateAchievement = () => {
                     </FormGroup>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={() => handleEditAchievement(editAchievementData)}>Save Changes</Button>{' '}
-                    <Button color="secondary" onClick={() => setEditModal(false)}>Cancel</Button>
+                    <Button color="primary" onClick={() => handleEditAchievement(editAchievementData)}>Speichere Änderungen</Button>{' '}
+                    <Button color="secondary" onClick={() => setEditModal(false)}>Abbrechen</Button>
                 </ModalFooter>
             </Modal>
         </div>

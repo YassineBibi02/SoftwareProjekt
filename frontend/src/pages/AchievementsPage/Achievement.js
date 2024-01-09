@@ -12,8 +12,8 @@ const Achievement = ({ achievement, onDelete, onEdit }) => {
                 <p>{achievement.description}</p>
             </div>
             <div className="achievement-actions">
-                <Button className="edit-button" onClick={() => onEdit(achievement)}>Edit</Button>
-                <Button className="delete-button" onClick={() => onDelete(achievement.id)}>Delete</Button>
+                <Button className="edit-button" onClick={() => onEdit(achievement)}>Bearbeiten</Button>
+                <Button className="delete-button" onClick={() => onDelete(achievement.id)}>Löschen</Button>
             </div>
         </div>
     );

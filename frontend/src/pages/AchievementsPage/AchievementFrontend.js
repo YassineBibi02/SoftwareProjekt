@@ -53,14 +53,14 @@ const AchievementFrontend = () => {
 
   const button2 = <Button color="primary" onClick={login2}>Achievements</Button>;
 
-  const message = <h2>Welcome</h2> ;
+  const message = <h2>Willkommen</h2> ;
 
 
   return (
            <div>
                <Header/>
                <div className="achievement-page-container">
-                   <h2 className="achievements-title">Your Achievements</h2>
+                   <h2 className="achievements-title">Deine Achievements</h2>
                    <div className="achievements-container">
                        {achievementIds.map(id => (
                            <AchievementDisplay key={id} achievementId={id} xsrfToken={cookies['XSRF-TOKEN']} />

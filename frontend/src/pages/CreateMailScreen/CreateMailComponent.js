@@ -187,7 +187,7 @@ function CreateMailComponent() {
 
                     {/* Submit button */}
                     <div className="d-flex justify-content-center">
-                        <Button style={SubmitButtonStyle} className="mt-3 btn-lg" onClick={handleSubmit} disabled={!subject || !text || !level}>Hinzufügen</Button>
+                        <Button style={SubmitButtonStyle} className="mt-3 btn-lg" onClick={handleSubmit} disabled={!subject || !text || !level}>Template Speichern</Button>
                     </div>
                 </Form>
             </Container>
