@@ -2,12 +2,12 @@ package SWP.Cyberkraftwerk2.Module;
 
 import SWP.Cyberkraftwerk2.Databank.AchievementRepository;
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Optional;
 
 
@@ -181,6 +181,7 @@ public class UserService {
      *
      * @param ID ID of the user
      */
+    @Transactional
     public void removeUserByID(int ID) {
         this.userRepository.deleteById(ID);
     }
@@ -191,6 +192,7 @@ public class UserService {
      *
      * @param email email of the user
      */
+    @Transactional
     public void removeUserByEmail(String email) {
         this.userRepository.deleteByEmail(email);
     }

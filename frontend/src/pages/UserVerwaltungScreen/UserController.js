@@ -167,7 +167,34 @@ const UserController = () => {
 
   // Handle confirming user deletion
   const handleConfirmDelete = () => {
-    // Perform the deletion logic here
+    if (selectedUser) {
+      // Prepare the email to be sent in the request body
+      const requestBody = JSON.stringify([selectedUser._email]);
+
+      fetch('/api/methode/RemoveUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+        },
+        body: requestBody,
+      })
+        .then((response) => {
+          if (response.ok) {
+            // User deleted successfully
+            console.log('User removed successfully');
+            // Optionally, update the users state to reflect the change
+            setUsers(users.filter((user) => user._email !== selectedUser._email));
+          } else {
+            // Handle the case where the request was not successful
+            console.error('Failed to remove user');
+          }
+        })
+        .catch((error) => {
+          // Handle network or other errors here
+          console.error('Error removing user:', error);
+        });
+    }
     // Close the delete confirmation modal
     setIsDeleteModalOpen(false);
   };
