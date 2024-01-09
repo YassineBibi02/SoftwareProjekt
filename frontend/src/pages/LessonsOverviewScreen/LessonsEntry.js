@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from 'react-bootstrap';
-import axios from 'axios';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ProgressBar from 'react-bootstrap/ProgressBar';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from './ConfirmDeletionPopup';
@@ -13,7 +9,6 @@ import DeleteButton from './ConfirmDeletionPopup';
 const LessonsEntry = ({lessonData, admin, completed}) => {    
         
         const navigate = useNavigate();
-        console.log("Completed" ,completed)
         const EntryStyle = {
             textAlign: 'center',
             fontSize: '2em',

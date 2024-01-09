@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #ffffff;
+            background-color: #cc081f;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        p {
+            color: #555555;
+            line-height: 1.6;
+        }
+
+        .button {
+            display: inline-block;
+            font-size: 16px;
+            padding: 10px 20px;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #ffffff;
+            background-color: #cc081f;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>REWE<br>DEIN MARKT</h1>
+        <p>Lieber EMPFAENGERVORNAME EMPFAENGERNACHNAME,</p>
+        <p>Zu unserer großen Freude können wir ihnen mitteilen, dass Sie einen Gutschein im Wert von 100€ für Lieferungen gewonnen haben!</p>
+        <p>Klicken SIe einfach auf den folgenden Link und bestätigen Sie Ihre Kontaktdaten, dann kann das Einkaufen losgehen!</p>
+        LINK
+        <p>Der Gutschein ist bis zum Ende des Jahres gültig. Bei weiteren Fragen besuchen Sie bitte unsere Website.</p>
+        <p>Danke dass Sie ein treuer Kunde sind.</p>
+    </div>
+</body>
+</html>
+
+
+

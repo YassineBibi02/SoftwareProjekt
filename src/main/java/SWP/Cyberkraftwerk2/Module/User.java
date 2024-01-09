@@ -55,6 +55,7 @@ public class User {
         this.maillevel = maillevel;
     }
 
+
     public User(String firstname, String lastname, String email){
         this.firstname = firstname;
         this.lastname = lastname;
@@ -67,10 +68,10 @@ public class User {
         }
     }
 
+    //getter functions
     public String get_firstname(){
         return this.firstname;
     }
-
 
 
     public String get_lastname(){
@@ -97,6 +98,36 @@ public class User {
         return this.maillevel;
     }
 
+    //setter functions
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public void setMailsreceived(int[] mailsreceived) {
+        this.mailsreceived = mailsreceived;
+    }
+
+
+    public void setMaillevel(int maillevel) {
+        this.maillevel = maillevel;
+    }
+
 
     public String toJson() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -107,30 +138,5 @@ public class User {
             return null;
         }
     }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setMailsreceived(int[] mailsreceived) {
-        this.mailsreceived = mailsreceived;
-    }
-
-    public void setMaillevel(int maillevel) {
-        this.maillevel = maillevel;
-    }
-
 
 }

@@ -1,10 +1,12 @@
 package SWP.Cyberkraftwerk2.Mail;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,43 +17,48 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Class accessing the JavaMail and JakartaMail packages to send Emails
  * @author Tristan Slodowski
- * @version 02.01.2024
+ * @version 04.01.2024
  */
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:/application.properties")
 @Service
 @RestController
+@ComponentScan
 public class EmailService {
     
     // default JavaMailSender to manage sending SimpleMailMessages or MimeMessages
     @Autowired
-    private JavaMailSenderImpl mailSender;
+    private JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
     // String hostname of the mail server
-    @Value("${spring.mail.host}")
+    @Value("${spring.mail.host}") 
     private String host_name;
+
     // Integer port number of the mail server
     @Value("${spring.mail.port}")
     private int port;
+
     // String password of the account accessing the mail server
     @Value("${spring.mail.password}")
     private String password;
+
     // String username of the account accessing the mail server
     @Value("${spring.mail.username}")
     private String username;
 
     /**
-     * Default constructor of the EmailService class.
-     * <p> Derives all needed values from the respecting entries in the application.properties file.
+     * Initializer for the EmailService class.
+     * <p> Sets all the login credentials for the desired mail provider derived from the "application.properties" file
      * @author Tristan Slodowski
      */
-    public EmailService() {
-        this.mailSender = new JavaMailSenderImpl();             // Standard Implementation des JavaMailSenders; erfuellt unsere Zwecke ausreichend
-        this.mailSender.setHost(this.host_name);
+    @PostConstruct
+    private void mailServiceInit() {
+        //showStatus();
+        this.mailSender.setHost(this.host_name);                // setting the hostname, port number, password and username to be able to log into the mail service provider
         this.mailSender.setPort(this.port);
         this.mailSender.setPassword(this.password);
         this.mailSender.setUsername(this.username);
-        this.mailSender.getJavaMailProperties().put("mail.smtp.starttls.enable", "true");   // TLS aktivieren; fuer manche Dienste fest benoetigt
+        this.mailSender.getJavaMailProperties().put("mail.smtp.starttls.enable", "true");   // activating TLS; some providers explicitly need this to accept connections
 
         this.mailSender.getJavaMailProperties().put("mail.debug","true");       // TODO Debugging-Option: deaktivieren wenn nicht mehr benötigt!
 
@@ -64,6 +71,19 @@ public class EmailService {
         }
         */
     }
+
+    /**
+     * Private debugging method to show all the mail provider login credentials.
+     * Useful to check if the value injection worked properly.
+     * @author Tristan Slodowski
+     */
+    private void showStatus() {
+        System.out.println("[EmailService Init] Setting Hostname: " + this.host_name);
+        System.out.println("[EmailService Init] Setting Port: " + this.port);
+        System.out.println("[EmailService Init] Setting Password: " + this.password);
+        System.out.println("[EmailService Init] Setting Username: " + this.username);
+    }
+
     /**
      * Method to send simple txt.-like messages using Email
      * @param target String of the email address of the recipient
@@ -71,10 +91,10 @@ public class EmailService {
      * @param body String containing the general message of the Mail to be sent
      * @author Tristan Slodowski
      */
-    // Senden von "simplen" txt.-ähnlichen Mails
+    // simple .txt-like emails can be sent using this method
     public void sendEmail(String target, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(target);                      // "simples Ausfuellen" von Feldern von SimpleMailMessage()
+        message.setTo(target);                      // "simple filling out" of all needed values from SimpleMailMessage()
         message.setSubject(subject);
         message.setText(body);
         message.setFrom("cyber.kraftwerk2@outlook.com");        // TODO Herkunftsadresse aendern je nachdem von wo am Ende gesendet werden soll
@@ -90,10 +110,10 @@ public class EmailService {
      * @param body String containing the general message of the Mails to be sent
      * @author Tristan Slodowski
      */
-    // Senden von "simplen" txt.-ähnlichen Mails an mehrere Adressen gleichzeitig
+    // simple .txt-like emails can be sent to multiple recipients at once using this method
     public void sendEmail(String[] targets, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(targets);
+        message.setTo(targets);                                 // by setting a list of email addresses as the target, all of them will receive the mail at once
         message.setSubject(subject);
         message.setText(body);
         message.setFrom("cyber.kraftwerk2@outlook.com");        // TODO Herkunftsadresse aendern je nachdem von wo am Ende gesendet werden soll
@@ -109,7 +129,7 @@ public class EmailService {
      * @throws MessagingException in case of failure if the sending fails
      * @author Tristan Slodowski
      */
-    // Senden von Mails basierend auf HTML
+    // mails with html-formatted bodies can be sent using this method
     public void sendHtmlMessage(String to, String subject, String html_body) throws MessagingException {
         MimeMessage msg = mailSender.createMimeMessage();
 
@@ -117,9 +137,7 @@ public class EmailService {
         msg.setRecipients(MimeMessage.RecipientType.TO, to);
         msg.setSubject(subject);
 
-        msg.setContent(html_body, "text/html; charset=utf-8");  // html-String als Inhalt der Message und dementsprechend den passenden Mime-Typ einstellen
-
+        msg.setContent(html_body, "text/html; charset=utf-8");  // setting the input html string as the body of the mail and setting the right charset etc.
         mailSender.send(msg);
     }
-
 }

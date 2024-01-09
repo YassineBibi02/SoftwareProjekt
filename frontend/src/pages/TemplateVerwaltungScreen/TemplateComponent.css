@@ -4,9 +4,8 @@
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
     padding: 20px;
     margin: 20px; /* Margin between template cards */
-    display: inline-block; /* Display templates horizontally */
     width: 300px; /* Width of template card */
-    height: 180px; /* Height of template card */
+    min-height: 180px; /* Minimum height of template card */
     margin-top: 20px; /* Margin between template cards */
   }
   

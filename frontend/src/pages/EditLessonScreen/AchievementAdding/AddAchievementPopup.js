@@ -40,7 +40,7 @@ const AddAchievementPopup = ({lessonTitle, setLessonAchievementID}) => {
     return (
         <div>
             <Button variant="primary"  size="sm" style={{margin: '5px'}} onClick={handleShow}>
-                Achievement hinzufügen/ändern
+                Achievement zuweisen
             </Button>
           <Modal show={show} size="lg" fullscreen={true}  onHide={handleClose} backdrop="static">
             <Modal.Header closeButton>

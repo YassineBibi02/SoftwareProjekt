@@ -1,6 +1,5 @@
 import React, { useState, useEffect ,useContext} from 'react';
 import Header from '../../components/Header';
-import UserList from '../../users/UserList';
 import { useNavigate } from 'react-router-dom';
 import LoginContext from '../../globals/globalContext';
 
@@ -9,12 +8,12 @@ const MainMenuScreenComponent = () => {
     const {isLoggedIn, setLoggedIn,userV , setUserV} = useContext(LoginContext);
     const navigate = useNavigate();
     const [buttonText, setButtonText] = useState('');
-    var emailButtonText = "Emails senden";
+    var emailButtonText = "Mails verschicken";
     var schulungButtonText = "Schulungsübersicht";
     var achievementButtonText = "Archievementsübersicht";
     var nutzerVerwaltenText = "Nutzer Verwalten";
     var achievementErstellenText = "Achievement Erstellen";
-    var mailErstellenText = "Mail Erstellen";
+    var mailErstellenText = "Template Hinzufügen";
     var templateVerwaltenText = "Template Verwalten";
 
     let roles = [];

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #555;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Lieber EMPFAENGERVORNAME EMPFAENGERNACHNAME,</h1>
+
+        <p>Wir schreiben diese Mail schweren Herzens, aber Ihre Arbeitsmoral lässt uns keine Wahl. Wir schätzen alle unsere Mitarbeiter und unterstützen sie, wo wir können, aber wir sehen, dass Sie weiterhin Schwierigkeiten haben, unsere Unternehmensstandards zu erfüllen.</p>
+
+        <p>Daher müssen wir Sie leider darüber informieren, dass wir Ihr Arbeitsverhältnis mit uns beenden müssen. Wir halten dies für die beste Entscheidung im beiderseitigen Interesse und wünschen Ihnen nur das Beste für Ihren weiteren Weg. Wenn Sie Fragen oder Anmerkungen haben, richten Sie diese bitte an das Portal unserer Personalabteilung unter diesem LINK.</p>
+
+        <p>Freundlichste Grüße,<br>
+            Geschäftsführung<br>
+            COMPANY</p>
+    </div>
+</body>
+
+</html>

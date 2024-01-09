@@ -2,8 +2,7 @@
 import React, { useRef, useEffect, useState, useContext} from 'react';
 import Header from '../../components/Header';
 import { Button } from 'react-bootstrap';
-import { Route, Link, useParams, useNavigate, useLocation  } from 'react-router-dom';
-import axios, { all } from 'axios';
+import { useParams, useNavigate, useLocation  } from 'react-router-dom';
 import AddAchievementPopup from './AchievementAdding/AddAchievementPopup';
 import { useCookies } from 'react-cookie';
 import AddQuizPopup from './QuizAdding/AddQuizPopup';
@@ -21,11 +20,43 @@ const EditLessonScreenComponent = ({newLesson}) => {
     const navigate = useNavigate();
 
     const idRef = useRef('');
-    
+
+    function createWrongAnswers(wrongAnswers) {
+        const wrongAnswersArray = [];
+        for (let i = 0; i < wrongAnswers.length; i++) {
+            const wrongAnswer = {id: i, value: wrongAnswers[i]};
+            wrongAnswersArray.push(wrongAnswer);
+        }
+        return wrongAnswersArray;
+    }
+
+    const getQuestionsFromJSON = (inputJSON) => {
+        const result = [];
+        const questionCount = inputJSON.question_count;
+        for (let i = 0; i < questionCount; i++) {
+            const question = inputJSON["q" + i];
+            const wrongAnswers = createWrongAnswers(question.wrong_answers);
+            const rightAnswer = question.right_answer;
+            const questionText = question.question;
+            const questionArray = [questionText, rightAnswer, wrongAnswers];
+            result.push(questionArray);
+        }
+        return result;
+    }
 
     useEffect(() => {
         idRef.current = newLesson ? '' : lesson.id;
     },[]);
+
+    const [oldQuizData, setOldQuizData] = useState(() => {
+        if (newLesson) {
+            // Handle initial state for new lesson
+            return [];
+        } else {
+            // Setup Variables with lesson data
+            return lesson.quiz;
+        }
+    });
 
     const [initialPath, setInitialPath] = useState(() => {
         if (newLesson) {
@@ -77,17 +108,17 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     });
 
-    const [fileChanged, setFileChanged] = useState(() => {
+    const [achievementName, setAchievementName] = useState(() => {
         if (newLesson) {
             // Handle initial state for new lesson
-            return true;
+            return "";
         } else {
             // Setup Variables with lesson data
-            return false;
+            return "Platzhalter";
         }
     });
 
-    const [quizChanged, setQuizChanged] = useState(() => {
+    const [fileChanged, setFileChanged] = useState(() => {
         if (newLesson) {
             // Handle initial state for new lesson
             return true;
@@ -104,7 +135,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
             return '';
         } else {
             // TODO Load from LessonEntry
-            return '';
+            return getQuestionsFromJSON(lesson.quiz);
         }
     });
 
@@ -112,16 +143,34 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
     const isButtonDisabled = !difficulty || (!file && newLesson) || !questions || !achievementID || !title;
 
-    const [shouldSubmit, setShouldSubmit] = useState(false);
-
     const showErrorMessages = ({text}) => {
         setErrorMessageText(text);
     }
 
     const setQuizData = (allQuestions) => {
         setQuestions(allQuestions);
-        setQuizChanged(true);
     }
+
+    useEffect(() => {
+        const fetchAchievementName = async () => {
+            try {
+                const response = await fetch('/api/methode/AchievementDetails', {
+                    method: 'POST', credentials: 'include',
+                    headers: {
+                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                        'Content-Type': 'application/json',
+                    },
+                    body: achievementID,
+                });
+                const result = await response.json();
+                setAchievementName(result.name);
+            } catch (error) {
+                console.log("Error fetching achievement name: ", error)
+            }
+        };
+        fetchAchievementName();
+    }, [achievementID]);
+
 
     useEffect(() => {
         fetch('/api/user', { credentials: 'include' }) // <.>
@@ -145,33 +194,8 @@ const EditLessonScreenComponent = ({newLesson}) => {
             });
     });
 
-    const uploadQuiz = () => {
-        console.log("Uploading quiz with ID: ", idRef.current);
-        if (questions.length > 0) {
-            const convertedQuestions = getQuizString(questions);
-            console.log(JSON.stringify(convertedQuestions));
-        
-            try {
-                fetch('/api/methode/AddQuiz', {
-                    method: 'POST', credentials: 'include',
-                    headers: {
-                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(convertedQuestions),
-                })
-            } catch (error) {
-                console.error("Error2:", error);
-                console.error("Error details:", error.message, error.response);
-                showErrorMessages({text: "Error uploading Quiz"});
-                return false;
-            }
-        } else {
-            showErrorMessages({text: "No Quiz found"});
-            return false;
-        }
-        return true;
-    }
+    
+                    
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -190,7 +214,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         lessonArray.push(getDifficulty());
         lessonArray.push(achievementID);
         lessonArray.push(file.name);
-        const convertedQuestions = getQuizString(questions);
+        const convertedQuestions = getQuizArray(questions);
         console.log(JSON.stringify(convertedQuestions));
         const unitedArray = lessonArray.concat(convertedQuestions);
         console.log("United Array: ", unitedArray);
@@ -207,16 +231,18 @@ const EditLessonScreenComponent = ({newLesson}) => {
             const result = await response.json();
             console.log("Success creating: ", result);
             idRef.current = result;
+            alert("Schulung erfolgreich hinzugefügt");
             return result;
         } catch (error) {
             console.error("Error2:", error);
             console.error("Error details:", error.message, error.response);
-            showErrorMessages({text: "Error creating Lesson"});
+            showErrorMessages({text: "Error creating Lesson. If using Firefox, this error is likely inconsequential. Please check the Lessons Overview to see if the lesson was created."});
             return false;
         }
     }
 
     const editLesson = ({newName}) => {
+        console.log("Quiz:" , questions)
         const lessonArray = [];
         lessonArray.push(lesson.id)
         lessonArray.push(title);
@@ -226,7 +252,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         if (newName) {
             lessonArray.push(file.name);
         }        
-        const convertedQuestions = getQuizString(questions);
+        const convertedQuestions = getQuizArray(questions);
         const unitedArray = lessonArray.concat(convertedQuestions);
         if (newName) {
             try {
@@ -322,25 +348,26 @@ const EditLessonScreenComponent = ({newLesson}) => {
             }
         }
         console.log("ID: ", idRef.current)
-        setShouldSubmit(true);
+        navigate('/lessonsOverview');
     };
 
-    const getQuizString = (inputArray) => {
+    const getQuizArray = (inputArray) => {
         const result = [];
-        result.push(questions.length);
+        result.push(inputArray.length);
 
         inputArray.forEach((item) => {
             const [question, rightAnswer, ...wrongAnswers] = item;
-            result.push(question);
-            result.push(wrongAnswers[0].length);
-            result.push(rightAnswer);
-            console.log("Wrong Answers: ", wrongAnswers);
-            wrongAnswers[0].forEach((wrongAnswer) => {
-                console.log("Wrong Answer: ", wrongAnswer);
-                result.push(wrongAnswer.value);
-            });
+            if (question !== "" && rightAnswer !== "" && wrongAnswers[0].length !== 0) {
+                result.push(question);
+                result.push(wrongAnswers[0].length);
+                result.push(rightAnswer);
+                wrongAnswers[0].forEach((wrongAnswer) => {
+                    result.push(wrongAnswer.value);
+                });
+            } else {
+                result[0] = result[0] - 1;
+            }
         });
-
         return result;
     };
     
@@ -377,13 +404,8 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 </div>
 
                 <div style={containerStyle}>
-                    <p>PDF: {initialPath}</p>                
-                    <input type="file" onChange={handleFileChange}  style={{margin: '20px'}}/>
-                </div>
-
-                <div style={containerStyle}>
-                    <p>Level:</p>
-                    <select style={{margin: '20px'}} id='difficulty-select' value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
+                    <p>Level: &emsp;&emsp;</p>
+                    <select style={{ ...containerStyle, position: 'fixed', left: '200px' }} id='difficulty-select' value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -391,22 +413,42 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 </div>
 
                 <div style={containerStyle}>
-                    <p>Quiz:&nbsp;&nbsp;</p>
-                    <QuizCheckmark/>
-                    <AddQuizPopup setQuizData={setQuizData}/>                
+                    <p>PDF:</p>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '200px' }}>
+                        <p>{initialPath}</p>   
+                    </div>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '600px' }}>             
+                        <input type="file" onChange={handleFileChange} />
+                    </div>
                 </div>
 
                 <div style={containerStyle}>
-                    <p>Achievement:&nbsp;&nbsp; {achievementID}</p>
-                    <AddAchievementPopup lessonTitle={title} setLessonAchievementID={setAchievementID}/>                 
+                    <p>Quiz:</p>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '200px' }}>
+                        <QuizCheckmark/>
+                    </div>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '600px' }}>
+                        <AddQuizPopup setQuizData={setQuizData} oldQuizData={oldQuizData} editing={!newLesson}/>                       
+                    </div>         
+                </div>
+
+                <div style={containerStyle}>
+                    <p>Achievement:</p>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '200px' }}>
+                        <p>{achievementName}</p>
+                    </div>
+                    <div style={{ ...containerStyle, position: 'fixed', left: '600px' }}>
+                        <AddAchievementPopup lessonTitle={title} setLessonAchievementID={setAchievementID}/>                 
+                    </div>
                 </div>
                 
             </div>
             <div style={{ position: 'fixed', bottom: '50px', right: '20px' }}>
                     <Button onClick={confirm} disabled={isButtonDisabled}>Bestätigen</Button>
             </div>
-            
-            <Button onClick={() => navigate('/lessonsOverview')}>Back</Button>
+            <div style={containerStyle}>
+                <Button onClick={() => navigate('/lessonsOverview')}>Abbrechen</Button>
+            </div>
             {errorMessageText && (
                 <div style={{ backgroundColor: 'red', padding: '10px', color: 'white', position: 'fixed', bottom: 0, left: 0, width: '100%' }}>
                     {errorMessageText}

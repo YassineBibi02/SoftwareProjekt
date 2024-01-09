@@ -13,7 +13,7 @@ const AchievementScreenComponent = () => {
         <div>
             <Header />
             <div className="achievements-container">
-                <h2>Your Achievements</h2>
+                <h2>Deine Achievements</h2>
                 <ul>
                     {achievementsData.map((achievement) => (
                         <li key={achievement.id}>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+
+  <div>
+    <h2>Rechnung</h2>
+    <p><strong>Büroartikel Müller</strong><br>
+      Bergblickweg 17<br>
+      30321 Blumental
+    </p>
+    <p><strong>Datum:</strong> DATELASTWEEK</p>
+    <p><strong>To:</strong><br>
+      EMPFAENGERVORNAME EMPFAENGERNACHNAME<br>
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Artikel</th>
+          <th>Menge</th>
+          <th>Preis</th>
+          <th>Anmerkungen</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Druckerpapier A4</td>
+          <td>2 Paletten</td>
+          <td>800€ pro ST.</td>
+          <td>zzgl. 34€ Lieferkosten</td>
+          
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Weitere Infomationen</strong><br>
+      Bezahlbar innerhalb von 14 Tagen, Kontakt unter diesem LINK
+    </p>
+    
+
+    <h3>Danke für Ihren Einkauf!</h3>
+  </div>
+
+</body>
+</html>

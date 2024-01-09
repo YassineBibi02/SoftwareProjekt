@@ -51,15 +51,15 @@ public class QuizMaster {
         JSONArray registered_ids = registry.getJSONArray("taken_ids");
         for(int i = 0; i < registered_ids.length(); i++) {
             int id = registered_ids.getInt(i);
-            if(id == lesson_id) {
-                JSONObject lesson = (JSONObject) registry.get(Integer.toString(lesson_id));
+            if(id == lesson_id) {                       // check if the desired entry id exists in the "taken_ids" array
+                JSONObject lesson = (JSONObject) registry.get(Integer.toString(lesson_id));     // parsing the corresponding entry and quiz objects
                 JSONObject quiz = (JSONObject) lesson.get("quiz");
-                if(quiz.isEmpty()) {
+                if(quiz.isEmpty()) {            // if the quiz is undefined for this entry, return an empty string
                     return "";
                 }
-                JSONObject question = (JSONObject) quiz.get("q" + Integer.toString(question_number));
+                JSONObject question = (JSONObject) quiz.get("q" + Integer.toString(question_number));   // parse the question json object from the quiz designated by the question_number
                 
-                return (String) question.get("right_answer");
+                return (String) question.get("right_answer");               // return the right answer string from the question object
             }
         }
 
@@ -79,45 +79,53 @@ public class QuizMaster {
      */
     public boolean validateAnswers(int lesson_id, int user_id, String[] answers) {
         JSONObject registry = new JSONObject(LessonControl.getJsonString());
-        JSONObject target_lesson = (JSONObject) registry.get(Integer.toString(lesson_id));
-        JSONObject quiz_object = (JSONObject) target_lesson.get("quiz");
-        int achievement_id = (Integer) target_lesson.get("achievement_id");
-        if(quiz_object.isEmpty()) {
-            System.err.println("[QuizMaster - validateAnswer] No quiz data to validate answers with found in registry! Aborting operation ...");
-            return false;
-        }
-        // alle einzelnen Fragen des Quizzes abarbeiten und richtige Antworten extrahieren
-        int question_count = (Integer) quiz_object.get("question_count");
-        if(question_count != answers.length) {
-            System.err.println("[QuizMaster - validateAnswer] Incoming number of answers doesn't line up with number of questions in the quiz! Aborting operation ...");
-            return false;
-        }
-        String[] right_answers =  new String[question_count];
-        for(int i = 0; i < question_count; i++) {
-            right_answers[i] = getRightAnswerFrom(lesson_id, i);
-        }
-        
-        // Liste der richtigen Antworten mit der Liste der gegebenen Antworten vergleichen
-        int right_answer_counter = 0;
-        for(int i = 0; i < question_count; i++) {
-            if(answers[i].equals(right_answers[i])) {
-                right_answer_counter++;
+        JSONArray registered_ids = registry.getJSONArray("taken_ids");
+        for(int i = 0; i < registered_ids.length(); i++) {
+            int id = registered_ids.getInt(i);
+            if(id == lesson_id) {                       // check if the desired entry id exists in the "taken_ids" array
+                JSONObject target_lesson = (JSONObject) registry.get(Integer.toString(lesson_id));      // parsing the entry and quiz json objects
+                JSONObject quiz_object = (JSONObject) target_lesson.get("quiz");
+                int achievement_id = (Integer) target_lesson.get("achievement_id");
+                if(quiz_object.isEmpty()) {             // nothing to validate with if the quiz is undefined
+                    System.err.println("[QuizMaster - validateAnswer] No quiz data to validate answers with found in registry! Aborting operation ...");
+                    return false;
+                }
+
+                int question_count = (Integer) quiz_object.get("question_count");
+                if(question_count != answers.length) {              // abort if there are more/less answers than questions
+                    System.err.println("[QuizMaster - validateAnswer] Incoming number of answers doesn't line up with number of questions in the quiz! Aborting operation ...");
+                    return false;
+                }
+                String[] right_answers =  new String[question_count];
+                for(int j = 0; j < question_count; j++) {
+                    right_answers[j] = getRightAnswerFrom(lesson_id, j);        // get the right answers from the quiz questions
+                }
+                
+                // compare the list of right answers with the list of given answers
+                int right_answer_counter = 0;
+                for(int j = 0; j < question_count; j++) {
+                    if(answers[j].equals(right_answers[j])) {       // if the given answers is also the right answer, increment the right answer counter
+                        right_answer_counter++;
+                    }
+                }
+
+                User targeted_user = this.user_repo.findByid(user_id);          // get the user from the user databank
+                if(targeted_user == null) {
+                    System.err.println("[QuizMaster - validateAnswer] Given user id returned no registered user. Aborting ...");
+                    return false;
+                }
+                if(right_answer_counter >= ((double) question_count) / 2.0) {           // compute if enough right answers were given
+                    //this.qc_service.addAccomplishedUser(lesson_id, targeted_user);      // if half or more answers were correct, the user gets added to the list of user who cleared the quiz and receives the corresponding achievement
+                    grantAchievement(user_id, achievement_id);
+                    return true;
+                } else {
+                    //this.qc_service.addAttemptedUser(lesson_id, targeted_user);         // if less than half of the answers were correct, the user gets added to the list of user who attempted but failed the quiz
+                    return false;
+                }
             }
         }
-
-        User targeted_user = this.user_repo.findByid(user_id);
-        if(targeted_user == null) {
-            System.err.println("[QuizMaster - validateAnswer] Given user id returned no registered user. Aborting ...");
-            return false;
-        }
-        if(right_answer_counter >= ((double) question_count) / 2.0) {
-            this.qc_service.addAccomplishedUser(lesson_id, targeted_user);    // ist mehr als oder genau die Hälfte richtig, User der accomplished-Liste hinzufügen
-            grantAchievement(user_id, achievement_id);
-            return true;
-        } else {
-            this.qc_service.addAttemptedUser(lesson_id, targeted_user);       // ist weniger als die Hälfte richtig, User der attempted-Liste hinzufügen
-            return false;
-        }
+        
+        return false;
     }
 
     /**
@@ -132,26 +140,25 @@ public class QuizMaster {
      */
     public String getProgressionOf(String user_mail) {
         JSONObject progression_json = new JSONObject();
-        User target_user = this.user_repo.findByEmail(user_mail);       // User anhand der Mail aus der Datenbank abrufen (falls moeglich)
+        User target_user = this.user_repo.findByEmail(user_mail);       // get the user from the user databank
         if(target_user == null) {
             return "";
         }
 
-        int user_id = target_user.get_ID();                                                 // ID des User extrahieren
-        List<Integer> attempted_quizzes = this.qc_service.checkForAttempted(user_id);       // Liste der Quizzes die dieser User versucht hat abrufen
-        List<Integer> accomplished_quizzes = this.qc_service.checkForAccomplished(user_id); // Liste der Quizzes die dieser User absolviert hat abrufen
-        List<Integer> qc_ids = this.qc_service.getAllQCIds();
+        int user_id = target_user.get_ID();                                                 // extract the user id from the user
+        List<Integer> attempted_quizzes = this.qc_service.checkForAttempted(user_id);       // get the list of quizzes this user has attempted
+        List<Integer> accomplished_quizzes = this.qc_service.checkForAccomplished(user_id); // get the list of quizzes this user has accomplished
+        List<Integer> qc_ids = this.qc_service.getAllQCIds();                               // get list of all registered quiz tracker
 
-        for(int qc_id : qc_ids) {                                   // nacheinander Eintraege in die JSON anhand der Listen hinzufuegen
+        for(int qc_id : qc_ids) {                                   // iterate over the list of all quiz tracker
             if(accomplished_quizzes.contains(qc_id)) {
-                progression_json.put(Integer.toString(qc_id), 1);       // User hat das Quiz bestanden
+                progression_json.put(Integer.toString(qc_id), 1);       // if the user has cleared this quiz, mark it with a 1
                 continue;
             }
             if(attempted_quizzes.contains(qc_id)) {
-                progression_json.put(Integer.toString(qc_id), 0);       // User hat das Quiz nur versucht (aber nicht bestanden)
-                continue;
+                progression_json.put(Integer.toString(qc_id), 0);       // if the user has attempted but not cleared this quiz, mark it with a 0
             }
-            progression_json.put(Integer.toString(qc_id), -1);          // User hatte noch keine Interaktion mit diesem Quiz
+            progression_json.put(Integer.toString(qc_id), -1);          // if the user hasn't interacted with this quiz at all, mark it with a -1
         }
 
         return progression_json.toString();
@@ -164,18 +171,19 @@ public class QuizMaster {
      * @param achievement_id Integer representing the achievment to be given to the user
      */
     public void grantAchievement(int user_id, int achievement_id) {
-        User targeted_user = this.user_repo.findByid(user_id);
+        User targeted_user = this.user_repo.findByid(user_id);          // get the user from the user databank
         if(targeted_user == null) {
             System.err.println("[QuizMaster - grantAchievement] User not found. No achievements were granted.");
             return;    
         }
 
-        Achievement target_achievement = this.ach_repo.findByid(achievement_id);
+        Achievement target_achievement = this.ach_repo.findByid(achievement_id);    // get the achievement from the achievement databank
         if(target_achievement == null) {
             System.err.println("[QuizMaster - grantAchievement] Achievement not found! No achievements were granted.");
             return;
         }
 
-        target_achievement.addUser(targeted_user);
+        target_achievement.addUser(targeted_user);      // evoke the method to grant the user the specified achievement
+        this.ach_repo.save(target_achievement);
     }
 }
