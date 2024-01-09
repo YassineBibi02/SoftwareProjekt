@@ -9,6 +9,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 
 import '../../globals/globals';
 
+// This is the screen that displays the pdf viewer and the buttons to navigate through the pdf
 const WatchLessonScreen = () => {
     
     const navigate = useNavigate();
@@ -29,7 +30,6 @@ const WatchLessonScreen = () => {
 
     const [pageNumber, setPageNumber] = useState(1);
     const [numPages, setNumPages] = useState(null);
-    const totalPages = 112; // Replace with the actual total number of pages in the PDF
 
     // set the right page numbers and max page numbers when they are loaded
     function onDocumentLoadSuccess({ numPages }) {
@@ -81,11 +81,12 @@ const WatchLessonScreen = () => {
     // advance the pdf pages forth
     const handleForward = () => {
         console.log("Pressed Forward")
-        if (pageNumber < totalPages) {
+        if (pageNumber < numPages) {
             changePage(1);
         }
     };
 
+    // redirect to the quiz screen of the lesson
     function redirectToQuiz() {
         navigate(`/doQuiz?id=${lessonID}`);
     }

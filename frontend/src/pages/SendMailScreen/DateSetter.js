@@ -1,3 +1,10 @@
+/**
+ * A component for setting a date.
+ *
+ * @param {string} title - The title of the date setter.
+ * @param {function} setDateParent - The function to update the parent component with the selected date.
+ * @returns {JSX.Element} The date setter component.
+ */
 import React from 'react';
 import Form from "react-bootstrap/Form";
 import { useState } from "react";
@@ -14,6 +21,11 @@ const DateSetter = ({ title, setDateParent }) => {
         fontSize: '1.5em',
     };
 
+    /**
+     * Updates the selected date and calls the setDateParent function to update the parent component.
+     *
+     * @param {string} e - The selected date.
+     */
     const updateDate = (e) => {
         setDate(e);
         setDateParent(e);
