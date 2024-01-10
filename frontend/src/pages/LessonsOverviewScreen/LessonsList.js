@@ -22,7 +22,7 @@ const LessonsList = () => {
     useEffect(() => {
         const fetchLessons = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/methode/GetLessonRegistry');
+                const response = await fetch('/api/methode/GetLessonRegistry');
                 const data = await response.json();
                 console.log('Raw data: ', data);
                 const LessonArray = Object.values(data);
