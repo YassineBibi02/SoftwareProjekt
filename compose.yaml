@@ -16,6 +16,9 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+    volumes:
+      - shared-data:/app/shared-data  # Mount the shared volume into /app/shared-data
+      - ./frontend/public:/app/shared-data/public  # Mount the host directory to /app/shared-data/public
 
   backend:
     build:
@@ -23,4 +26,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    volumes:
+      - shared-data:/app/shared-data  # Mount the shared volume into /app/shared-data
 
+volumes:
+  shared-data:  # Define a named volume called "shared-data"

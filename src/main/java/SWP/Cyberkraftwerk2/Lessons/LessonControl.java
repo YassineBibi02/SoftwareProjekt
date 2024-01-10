@@ -1,8 +1,7 @@
 package SWP.Cyberkraftwerk2.Lessons;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
-
-//import SWP.Cyberkraftwerk2.Module.QuizCompService;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,8 +11,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.json.JSONArray;
 
 /**
  * Class providing static methods to control registered lessons.
@@ -25,7 +22,7 @@ import org.json.JSONArray;
  * @version 14.12.2023
  */
 public class LessonControl {
-    static String res_directory = "frontend/public";
+    static String res_directory = "shared-data/public";
 
     /**
      * Internal method to initialize the registry file if there is no present yet.
@@ -47,7 +44,7 @@ public class LessonControl {
         JSONArray empty_id_list = new JSONArray();
         new_registry.put("taken_ids", empty_id_list);
         try {
-            FileWriter fw = new FileWriter(res_directory + "\\registry.json");      // FileWriter tries to create the new empty registry, closes itself and returns true
+            FileWriter fw = new FileWriter(res_directory + "/registry.json");      // FileWriter tries to create the new empty registry, closes itself and returns true
             fw.write(new_registry.toString());
             fw.close();
             return true;
@@ -87,7 +84,7 @@ public class LessonControl {
      * @author Tristan Slodowski
      */
     private static boolean checkForRegistry() {
-        File registry = new File(res_directory + "\\registry.json");
+        File registry = new File(res_directory + "/registry.json");
         return registry.exists();
     }
 
@@ -103,7 +100,7 @@ public class LessonControl {
             createRegistry();
         }
         try{
-            Path json_path = Path.of(res_directory + "\\registry.json");
+            Path json_path = Path.of(res_directory + "/registry.json");
             JSONObject out = new JSONObject(Files.readString(json_path)); // parse the contents of the registry and return the resulting JSONObject
 
             return out;
@@ -123,7 +120,7 @@ public class LessonControl {
      */
     private static boolean writeRegistry(JSONObject new_registry) {
         try {
-            FileWriter writer = new FileWriter(res_directory + "\\registry.json");
+            FileWriter writer = new FileWriter(res_directory + "/registry.json");
             writer.write(new_registry.toString());                  // if possible save/overwrite the given JSONObject as the new registry file
 
             writer.close();
