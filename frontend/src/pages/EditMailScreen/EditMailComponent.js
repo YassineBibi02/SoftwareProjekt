@@ -71,7 +71,8 @@ function EditMailComponent() {
                 .then(response => response.text())
                 .then(data => {
                     console.log("Response:", data);
-                });
+                })
+                .then(alert("Template Erstellt"))
         } catch (error) {
             console.error('Error', error);
         }
