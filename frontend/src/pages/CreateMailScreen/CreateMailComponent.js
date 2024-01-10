@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import Header from '../../components/Header';
 import { Form, Button, Container, Modal} from 'react-bootstrap';
 import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 function CreateMailComponent() {
     const [cookies] = useCookies(['XSRF-TOKEN']);
@@ -13,6 +14,7 @@ function CreateMailComponent() {
     const [showPopup, setShowPopup] = useState(false); // Sets if the popup is currently shown or not
 
     const mail = [];    // The mail, initially empty
+    const navigate = useNavigate();
 
     // The style of a text field
     const FormGroupStyle = {
@@ -56,23 +58,25 @@ function CreateMailComponent() {
 
         try {
             fetch('/api/methode/NewMail', {
-                      method: 'POST', credentials: 'include',
-                      headers: { 
-                        'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
-                        'Content-Type': 'application/json',
-                     },
-                     body: JSON.stringify(mail)
-                })
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(mail)
+            })
                 .then(response => response.text())
                 .then(data => {
                     console.log("Response:", data);
+                    alert("Template erstellt");
+                    navigate('/'); // (*) Replace '/' with the desired path to navigate to
                 });
         } catch (error) {
             console.error('Error', error);
         }
 
         console.log("This is the mail:", mail);
-
     }
 
     // Push all the variables into the mail array
