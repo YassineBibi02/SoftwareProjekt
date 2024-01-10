@@ -4,7 +4,6 @@ package SWP.Cyberkraftwerk2.Mail;
 import SWP.Cyberkraftwerk2.Module.User;
 import SWP.Cyberkraftwerk2.Module.UserService;
 import jakarta.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,7 +22,7 @@ import java.util.*;
 public class Mail {
 
     //path to mail directory
-    private static String MAILPATH = "src\\main\\resources\\mails\\"; 
+    private static String MAILPATH = "shared-data/public/";
     //path for hyperlink to tip page
     private static String TIPPATH = "http:/23.88.113.199:3000/hereingefallen";
 
@@ -128,6 +127,8 @@ public class Mail {
             listscan.close();
             }
         catch(Exception e) {
+            System.out.println("1");
+            System.out.println(e);
             return false;
             }
         /*get id of new template*/
@@ -141,6 +142,7 @@ public class Mail {
             listwriter.close();
             }
         catch(Exception e) {
+            System.out.println("2");
             return false;
             }
         /*log new template to subjects.txt*/
@@ -151,6 +153,7 @@ public class Mail {
             subjectswriter.close();
             }
         catch(Exception e) {
+            System.out.println("3");
             return false;
             }     
         /*save new template*/    
@@ -161,6 +164,7 @@ public class Mail {
             mailwriter.close();
             }
         catch(Exception e) {
+            System.out.println("4");
             return false;
             }
         this.userservice.new_mail();
