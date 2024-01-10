@@ -3,7 +3,6 @@ import UserCard from './UserCard';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
-import axios from 'axios';
 
 const UserList = ({ onUserCardSelect }) => {
     const ListStyle = {
@@ -28,10 +27,11 @@ const UserList = ({ onUserCardSelect }) => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/methode/GetUsers');
-                console.log('Raw data: ', response.data)
-                setLoadedUsers(response.data);
-                console.log('Array: ' , loadedUsers);
+                const response = await fetch('http://localhost:8080/api/methode/GetUsers');
+                const data = await response.json();
+                console.log('Raw data: ', data);
+                setLoadedUsers(data);
+                console.log('Array: ', loadedUsers);
             } catch (error) {
                 console.error(error);
             }
