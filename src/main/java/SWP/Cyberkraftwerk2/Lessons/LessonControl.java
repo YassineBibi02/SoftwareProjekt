@@ -22,7 +22,7 @@ import org.json.JSONArray;
  * This registry consists of one JSONObject per registered lesson, containing more information about them, and one JSONArray (called "registered_lessons") 
  * which keeps track of all the keys required to access the JSONObjects for the registered lessons.
  * @author Tristan Slodowski
- * @version 14.12.2023
+ * @version 12.01.2024
  */
 public class LessonControl {
     static String res_directory = "frontend/public";
@@ -153,6 +153,7 @@ public class LessonControl {
         obj.put("quiz", quiz);                                                  // up until a quiz gets added to the entry, it will stay empty
         obj.put("achievement_id", achievement_id);
         String file_name = pdf_name.replace(" ", "_");      // replace all empty spaces " " of the file name with underscores "_"
+        file_name = removeProblemCharacters(file_name);
         obj.put("path", res_directory + "/" + file_name);                       // the file path for the entry get put together from the resource directory, a slash and the file name
 
         JSONObject registry = parseRegistry();
@@ -168,6 +169,25 @@ public class LessonControl {
         writeRegistry(registry);                                // save the registry json with the new entry
         return new_id;
     }
+
+    /**
+     * Private static method to remove and replace problematic characters that will corrupt the registry upon saving.
+     * <p> Common german Umlaute and the "Esszett" will be replaced by their "written out" versions (ä -> ae, ü -> ue etc.).
+     * Characters like §, °, ´, ² and ³ will be removed.
+     * @param input_string String potentially containing problematic characters
+     * @return input_string without certain characters
+     * @author Tristan Slodowski
+     */
+    private static String removeProblemCharacters(String input_string) {
+        String result = input_string.replaceAll("[§°´²³]", "");     // regex-Expression to locate certain characters
+        result = result.replace("ä", "ae");
+        result = result.replace("ö","ue");
+        result = result.replace("ü","ue");
+        result = result.replace("ß", "ss");
+
+        return result;
+    }
+
 
     /**
      * Method to register a new lesson by inserting an already pre-prepared JSONObject.

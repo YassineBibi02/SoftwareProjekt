@@ -31,8 +31,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 /**
@@ -134,6 +132,7 @@ public class APImethode {
                 throw new Exception("Original Filename may not be null!");
             }
             String normal_orig_path = file.getOriginalFilename().replace(" ", "_");     // replace all spaces " " with underscores "_" to avoid file system problems
+            normal_orig_path = removeProblemCharacters(normal_orig_path);
             Path dest_path = Path.of("frontend","public", normal_orig_path);
 
             file.transferTo(dest_path);                                     // save the uploaded pdf in the designated pdf folder
@@ -145,6 +144,24 @@ public class APImethode {
             System.out.println(e.toString());
             return false;
         }
+    }
+
+    /**
+     * Private static method to remove and replace problematic characters that will corrupt the registry upon saving.
+     * <p> Common german Umlaute and the "Esszett" will be replaced by their "written out" versions (ä -> ae, ü -> ue etc.).
+     * Characters like §, °, ´, ² and ³ will be removed.
+     * @param input_string String potentially containing problematic characters
+     * @return input_string without certain characters
+     * @author Tristan Slodowski
+     */
+    private String removeProblemCharacters(String input_string) {
+        String result = input_string.replaceAll("[§°´²³]", "");     // regex-Expression to locate and replace certain characters
+        result = result.replace("ä", "ae");
+        result = result.replace("ö","ue");
+        result = result.replace("ü","ue");
+        result = result.replace("ß", "ss");
+
+        return result;
     }
 
     /**
