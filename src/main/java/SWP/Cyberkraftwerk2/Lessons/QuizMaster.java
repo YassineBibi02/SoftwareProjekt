@@ -114,12 +114,12 @@ public class QuizMaster {
                     System.err.println("[QuizMaster - validateAnswer] Given user id returned no registered user. Aborting ...");
                     return false;
                 }
-                if(right_answer_counter >= ((double) question_count) / 2.0) {           // compute if enough right answers were given
-                    //this.qc_service.addAccomplishedUser(lesson_id, targeted_user);      // if half or more answers were correct, the user gets added to the list of user who cleared the quiz and receives the corresponding achievement
+                if(right_answer_counter >= Math.round((((double) question_count) * 0.75))) {           // compute if enough right answers were given
+                    //this.qc_service.addAccomplishedUser(lesson_id, targeted_user);      // if >=75% of the answers were correct, the user gets added to the list of user who cleared the quiz and receives the corresponding achievement
                     grantAchievement(user_id, achievement_id);
                     return true;
                 } else {
-                    //this.qc_service.addAttemptedUser(lesson_id, targeted_user);         // if less than half of the answers were correct, the user gets added to the list of user who attempted but failed the quiz
+                    //this.qc_service.addAttemptedUser(lesson_id, targeted_user);         // if less than 75% of the answers were correct, the user gets added to the list of user who attempted but failed the quiz
                     return false;
                 }
             }
