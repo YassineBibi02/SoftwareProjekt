@@ -5,7 +5,7 @@ import LoginContext from '../../globals/globalContext';
 
 
 const MainMenuScreenComponent = () => {
-    const {isLoggedIn, setLoggedIn,userV , setUserV} = useContext(LoginContext);
+    const {isLoggedIn, setLoggedIn,userV ,login, setUserV} = useContext(LoginContext);
     const navigate = useNavigate();
     const [buttonText, setButtonText] = useState('');
     var emailButtonText = "Mails verschicken";
@@ -84,6 +84,7 @@ const MainMenuScreenComponent = () => {
         .then(body => {
             if (body === '') {
                 setLoggedIn(false);
+                login();
             } else {
                 setUserV({ given_name: JSON.parse(body).given_name, email: JSON.parse(body).email , mailLevel: JSON.parse(body).Level});
                 roles = JSON.parse(body).roles;
