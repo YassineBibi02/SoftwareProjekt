@@ -148,8 +148,8 @@ public class APImethode {
 
     /**
      * Private static method to remove and replace problematic characters that will corrupt the registry upon saving.
-     * <p> Common german Umlaute and the "Esszett" will be replaced by their "written out" versions (ä -> ae, ü -> ue etc.).
-     * Characters like §, °, ´, ² and ³ will be removed.
+     * <p> Common german Umlaute and the "Esszett" will be replaced by their "written out" versions (ä -> ae, ü -> ue, ö -> oe & ß -> ss).
+     * Characters like §, °, ´, ² and ³ will be removed, while empty spaces (" ") will be replaced with underscores ("_").
      * @param input_string String potentially containing problematic characters
      * @return input_string without certain characters
      * @author Tristan Slodowski
@@ -171,19 +171,25 @@ public class APImethode {
      * @return Integer representing the id of the newly registered lesson
      * @author Tristan Slodowski
      */
-    @PostMapping("/RegisterLesson")                                         // TODO Auslesen der Argumente aus den Inputs für alle Lesson-Methoden sicherer machen
+    @PostMapping("/RegisterLesson")
     public boolean registerLesson(@RequestBody String[] input) {
-        System.out.println("Input Array:" + Arrays.toString(input));
-        String name = input[0];
-        int difficulty = Integer.parseInt(input[1]);
-        int achievement_id = Integer.parseInt(input[2]);
-        String pdf_name = input[3];
-        int id = LessonControl.addLessonEntry(name, difficulty, achievement_id, pdf_name);  // registering the new entry into the registry; returns the id of the new entry
-        System.out.println(id);
-        //Call create Quiz with the id and the rest of the input array:
-        String[] quiz_input = Arrays.copyOfRange(input, 3, input.length);
-        quiz_input[0] = Integer.toString(id);
-        createQuiz(quiz_input);
+        try{
+            System.out.println("Input Array:" + Arrays.toString(input));
+            String name = input[0];
+            int difficulty = Integer.parseInt(input[1]);
+            int achievement_id = Integer.parseInt(input[2]);
+            String pdf_name = input[3];
+            int id = LessonControl.addLessonEntry(name, difficulty, achievement_id, pdf_name);  // registering the new entry into the registry; returns the id of the new entry
+            System.out.println(id);
+            //Call create Quiz with the id and the rest of the input array:
+            String[] quiz_input = Arrays.copyOfRange(input, 3, input.length);
+            quiz_input[0] = Integer.toString(id);
+            createQuiz(quiz_input);
+        } catch (Exception e) {
+            System.err.println("[APImethode - registerLesson] An error ocurred while executing and nothing has been registered: ");
+            System.err.println(e.getMessage());
+            return false;
+        }
         return true;
     }
 
@@ -195,22 +201,29 @@ public class APImethode {
      */
     @PostMapping("/RemoveFromRegistry")
     public boolean removeFromRegistry(@RequestBody String input) {
-        int target_id = Integer.parseInt(input);
-
-        JSONObject registry = new JSONObject(LessonControl.getJsonString());
-        JSONObject entry = (JSONObject) registry.get(Integer.toString(target_id));      // parse the entry json object to be deleted
-        String path = (String) entry.get("path");                                       // extract the path to the corresponding pdf file
-
+        try{
+            int target_id = Integer.parseInt(input);
         
-        File to_be_deleted = new File(path);
-        if (to_be_deleted.delete()) {               // deleting the pdf file
-            System.out.println("[APImethode] Deletion of lesson file successful. Removing from registry ...");
-            String[] inp_arr = {input};
-            removeQuiz(inp_arr);                                // the quiz of the entry gets deleted seperately to ensure deletion of the quiz tracker
-            return LessonControl.removeLessonEntry(target_id);  // deleting the entry in the registry
-        } else {
-            System.out.println("[APImethode] File could not be deleted. Removing from registry ...");
-            LessonControl.removeLessonEntry(target_id);         // deleting the entry in the registry
+
+            JSONObject registry = new JSONObject(LessonControl.getJsonString());
+            JSONObject entry = (JSONObject) registry.get(Integer.toString(target_id));      // parse the entry json object to be deleted
+            String path = (String) entry.get("path");                                       // extract the path to the corresponding pdf file
+
+            
+            File to_be_deleted = new File(path);
+            if (to_be_deleted.delete()) {               // deleting the pdf file
+                System.out.println("[APImethode] Deletion of lesson file successful. Removing from registry ...");
+                String[] inp_arr = {input};
+                removeQuiz(inp_arr);                                // the quiz of the entry gets deleted seperately to ensure deletion of the quiz tracker
+                return LessonControl.removeLessonEntry(target_id);  // deleting the entry in the registry
+            } else {
+                System.out.println("[APImethode] File could not be deleted. Removing from registry ...");
+                LessonControl.removeLessonEntry(target_id);         // deleting the entry in the registry
+                return false;
+            }
+        } catch(Exception e) {
+            System.err.println("[APImethode - removeFromRegister] An error ocurred while executing and nothing has been removed: ");
+            System.err.println(e.getMessage());
             return false;
         }
     }
@@ -224,27 +237,33 @@ public class APImethode {
      */
     @PostMapping("/UpdateInRegistry")
     public boolean updateLessonInRegistry(@RequestBody String[] input) {
-        int id = Integer.parseInt(input[0]);
-        String name = input[1];
-        int difficulty = Integer.parseInt(input[2]);
-        int achievement_id = Integer.parseInt(input[3]);
-        String new_pdf_name = input[4];
-        boolean success;
+        try{
+            int id = Integer.parseInt(input[0]);
+            String name = input[1];
+            int difficulty = Integer.parseInt(input[2]);
+            int achievement_id = Integer.parseInt(input[3]);
+            String new_pdf_name = input[4];
+            boolean success;
 
-        JSONObject registry = new JSONObject(LessonControl.getJsonString());
-        JSONObject entry = (JSONObject) registry.get(Integer.toString(id));     // parse the entry json object from the registry
-        String path = (String) entry.get("path");                               // get the path to the corresponding pdf from the entry json
+            JSONObject registry = new JSONObject(LessonControl.getJsonString());
+            JSONObject entry = (JSONObject) registry.get(Integer.toString(id));     // parse the entry json object from the registry
+            String path = (String) entry.get("path");                               // get the path to the corresponding pdf from the entry json
 
-        File to_be_deleted = new File(path);
+            File to_be_deleted = new File(path);
 
-        if(to_be_deleted.delete()) {                            // deleting the old pdf file
-            success = LessonControl.updateLessonEntry(id, name, difficulty, achievement_id, new_pdf_name);      // updating the old entry with the new values and register a new pdf file
-            String[] quiz_input = Arrays.copyOfRange(input, 4, input.length);
-            quiz_input[0] = Integer.toString(id);
-            createQuiz(quiz_input);                 // overwrite the quiz object with new values
-            return success;
-        } else {
-            System.out.println("[UpdateInRegistry] Error while trying to delete old PDF file! Aborting ...");
+            if(to_be_deleted.delete()) {                            // deleting the old pdf file
+                success = LessonControl.updateLessonEntry(id, name, difficulty, achievement_id, new_pdf_name);      // updating the old entry with the new values and register a new pdf file
+                String[] quiz_input = Arrays.copyOfRange(input, 4, input.length);
+                quiz_input[0] = Integer.toString(id);
+                createQuiz(quiz_input);                 // overwrite the quiz object with new values
+                return success;
+            } else {
+                System.out.println("[UpdateInRegistry] Error while trying to delete old PDF file! Aborting ...");
+                return false;
+            }
+        } catch(Exception e) {
+            System.err.println("[APImethode - updateLessonInRegistry] An error ocurred while executing and the Update was stopped: ");
+            System.err.println(e.getMessage());
             return false;
         }
     }
@@ -258,14 +277,20 @@ public class APImethode {
      */
     @PostMapping("/UpdateInRegistryNoNameChange")
     public boolean updateWithoutNameChng(@RequestBody String[] input) {
-        int id = Integer.parseInt(input[0]);
-        String name = input[1];
-        int difficulty = Integer.parseInt(input[2]);
-        int achievement_id = Integer.parseInt(input[3]);
-        String[] quiz_input = Arrays.copyOfRange(input, 3, input.length);
-        quiz_input[0] = Integer.toString(id);
-        createQuiz(quiz_input);             // overwrite the quiz object with the new values
-        return LessonControl.updateLessonEntry(id, name, difficulty, achievement_id);   
+        try{
+            int id = Integer.parseInt(input[0]);
+            String name = input[1];
+            int difficulty = Integer.parseInt(input[2]);
+            int achievement_id = Integer.parseInt(input[3]);
+            String[] quiz_input = Arrays.copyOfRange(input, 3, input.length);
+            quiz_input[0] = Integer.toString(id);
+            createQuiz(quiz_input);             // overwrite the quiz object with the new values
+            return LessonControl.updateLessonEntry(id, name, difficulty, achievement_id);
+        } catch(Exception e) {
+            System.err.println("[APImethode - updateWhithoutNameChng] An error ocurred while executing and the Update was stopped: ");
+            System.err.println(e.getMessage());
+            return false;
+        }  
     }
 
     /**
@@ -282,27 +307,32 @@ public class APImethode {
 
 
     private void createQuiz(String[] input) {
-        System.out.println(Arrays.toString(input));
-        int lesson_id = Integer.parseInt(input[0]);
-        Quiz new_quiz = new Quiz(lesson_id);
-        int number_of_qs = Integer.parseInt(input[1]);
-        int index = 2;
-        for (int current_q = 1; current_q <= number_of_qs; current_q++) {
-            Question new_question = new Question();
-            new_question.setQuestion(input[index]);
-            index++;
-            int number_of_wrong_as = Integer.parseInt(input[index]);
-            index++;
-            new_question.setRightAnswer(input[index]);
-            index++;
-            for (int current_a = 1; current_a <= number_of_wrong_as; current_a++) {
-                new_question.addWrongAnswer(input[index]);
+        try{
+            System.out.println(Arrays.toString(input));
+            int lesson_id = Integer.parseInt(input[0]);
+            Quiz new_quiz = new Quiz(lesson_id);
+            int number_of_qs = Integer.parseInt(input[1]);
+            int index = 2;
+            for (int current_q = 1; current_q <= number_of_qs; current_q++) {
+                Question new_question = new Question();
+                new_question.setQuestion(input[index]);
                 index++;
+                int number_of_wrong_as = Integer.parseInt(input[index]);
+                index++;
+                new_question.setRightAnswer(input[index]);
+                index++;
+                for (int current_a = 1; current_a <= number_of_wrong_as; current_a++) {
+                    new_question.addWrongAnswer(input[index]);
+                    index++;
+                }
+                new_quiz.addQuestion(new_question);
             }
-            new_quiz.addQuestion(new_question);
+            LessonControl.setQuiz(lesson_id, new_quiz);
+            //this.quiz_completion_service.addQuizCompTracker(lesson_id);       // TODO QuizCompletion löschen?
+        } catch(Exception e) {
+            System.err.println("[APImethode - createQuiz] An error ocurred while executing and no Quiz has been created: ");
+            System.err.println(e.getMessage());
         }
-        LessonControl.setQuiz(lesson_id, new_quiz);
-        this.quiz_completion_service.addQuizCompTracker(lesson_id);
     }
     /**
      * Method for the Frontend to add/set a quiz for a registered lesson.
@@ -329,10 +359,15 @@ public class APImethode {
      */
     @PostMapping("/RemoveQuiz")
     public void removeQuiz(@RequestBody String[] lesson_id) {
-        int target_id = Integer.parseInt(lesson_id[0]);
+        try{
+            int target_id = Integer.parseInt(lesson_id[0]);
 
-        LessonControl.removeQuiz(target_id);                                // remove the quiz from the entry of the given id
-        this.quiz_completion_service.removeQuizCompTracker(target_id);      // delete the quiz completion tracker of this id
+            LessonControl.removeQuiz(target_id);                                // remove the quiz from the entry of the given id
+            //this.quiz_completion_service.removeQuizCompTracker(target_id);      // delete the quiz completion tracker of this id TODO QuizCompletion löschen?
+        } catch(Exception e) {
+            System.err.println("[APImethode - removeQuiz] An error ocurred while executing and no quiz has been altered: ");
+            System.err.println(e.getMessage());
+        }
     }
     
     /**
@@ -349,29 +384,35 @@ public class APImethode {
      */
     @PostMapping("/EvaluateQuiz")
     public int evaluateQuiz(@RequestBody String[] input) {
-        if(input.length <= 2) {                             // Less or equal two given arguments means not enough or no answers were transmitted; immediate termination of the process
-            System.err.println("[APImethode - evaluateQuiz] No or not enough arguments given. Aborting ...");
-            return -1;
-        }
-        int lesson_id = Integer.parseInt(input[0]);
-        String user_email = input[1];                                                       // Email-to-ID-Adapter to adhere to the databank conventions
-        User target_user = this.userRepository.findByEmail(user_email);                     // get the user from the user databank
-        if(target_user == null) {
-            System.err.println("[APImethode - EvaluateQuiz] User not found! Aborting!");
-            return -1;
-        }
-        int user_id = target_user.get_ID();                                                 // extract the user id from the user object
-        String[] given_answers = new String[input.length - 2];
-        for(int i = 2; i < input.length; i++) {
-            given_answers[i - 2] = input[i];                                                // transfer the given answers to a new array
-        }
+        try{
+            if(input.length <= 2) {                             // Less or equal two given arguments means not enough or no answers were transmitted; immediate termination of the process
+                System.err.println("[APImethode - evaluateQuiz] No or not enough arguments given. Aborting ...");
+                return -1;
+            }
+            int lesson_id = Integer.parseInt(input[0]);
+            String user_email = input[1];                                                       // Email-to-ID-Adapter to adhere to the databank conventions
+            User target_user = this.userRepository.findByEmail(user_email);                     // get the user from the user databank
+            if(target_user == null) {
+                System.err.println("[APImethode - EvaluateQuiz] User not found! Aborting!");
+                return -1;
+            }
+            int user_id = target_user.get_ID();                                                 // extract the user id from the user object
+            String[] given_answers = new String[input.length - 2];
+            for(int i = 2; i < input.length; i++) {
+                given_answers[i - 2] = input[i];                                                // transfer the given answers to a new array
+            }
 
-        boolean result = quiz_master.validateAnswers(lesson_id, user_id, given_answers);    // validate the answers with the registered right answers in the registry
+            boolean result = quiz_master.validateAnswers(lesson_id, user_id, given_answers);    // validate the answers with the registered right answers in the registry
 
-        if (result) {
-            return 1;       // User has cleared the quiz
-        } else {
-            return 0;       // User has failed the quiz
+            if (result) {
+                return 1;       // User has cleared the quiz
+            } else {
+                return 0;       // User has failed the quiz
+            }
+        } catch(Exception e) {
+            System.err.println("[APImethode - evaluateQuiz] An error ocurred while executing and the Evaluation failed: ");
+            System.err.println(e.getMessage());
+            return -1;
         }
     }    
 
@@ -384,7 +425,7 @@ public class APImethode {
      * @param mail String of the email address of the user to be checked
      * @return JSON-formatted string of the progression of the user
      */
-    @PostMapping("/GetQuizProg")
+    @PostMapping("/GetQuizProg")                                // TODO QuizCompletion löschen?
     public String getQuizProgression(@RequestBody String mail) {
         String result = this.quiz_master.getProgressionOf(mail);    // QuizMaster prepares the json object depicting the progression of the user
 
