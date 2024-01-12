@@ -8,17 +8,8 @@ import SWP.Cyberkraftwerk2.Lessons.Quiz;
 import SWP.Cyberkraftwerk2.Lessons.QuizMaster;
 import SWP.Cyberkraftwerk2.Mail.EmailService;
 import SWP.Cyberkraftwerk2.Mail.Mail;
-import SWP.Cyberkraftwerk2.Module.Achievement;
-import SWP.Cyberkraftwerk2.Module.AchievementService;
-import SWP.Cyberkraftwerk2.Module.QuizCompService;
-import SWP.Cyberkraftwerk2.Module.User;
-import SWP.Cyberkraftwerk2.Module.UserService;
-
+import SWP.Cyberkraftwerk2.Module.*;
 import org.json.JSONObject;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +22,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 /**
@@ -134,7 +123,7 @@ public class APImethode {
                 throw new Exception("Original Filename may not be null!");
             }
             String normal_orig_path = file.getOriginalFilename().replace(" ", "_");     // replace all spaces " " with underscores "_" to avoid file system problems
-            Path dest_path = Path.of("frontend","public", normal_orig_path);
+            Path dest_path = Path.of("shared-data", "public", normal_orig_path);
 
             file.transferTo(dest_path);                                     // save the uploaded pdf in the designated pdf folder
             System.out.println("[uploadLesson] Upload successful.");
