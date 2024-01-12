@@ -20,6 +20,7 @@ import DoQuizScreen from './pages/Quiz/doQuizScreen';
 import CreateQuizScreen from './pages/Quiz/createQuizScreen';
 import TemplateController from './pages/TemplateVerwaltungScreen/TemplateController';
 import EditMailComponent from './pages/EditMailScreen/EditMailComponent';
+import TransitionScreen from './pages/Quiz/transitionScreen';
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
         <Route path="/doQuiz" element={<DoQuizScreen/>}/>
         <Route path="/createQuiz" element={<CreateQuizScreen/>}/>
         <Route path="/editTemplate" element={<EditMailComponent/>}/>
+        <Route path="/quizTransition" element={<TransitionScreen/>}/>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>
