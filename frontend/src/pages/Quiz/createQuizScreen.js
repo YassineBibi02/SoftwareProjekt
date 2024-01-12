@@ -115,10 +115,17 @@ function CreateQuizScreen({setQuizData, closePopup, oldQuizData, editing}) {
         setWrongAnswers(updatedWrongAnswers);
     }
 
+    // remove certain special characters to avoid corruption of the registry
+    function removeProblemCharacters(input_string) {
+        let result = input_string.replace(/[üöäß§°´²³]/gi,'');
+        return result;
+    }
+
     // Directly updates the values with the new inputs from user
     function handleInputChange(event, id) {
         event.preventDefault();
-        const {name, value} = event.target;
+        let {name, value} = event.target;
+        value = removeProblemCharacters(value);
         
         if (name === "Question") {
             setQuestion(value);

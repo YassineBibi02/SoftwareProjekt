@@ -41,8 +41,8 @@ const LessonsEntry = ({lessonData, admin, completed}) => {
             navigate(`/lessonEdit/${lessonData.id}`, { state: { lesson: lessonData } })
         }
 
-        function redirectToQuiz() {
-            navigate(`/doQuiz?id=${lessonData.id}`);
+        function redirectToQuizTransition() {
+            navigate(`/quizTransition?id=${lessonData.id}`);
         }
 
         //Includes the edit and delete buttons
@@ -59,7 +59,7 @@ const LessonsEntry = ({lessonData, admin, completed}) => {
                         <CompletionIndicator />
                     </Col>
                     <Col style={EntryStyle} xs={6} sm={6} md={6} lg={2}>
-                        <Button onClick={redirectToQuiz} variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
+                        <Button onClick={redirectToQuizTransition} variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
                     </Col>
                     <Col style={EntryStyle} xs={6} sm={6} md={6} lg={1}>                    
                         <Button variant="dark" size="sm" style={{margin: '5px'}} onClick={() => editLesson(lessonData)}>
@@ -85,7 +85,7 @@ const LessonsEntry = ({lessonData, admin, completed}) => {
                         <CompletionIndicator />
                     </Col>
                     <Col style={EntryStyle} xs={6} sm={6} md={6} lg={3}>
-                        <Button onClick={redirectToQuiz} variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
+                        <Button onClick={redirectToQuizTransition} variant="primary" size="lg" style={{margin: '0px'}}>Quiz</Button>
                     </Col>
                 </Row>
             );

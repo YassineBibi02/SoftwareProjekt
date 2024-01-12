@@ -12,6 +12,8 @@ import java.io.FileWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.net.URLDecoder;
+import java.io.UnsupportedEncodingException;
 
 
 /**
@@ -439,6 +441,14 @@ public class Mail {
      * @return the formatted mail text
     */
     private String format_mail(User recipient, String mailtext, int mailid) {
+        String formatted_mail = mailtext;
+        try {
+            // Decode the URL-encoded string
+            formatted_mail = URLDecoder.decode(mailtext, "UTF-8");
+
+        } catch (UnsupportedEncodingException e) {
+            System.out.println(e);
+        }
         /*get 2 random User that are not the recipient*/
         User random1 = recipient;
         while(random1.get_ID() == recipient.get_ID()) {
@@ -448,7 +458,6 @@ public class Mail {
         while(random2.get_ID() == recipient.get_ID() || random2.get_ID() == random1.get_ID()) {
             random2 = userservice.getRandomUser();
             }
-        String formatted_mail = mailtext;
         formatted_mail = formatted_mail.replace("EMPFAENGERVORNAME", recipient.get_firstname());
         formatted_mail = formatted_mail.replace("EMPFAENGERNACHNAME", recipient.get_lastname());
         formatted_mail = formatted_mail.replace("EMPFAENGEREMAIL", recipient.get_email());

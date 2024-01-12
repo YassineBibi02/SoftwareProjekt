@@ -203,8 +203,14 @@ const EditLessonScreenComponent = ({newLesson}) => {
         setFileChanged(true);
     };
 
+    // remove certain special characters to avoid displaying and saving errors with the registry
+    function removeProblemCharacters(input_string) {
+        let result = input_string.replace(/[üöäß§°´²³]/gi, '');
+        return result;
+    }
+
     const handleTitleChange = (event) => {
-        setTitle(event.target.value);
+        setTitle(removeProblemCharacters(event.target.value));
     };
 
 

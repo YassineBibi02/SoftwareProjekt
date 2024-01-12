@@ -10,7 +10,7 @@ const MainMenuScreenComponent = () => {
     const [buttonText, setButtonText] = useState('');
     var emailButtonText = "Mails verschicken";
     var schulungButtonText = "Schulungsübersicht";
-    var achievementButtonText = "Archievementsübersicht";
+    var achievementButtonText = "Achievementsübersicht";
     var nutzerVerwaltenText = "Nutzer Verwalten";
     var achievementErstellenText = "Achievement Erstellen";
     var mailErstellenText = "Template Hinzufügen";
