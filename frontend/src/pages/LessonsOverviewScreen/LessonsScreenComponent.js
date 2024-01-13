@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+
+import React from 'react';
 import Header from '../../components/Header';
 import LessonsList from './LessonsList';
-import { Button } from 'react-bootstrap';
-import axios from 'axios';
-
+/**
+ * Renders the LessonsScreenComponent which includes a Lessons List below the header.
+ * @returns {JSX.Element} The rendered component.
+ */
 const LessonsScreenComponent = () => {
 
     return (
