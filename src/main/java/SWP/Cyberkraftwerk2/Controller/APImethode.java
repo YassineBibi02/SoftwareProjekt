@@ -316,7 +316,6 @@ public class APImethode {
                 new_quiz.addQuestion(new_question);
             }
             LessonControl.setQuiz(lesson_id, new_quiz);
-            //this.quiz_completion_service.addQuizCompTracker(lesson_id);       // TODO QuizCompletion löschen?
         } catch(Exception e) {
             System.err.println("[APImethode - createQuiz] An error ocurred while executing and no Quiz has been created: ");
             System.err.println(e.getMessage());
@@ -351,7 +350,6 @@ public class APImethode {
             int target_id = Integer.parseInt(lesson_id[0]);
 
             LessonControl.removeQuiz(target_id);                                // remove the quiz from the entry of the given id
-            //this.quiz_completion_service.removeQuizCompTracker(target_id);      // delete the quiz completion tracker of this id TODO QuizCompletion löschen?
         } catch(Exception e) {
             System.err.println("[APImethode - removeQuiz] An error ocurred while executing and no quiz has been altered: ");
             System.err.println(e.getMessage());

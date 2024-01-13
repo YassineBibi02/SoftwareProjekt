@@ -63,14 +63,12 @@ public class QuizMaster {
 
     /**
      * Method to validate given user answers with the saved 'right answers'.
-     * <p> Depending on whether the user managed to answer more than half of the question correctly or not, the method will add the user to the
-     * corresponding tracker lists of the QuizCompletion object for that specific quiz.
-     * <p> If equal to or more than 50% of the questions were answered correctly, the user gets added to the Accomplished-List, otherwise they will
-     * be added to the Attempted-List.
+     * <p> Depending on whether the user managed to answer >=75% of the questions correctly or not, the method will grant the user the
+     * corresponding achievement for that specific quiz.
      * @param lesson_id Integer id of the lesson which contains the wanted quiz structure
      * @param user_id Integer id of the user that is answering the questions
      * @param answers String array of the given answers
-     * @return boolean whether the user passed the quiz (>=50% answered correctly) or not
+     * @return boolean whether the user passed the quiz (>=75% answered correctly) or not
      */
     public boolean validateAnswers(int lesson_id, int user_id, String[] answers) {
         JSONObject registry = new JSONObject(LessonControl.getJsonString());
