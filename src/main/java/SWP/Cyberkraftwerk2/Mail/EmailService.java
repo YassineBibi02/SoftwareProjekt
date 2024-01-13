@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Class accessing the JavaMail and JakartaMail packages to send Emails
  * @author Tristan Slodowski
- * @version 04.01.2024
+ * @version 13.01.2024
  */
 @Configuration
 @PropertySource("classpath:/application.properties")
@@ -97,7 +97,7 @@ public class EmailService {
         message.setTo(target);                      // "simple filling out" of all needed values from SimpleMailMessage()
         message.setSubject(subject);
         message.setText(body);
-        message.setFrom("cyber.kraftwerk2@outlook.com");        // TODO Herkunftsadresse aendern je nachdem von wo am Ende gesendet werden soll
+        message.setFrom(this.username);
 
 
         mailSender.send(message);
@@ -116,7 +116,7 @@ public class EmailService {
         message.setTo(targets);                                 // by setting a list of email addresses as the target, all of them will receive the mail at once
         message.setSubject(subject);
         message.setText(body);
-        message.setFrom("cyber.kraftwerk2@outlook.com");        // TODO Herkunftsadresse aendern je nachdem von wo am Ende gesendet werden soll
+        message.setFrom(this.username);
 
         mailSender.send(message);
     }
@@ -133,7 +133,7 @@ public class EmailService {
     public void sendHtmlMessage(String to, String subject, String html_body) throws MessagingException {
         MimeMessage msg = mailSender.createMimeMessage();
 
-        msg.setFrom(new InternetAddress("cyber.kraftwerk2@outlook.com"));   // TODO Herkunftsadresse aendern je nachdem von wo gesendet werden soll
+        msg.setFrom(new InternetAddress(this.username));
         msg.setRecipients(MimeMessage.RecipientType.TO, to);
         msg.setSubject(subject);
 
