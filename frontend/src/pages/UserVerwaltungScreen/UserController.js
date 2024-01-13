@@ -249,7 +249,7 @@ const UserController = () => {
     <div>
       <Header />
       <div className="MainBox">
-        <h2 className="Welcome">Users</h2>
+        <h2 className="Welcome">Nutzer</h2>
         <div className="user-grid">
           {users.map((user) => (
             <UserComponent
@@ -264,12 +264,12 @@ const UserController = () => {
 
       {/* Edit User Modal */}
       <Modal isOpen={isEditModalOpen} toggle={handleCloseModals}>
-        <ModalHeader>Edit User</ModalHeader>
+        <ModalHeader>Nutzer bearbeiten</ModalHeader>
         <ModalBody>
           <Form>
             {/* Populate the form with selectedUser data */}
             <FormGroup>
-              <Label for="_firstname">First Name</Label>
+              <Label for="_firstname">Vorname</Label>
               <Input
                 type="text"
                 name="_firstname"
@@ -279,7 +279,7 @@ const UserController = () => {
               />
             </FormGroup>
             <FormGroup>
-              <Label for="_lastname">Last Name</Label>
+              <Label for="_lastname">Nachname</Label>
               <Input
                 type="text"
                 name="_lastname"
@@ -303,34 +303,34 @@ const UserController = () => {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={() => handleEditUser(editedUserData)}>
-            Save Changes
+            Speichern
           </Button>
           <Button color="secondary" onClick={() => setIsEditModalOpen(false)}>
-            Cancel
+            Abbrechen
           </Button>
           <Button color="info" onClick={toggleAssignPopup}>
-            Assign Achievement
+            Achievement zuweisen
           </Button>
         </ModalFooter>
       </Modal>
 
       {/* Delete User Confirmation Modal */}
       <Modal isOpen={isDeleteModalOpen} toggle={handleCloseModals}>
-        <ModalHeader>Confirm Delete</ModalHeader>
-        <ModalBody>Are you sure you want to delete this user?</ModalBody>
+        <ModalHeader>Löschen bestätigen</ModalHeader>
+        <ModalBody>Möchten Sie diesen Benutzer wirklich löschen</ModalBody>
         <ModalFooter>
           <Button color="danger" onClick={handleConfirmDelete}>
-            Delete
+            Löschen
           </Button>
           <Button color="secondary" onClick={handleCloseModals}>
-            Cancel
+            Abbrechen
           </Button>
         </ModalFooter>
       </Modal>
 
       {/* Assign Achievement Modal */}
       <Modal isOpen={assignPopup} toggle={toggleAssignPopup}>
-        <ModalHeader toggle={toggleAssignPopup}>Assign Achievement</ModalHeader>
+        <ModalHeader toggle={toggleAssignPopup}>Achievement zuweisen</ModalHeader>
         <ModalBody>
           {/* Fetch the list of achievements here and display them */}
           {achievements.map((achievement) => (
@@ -347,10 +347,10 @@ const UserController = () => {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={handleAssignAchievements}>
-            Assign
+            Zuweisen
           </Button>
           <Button color="secondary" onClick={toggleAssignPopup}>
-            Cancel
+            Abbrechen
           </Button>
         </ModalFooter>
       </Modal>
