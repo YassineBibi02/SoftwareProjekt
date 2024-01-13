@@ -122,7 +122,7 @@ public class APImethode {
             }
             String normal_orig_path = file.getOriginalFilename().replace(" ", "_");     // replace all spaces " " with underscores "_" to avoid file system problems
             normal_orig_path = removeProblemCharacters(normal_orig_path);
-            Path dest_path = Path.of("shared-data", "public", normal_orig_path);
+            Path dest_path = Path.of("shared-data", normal_orig_path);
 
             file.transferTo(dest_path);                                     // save the uploaded pdf in the designated pdf folder
             System.out.println("[uploadLesson] Upload successful.");

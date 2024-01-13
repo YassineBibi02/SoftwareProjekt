@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 public class Mail {
 
     //path to mail directory
-    private static String MAILPATH = "shared-data/public/";
+    private static String MAILPATH = "shared-data/";
     //path for hyperlink to tip page
     private static String TIPPATH = "http:/23.88.113.199:3000/hereingefallen";
 

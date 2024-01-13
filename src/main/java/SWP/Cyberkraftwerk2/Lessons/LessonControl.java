@@ -22,7 +22,7 @@ import java.util.List;
  * @version 12.01.2024
  */
 public class LessonControl {
-    static String res_directory = "shared-data/public";
+    static String res_directory = "shared-data";
 
     /**
      * Internal method to initialize the registry file if there is no present yet.

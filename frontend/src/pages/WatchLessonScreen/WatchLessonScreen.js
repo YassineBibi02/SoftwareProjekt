@@ -97,7 +97,7 @@ const WatchLessonScreen = () => {
             <div style={styles.container} className='PdfDiv'>
                 <h1 style={styles.lessonTitle}>{title}</h1>
                 <Document 
-                    file={"../shared-data/public/Halbleitertechnologie_Hausaufgabe2.pdf"}
+                    file={"../../../shared-data".concat(path)}
                     onLoadSuccess={onDocumentLoadSuccess}
                     style={styles.pdfViewer}
                 >
