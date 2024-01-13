@@ -38,20 +38,18 @@ public class APImethode {
     private AchievementRepository achievementRepository;
     private UserService userService;
     private AchievementService achievementService;
-    private QuizCompService quiz_completion_service;
     private QuizMaster quiz_master;
 
     // autowired email service instance; needs to be autowired to inject the login credentials properly
     @Autowired
     private EmailService mservice;
 
-    public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService, AchievementService achievementService, QuizCompService qcs) {
+    public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService, AchievementService achievementService) {
         this.userRepository = rep;
         this.achievementRepository = achievementRepository;
         this.userService = userService;
         this.achievementService = achievementService;
-        this.quiz_completion_service = qcs;
-        this.quiz_master = new QuizMaster(this.quiz_completion_service, this.userRepository, this.achievementRepository);
+        this.quiz_master = new QuizMaster(this.userRepository, this.achievementRepository);
     }
 
 
@@ -405,23 +403,6 @@ public class APImethode {
             return -1;
         }
     }    
-
-    /**
-     * Function for the Frontend to get an overview of the quiz completion progression for a specific user.
-     * <p> The funtion only needs the email of the user as an argument and returns a JSON structure representing the progression of the user.
-     * <p> Inside the JSON structure are Key-Value-Pairs using the lesson/quiz ids as keys and containing either a -1, 0 or 1 as values.
-     * A negative value of -1 means the user hasn't interacted with this quiz as of yet, 0 means the user has tried but failed the quiz and a value of 1 means the user passed the quiz.
-     * <p>  Example: <code> {"1": 1, "2": 1, "3": 0, "4": -1, "5": -1} </code>
-     * @param mail String of the email address of the user to be checked
-     * @return JSON-formatted string of the progression of the user
-     */
-    @PostMapping("/GetQuizProg")                                // TODO QuizCompletion löschen?
-    public String getQuizProgression(@RequestBody String mail) {
-        String result = this.quiz_master.getProgressionOf(mail);    // QuizMaster prepares the json object depicting the progression of the user
-
-        return result;
-    }
-
 
     /**
      * This Function adds an Achievement to a User

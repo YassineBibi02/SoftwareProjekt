@@ -2,12 +2,9 @@ package SWP.Cyberkraftwerk2.Lessons;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-import SWP.Cyberkraftwerk2.Module.QuizCompService;
 import SWP.Cyberkraftwerk2.Module.User;
 import SWP.Cyberkraftwerk2.Databank.UserRepository;
 import SWP.Cyberkraftwerk2.Databank.AchievementRepository;
@@ -15,26 +12,24 @@ import SWP.Cyberkraftwerk2.Module.Achievement;
 
 /**
  * Service class to offer methods interacting with the quiz objects of the lesson registry.
- * @version 19.12.2023
+ * @version 13.01.2024
  * @author Tristan Slodowski
  */
 @Service
 public class QuizMaster {
-    // QuizCompService reference to interact with the QuizCompletion databank
-    private QuizCompService qc_service;
     // UserRepository reference to get User information from the databank
     private UserRepository user_repo;
+    // AchievementRepository reference to get Achievement information from the databank
     private AchievementRepository ach_repo;
 
     /**
      * Default constructor of the QuizMaster class.
      * Requires references to the QuizCompService and the UserRepository
-     * @param qc_serv QuizCompService reference to interact with the QuizCompletion databank
      * @param user_rep UserRepository reference to interact with the User repository
+     * @param a_rep AchievementRepository reference to interact with the Achievement repository
      * @author Tristan Slodowski
      */
-    public QuizMaster(QuizCompService qc_serv, UserRepository user_rep, AchievementRepository a_rep) {
-        this.qc_service = qc_serv;
+    public QuizMaster(UserRepository user_rep, AchievementRepository a_rep) {
         this.user_repo = user_rep;
         this.ach_repo = a_rep;
     }
@@ -115,53 +110,17 @@ public class QuizMaster {
                     return false;
                 }
                 if(right_answer_counter >= Math.round((((double) question_count) * 0.75))) {           // compute if enough right answers were given
-                    //this.qc_service.addAccomplishedUser(lesson_id, targeted_user);      // if >=75% of the answers were correct, the user gets added to the list of user who cleared the quiz and receives the corresponding achievement
+                    // if >=75% of the answers were correct, the user cleared the quiz and receives the corresponding achievement
                     grantAchievement(user_id, achievement_id);
                     return true;
                 } else {
-                    //this.qc_service.addAttemptedUser(lesson_id, targeted_user);         // if less than 75% of the answers were correct, the user gets added to the list of user who attempted but failed the quiz
+                    // if less than 75% of the answers were correct, the user failed the quiz
                     return false;
                 }
             }
         }
         
         return false;
-    }
-
-    /**
-     * Function to compile an overview of a users progression over all the registered quizzes.
-     * <p> The funtion only needs the email of the user as an argument and returns a JSON structure representing the progression of the user.
-     * <p> Inside the JSON structure are Key-Value-Pairs using the lesson/quiz ids as keys and containing either a -1, 0 or 1 as values.
-     * A negative value of -1 means the user hasn't interacted with this quiz as of yet, 0 means the user has tried but failed the quiz and a value of 1 means the user passed the quiz.
-     * <p>  Example: <code> {"1": 1, "2": 1, "3": 0, "4": -1, "5": -1} </code>
-     * <p> Returns an empty string if the user couldn't be found in the databank.
-     * @param user_mail String of the target users email address
-     * @return JSON formatted String of the users quiz progression
-     */
-    public String getProgressionOf(String user_mail) {
-        JSONObject progression_json = new JSONObject();
-        User target_user = this.user_repo.findByEmail(user_mail);       // get the user from the user databank
-        if(target_user == null) {
-            return "";
-        }
-
-        int user_id = target_user.get_ID();                                                 // extract the user id from the user
-        List<Integer> attempted_quizzes = this.qc_service.checkForAttempted(user_id);       // get the list of quizzes this user has attempted
-        List<Integer> accomplished_quizzes = this.qc_service.checkForAccomplished(user_id); // get the list of quizzes this user has accomplished
-        List<Integer> qc_ids = this.qc_service.getAllQCIds();                               // get list of all registered quiz tracker
-
-        for(int qc_id : qc_ids) {                                   // iterate over the list of all quiz tracker
-            if(accomplished_quizzes.contains(qc_id)) {
-                progression_json.put(Integer.toString(qc_id), 1);       // if the user has cleared this quiz, mark it with a 1
-                continue;
-            }
-            if(attempted_quizzes.contains(qc_id)) {
-                progression_json.put(Integer.toString(qc_id), 0);       // if the user has attempted but not cleared this quiz, mark it with a 0
-            }
-            progression_json.put(Integer.toString(qc_id), -1);          // if the user hasn't interacted with this quiz at all, mark it with a -1
-        }
-
-        return progression_json.toString();
     }
 
     /**
