@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './AchievementDisplay.css';
 import userIcon from '../../images/user.png';
+import medalG from '../../images/medalG.png';
+import medalS from '../../images/medalS.png';
+import medalC from '../../images/medalC.png';
+
 import { useCookies } from 'react-cookie';
 
 const AchievementDisplay = ({ achievementId, xsrfToken }) => {
@@ -28,10 +32,20 @@ const AchievementDisplay = ({ achievementId, xsrfToken }) => {
         return <div>Loading...</div>;
     }
 
+// Function to select medal based on weight
+    const getMedalImage = (weight) => {
+        switch(weight) {
+            case 3: return medalG;
+            case 2: return medalS;
+            case 1: return medalC;
+            default: return medalC;
+        }
+    };
+
     return (
         <div className="achievement">
             <div className="achievement-image-container">
-                <img src={userIcon} alt="User Icon" className="achievement-ico"/>
+                <img src={getMedalImage(achievement.weight)} alt="Medal" className="achievement-icon"/>
             </div>
             <div className="achievement-text">
                 <h2>{achievement.name}</h2>
@@ -42,5 +56,4 @@ const AchievementDisplay = ({ achievementId, xsrfToken }) => {
 }
 
 export default AchievementDisplay;
-
 
