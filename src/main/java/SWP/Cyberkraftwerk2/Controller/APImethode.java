@@ -146,7 +146,7 @@ public class APImethode {
     private String removeProblemCharacters(String input_string) {
         String result = input_string.replaceAll("[§°´²³]", "");     // regex-Expression to locate and replace certain characters
         result = result.replace("ä", "ae");
-        result = result.replace("ö","ue");
+        result = result.replace("ö","oe");
         result = result.replace("ü","ue");
         result = result.replace("ß", "ss");
 
