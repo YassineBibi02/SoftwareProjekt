@@ -5,16 +5,15 @@ import LoginContext from '../../globals/globalContext';
 
 
 const MainMenuScreenComponent = () => {
-    const {isLoggedIn, setLoggedIn,userV ,login, setUserV} = useContext(LoginContext);
+    const {isLoggedIn, setLoggedIn,userV ,login, setUserV, logout} = useContext(LoginContext);
     const navigate = useNavigate();
     const [buttonText, setButtonText] = useState('');
-    var emailButtonText = "Mails verschicken";
-    var schulungButtonText = "Schulungsübersicht";
-    var achievementButtonText = "Achievementsübersicht";
-    var nutzerVerwaltenText = "Nutzer Verwalten";
-    var achievementErstellenText = "Achievement Erstellen";
-    var mailErstellenText = "Template Hinzufügen";
-    var templateVerwaltenText = "Template Verwalten";
+    const [adminStatus, setAdminStatus] = useState(false); 
+    const [user, setUser] = useState(undefined);
+
+    const schulungButtonText = "Schulungen";
+    const achievementButtonText = "Meine Achievements";
+    const adminübersichtText = "Admin";
 
     let roles = [];
 
@@ -34,7 +33,6 @@ const MainMenuScreenComponent = () => {
         padding: '20px', 
         backgroundColor: 'white',
         color: 'black',
-        // borderColor: '#ec6608',
         borderColor: 'black',
         borderRadius: '4px',
         width: '100%',
@@ -42,12 +40,28 @@ const MainMenuScreenComponent = () => {
         fontSize: '1.5rem'
     };
 
-    const redirectToMail = () => {
-        navigate('/mail');
-    };
-
-    const redirectControl = () => {
-        navigate('/UserController');
+    const fetchAdminStatus = async () => {
+        fetch('api/user', { credentials: 'include' })
+        .then(response => response.text())
+        .then(body => {
+            if (body === '') {
+                 navigate('/login');
+            } else {
+                const userData = JSON.parse(body);
+                if (userData.roles === undefined || userData.roles === null) {
+                    console.log("Bitte neu einloggen")
+                    logout();
+                } else if (userData.roles.includes("Admin_Access")) {
+                    setAdminStatus(true);
+                    setUser(userData);
+                    console.log("User: ", userData);
+                } else {
+                    setAdminStatus(false);
+                    setUser(userData);
+                    console.log("User: ", userData);
+                }
+            }
+        });
     };
 
     const redirectToLessons = () => {
@@ -58,16 +72,8 @@ const MainMenuScreenComponent = () => {
         navigate('/achievements');
     };
 
-    const redirectCreateAchievement = () => {
-        navigate('/createAchievement');
-    }
-
-    const redirectToCreateMail = () => {
-        navigate('/createMail');
-    }
-
-    const redirectToTemplates = () => {
-        navigate('/templates');
+    const redirectToAdminOverview = () => {
+        navigate('/adminOverview');
     }
 
     const infoContainer = {
@@ -79,7 +85,7 @@ const MainMenuScreenComponent = () => {
     };
 
     useEffect(() => {
-        fetch('api/user', { credentials: 'include' }) // <.>
+        fetch('api/user', { credentials: 'include' })
         .then(response => response.text())
         .then(body => {
             if (body === '') {
@@ -91,20 +97,21 @@ const MainMenuScreenComponent = () => {
                 setLoggedIn(true);
             }
         });
+        fetchAdminStatus();
     }, [])
 
     return (
         <div>
             <Header/>
-            <div style={{ display: 'flex', justifyContent: 'center' }}> {/* Changed this line to center the content */}
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div style={Container}>
-                    <button style={ButtonStyle} onClick={redirectToMail}>{emailButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
                     <button style={ButtonStyle} onClick={redirectToAchievements}>{achievementButtonText}</button>
-                    <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
-                    <button style={ButtonStyle} onClick={redirectCreateAchievement}>{achievementErstellenText}</button>
-                    <button style={ButtonStyle} onClick={redirectToCreateMail}>{mailErstellenText}</button>
-                    <button style={ButtonStyle} onClick={redirectToTemplates}>{templateVerwaltenText}</button>
+                    {
+                        adminStatus && (
+                            <button style={ButtonStyle} onClick={redirectToAdminOverview} >{adminübersichtText}</button>
+                        )
+                    }
                 </div>
             </div>
         </div>

@@ -21,6 +21,7 @@ import CreateQuizScreen from './pages/Quiz/createQuizScreen';
 import TemplateController from './pages/TemplateVerwaltungScreen/TemplateController';
 import EditMailComponent from './pages/EditMailScreen/EditMailComponent';
 import TransitionScreen from './pages/Quiz/transitionScreen';
+import AdminOverviewScreen from './pages/AdminOverviewScreen';
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
         <Route path="/createQuiz" element={<CreateQuizScreen/>}/>
         <Route path="/editTemplate" element={<EditMailComponent/>}/>
         <Route path="/quizTransition" element={<TransitionScreen/>}/>
+        <Route path="/adminOverview" element={<AdminOverviewScreen/>}/>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>
