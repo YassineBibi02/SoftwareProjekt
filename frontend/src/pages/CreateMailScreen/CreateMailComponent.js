@@ -70,7 +70,7 @@ function CreateMailComponent() {
                 .then(data => {
                     console.log("Response:", data);
                     
-                    if (data === false) {
+                    if (data === false || data === "false") {
                         alert("Fehler, bitte stellen Sie sicher, dass der Text einen LINK enthält");
                     } else {
                         alert("Template erstellt");
