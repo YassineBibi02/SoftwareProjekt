@@ -2,7 +2,7 @@ import React, { useState, useEffect ,useContext} from 'react';
 import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
 import LoginContext from '../../globals/globalContext';
-import MenuButton from '../MenuButton';
+import MenuButton from '../../components/MenuButton';
 
 
 const MainMenuScreenComponent = () => {

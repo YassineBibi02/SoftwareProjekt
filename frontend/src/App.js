@@ -2,7 +2,7 @@ import React from 'react';
 import SendMailScreenComponent from './pages/SendMailScreen/SendMailScreenComponent';
 import LoginScreen  from './pages/LoginScreen';
 import ReactDOM from 'react-dom';
-import MainMenuScreenComponent from './components/MainMenuScreen/MainMenuScreenComponent';
+import MainMenuScreenComponent from './pages/MainMenuScreen/MainMenuScreenComponent';
 import AchievementsOverviewScreenComponent from './pages/AchievementsOverviewScreen/AchievementsOverviewScreeenComponent';
 import LessonsScreenComponent from './pages/LessonsOverviewScreen/LessonsScreenComponent';
 import TemplateComponent from './pages/TemplateVerwaltungScreen/TemplateComponent';
