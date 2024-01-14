@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import './AchievementDisplay.css';
 import userIcon from '../../images/user.png';
 import { useCookies } from 'react-cookie';
-
+/**
+ * Renders an achievement display component. Used to represent an Achievement without the edit and delete buttons.
+ * @param {string} achievementId - The ID of the achievement.
+ * @param {string} xsrfToken - The XSRF token used to fetch from the server.
+ * @returns {JSX.Element} The rendered achievement display component.
+ */
 const AchievementDisplay = ({ achievementId, xsrfToken }) => {
     const [achievement, setAchievement] = useState(null);
     const [cookies] = useCookies(['XSRF-TOKEN']); // <.>
 
-
+    // Fetches the achievement data from the server
     useEffect(() => {
         fetch('/api/methode/AchievementDetails', {
             method: 'POST',
@@ -27,6 +32,7 @@ const AchievementDisplay = ({ achievementId, xsrfToken }) => {
     if (!achievement) {
         return <div>Loading...</div>;
     }
+
 
     return (
         <div className="achievement">

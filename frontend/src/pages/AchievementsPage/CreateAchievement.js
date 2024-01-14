@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input } from 'reactstrap';
 import { useCookies } from 'react-cookie';
@@ -5,7 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Achievement from './Achievement'; // Import the separate Achievement component
 import './AchievementDisplay.css';
-
+/**
+ * Component for creating achievements.
+ * 
+ * @returns {JSX.Element} The CreateAchievement component.
+ */
 const CreateAchievement = () => {
     const navigate = useNavigate();
     const [achievements, setAchievements] = useState([]);
@@ -16,7 +21,7 @@ const CreateAchievement = () => {
     const [editAchievementData, setEditAchievementData] = useState({ id: '', name: '', description: '' });
 
 
-
+    // Fetches the user data from the server, only allowing access to the page if the user has Admin_Access
     useEffect(() => {
         console.log("test")
         fetch('api/user', { credentials: 'include' }) // <.>
@@ -42,6 +47,7 @@ const CreateAchievement = () => {
 
     }, []);
 
+    // Fetches the achievements from the server
     function getAchievements () {
         fetch('/api/methode/GetAllAchievements')
             .then(response => response.json())
@@ -63,6 +69,7 @@ const CreateAchievement = () => {
         setEditModal(true);
     };
 
+    // Sends the edited achievement data to the server
     const handleEditAchievement = () => {
         fetch('api/methode/EditAchievement', {
             method: 'POST',
@@ -87,7 +94,7 @@ const CreateAchievement = () => {
         });
     };
 
-
+    // Sends the new achievement data to the server
     const handleAddAchievement = () => {
 
         fetch('/api/methode/CreateAchievement', {
@@ -116,7 +123,7 @@ const CreateAchievement = () => {
     };
 
 
-
+    // Sends the achievement ID to the server to delete the achievement
     const handleDeleteAchievement = (achievementId) => {
         fetch('/api/methode/DeleteAchievement', {
             method: 'POST',

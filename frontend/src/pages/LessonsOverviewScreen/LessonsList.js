@@ -1,24 +1,31 @@
+
 import React, { useEffect, useState, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Button } from 'react-bootstrap';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LessonsEntry from './LessonsEntry';
 import { IoMdAdd } from "react-icons/io";
 import LoginContext from '../../globals/globalContext';
 
+/**
+ * Renders a list of lesson entries
+ * 
+ * @returns {JSX.Element} The component JSX element.
+ */
+
 const LessonsList = () => {
     
     const navigate = useNavigate();
-    const [adminStatus, setAdminStatus] = useState(false); 
-    const [user, setUser] = useState(undefined);
-    const achievementIds = user?.achievements || [];
+    const [adminStatus, setAdminStatus] = useState(false);  //Admin status of the user
+    const [user, setUser] = useState(undefined);            //User data
+    const achievementIds = user?.achievements || [];        //List of completed lessons
     const [loadedIDs, setLoadedIDs] = useState([]); 
-    const [loadedLessons, setLoadedLessons] = useState([]);
+    const [loadedLessons, setLoadedLessons] = useState([]); //List of all lessons
     const { isLoggedIn, setLoggedIn, userV , login, logout} = useContext(LoginContext);
 
+    //Fetches all lessons and the admin status of the user
     useEffect(() => {
         const fetchLessons = async () => {
             try {
@@ -61,6 +68,7 @@ const LessonsList = () => {
         fetchAdminStatus();
     }, []);
 
+    //Styling for the header of the lesson table
     const HeaderStyle = {
         textAlign: 'center',
         fontWeight: 'bold', 
@@ -69,6 +77,7 @@ const LessonsList = () => {
         border: '3px solid black',
     };
 
+    //Styling for the lesson table
     const TableStyle = {
         fontSize: '1em',
         width: '90%',
@@ -83,12 +92,15 @@ const LessonsList = () => {
         margin: 'auto',
     };
 
+    //Navigates to the lesson creation page
     const addLesson = () => {
         navigate('/lessonCreate');
     }  
 
+    //Displays the lesson table for admins, including the add lesson button
     const AdminTable = () => {
         if (loadedLessons.length === 0) {
+            //return No Lessons found if no lessons can be loaded
             return (
                 <div>
                     <h1>No Lessons found</h1>
@@ -136,6 +148,7 @@ const LessonsList = () => {
         );    
     }
 
+    //Displays the lesson table for users without the add lesson button
     const UserTable = () => {
         
         if (loadedLessons.length === 0) {

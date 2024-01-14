@@ -1,9 +1,14 @@
+/**
+ * Represents a single achievement entry component.
+ * @param {Object} achievementData - The data of the achievement.
+ * @param {Function} onSelection - The function to call when the achievement is selected.
+ * @returns {JSX.Element} The rendered achievement entry component.
+ */
 import React from 'react';
-import { Button } from 'reactstrap';
 import '../../AchievementsPage/AchievementDisplay.css';
 
 const AchievementEntry = ({ achievementData, onSelection }) => {
-    const [background, setBackground] = React.useState("#f7f7f7");
+    const [background, setBackground] = React.useState("#f7f7f7"); // background color of the achievement entry
 
     const handleClick = () => {
         onSelection(achievementData.id);
