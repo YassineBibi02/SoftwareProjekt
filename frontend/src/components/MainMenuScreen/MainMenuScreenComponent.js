@@ -2,6 +2,7 @@ import React, { useState, useEffect ,useContext} from 'react';
 import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
 import LoginContext from '../../globals/globalContext';
+import MenuButton from '../MenuButton';
 
 
 const MainMenuScreenComponent = () => {
@@ -13,31 +14,18 @@ const MainMenuScreenComponent = () => {
 
     const schulungButtonText = "Schulungen";
     const achievementButtonText = "Meine Achievements";
-    const adminübersichtText = "Admin";
+    const adminübersichtText = "Adminübersicht";
 
     let roles = [];
 
     const Container = {
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        flexDirection: 'row',
         justifyContent: 'space-around', 
         backgroundColor: 'white',
         width: '80%', 
-        height: '80vh', 
+        height: '400px', 
         padding: '20px',
-    };
-
-    const ButtonStyle = {
-        margin: '10px', 
-        padding: '20px', 
-        backgroundColor: 'white',
-        color: 'black',
-        borderColor: 'black',
-        borderRadius: '4px',
-        width: '100%',
-        height: '15%',
-        fontSize: '1.5rem'
     };
 
     const fetchAdminStatus = async () => {
@@ -76,14 +64,6 @@ const MainMenuScreenComponent = () => {
         navigate('/adminOverview');
     }
 
-    const infoContainer = {
-        marginLeft: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '33%', 
-    };
-
     useEffect(() => {
         fetch('api/user', { credentials: 'include' })
         .then(response => response.text())
@@ -103,17 +83,24 @@ const MainMenuScreenComponent = () => {
     return (
         <div>
             <Header/>
+            <div style={{textAlign: 'center', marginTop: '20px', marginBottom: '20px', color: '#ec6608' }}>
+                <h2 style={{ fontSize: '4rem' }}>Willkommen!</h2>
+            </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div style={Container}>
-                    <button style={ButtonStyle} onClick={redirectToLessons}>{schulungButtonText}</button>
-                    <button style={ButtonStyle} onClick={redirectToAchievements}>{achievementButtonText}</button>
-                    {
-                        adminStatus && (
-                            <button style={ButtonStyle} onClick={redirectToAdminOverview} >{adminübersichtText}</button>
-                        )
-                    }
+                    <MenuButton onClick={redirectToLessons}>{schulungButtonText}</MenuButton>
+                    <MenuButton onClick={redirectToAchievements}>{achievementButtonText}</MenuButton>
                 </div>
             </div>
+            {
+                adminStatus && (
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <div style={{...Container, height: '200px'}}>
+                            <MenuButton onClick={redirectToAdminOverview} >{adminübersichtText}</MenuButton>
+                        </div>
+                    </div>
+                )
+            }
         </div>
     );
 };

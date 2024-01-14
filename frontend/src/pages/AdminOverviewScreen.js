@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
+import MenuButton from '../components/MenuButton';
 
 function AdminOverviewScreen() {
 
@@ -60,11 +61,13 @@ function AdminOverviewScreen() {
             <Header/>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div style={Container}>
-                    <button style={ButtonStyle} onClick={redirectToMail}>{emailButtonText}</button>                              
-                    <button style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</button>
-                    <button style={ButtonStyle} onClick={redirectCreateAchievement}>{achievementErstellenText}</button>
-                    <button style={ButtonStyle} onClick={redirectToCreateMail}>{mailErstellenText}</button>
-                    <button style={ButtonStyle} onClick={redirectToTemplates}>{templateVerwaltenText}</button>
+                    <MenuButton style={ButtonStyle} onClick={redirectToMail}>{emailButtonText}</MenuButton>                              
+                    <div style={{...Container, flexDirection:'row', width:'104%'}}>
+                        <MenuButton style={ButtonStyle} onClick={redirectToCreateMail}>{mailErstellenText}</MenuButton>
+                        <MenuButton style={ButtonStyle} onClick={redirectToTemplates}>{templateVerwaltenText}</MenuButton>
+                    </div>
+                    <MenuButton style={ButtonStyle} onClick={redirectCreateAchievement}>{achievementErstellenText}</MenuButton>
+                    <MenuButton style={ButtonStyle} onClick={redirectControl}>{nutzerVerwaltenText}</MenuButton>
                     
                 </div>
             </div>
