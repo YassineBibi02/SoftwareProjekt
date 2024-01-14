@@ -38,20 +38,18 @@ public class APImethode {
     private AchievementRepository achievementRepository;
     private UserService userService;
     private AchievementService achievementService;
-    private QuizCompService quiz_completion_service;
     private QuizMaster quiz_master;
 
     // autowired email service instance; needs to be autowired to inject the login credentials properly
     @Autowired
     private EmailService mservice;
 
-    public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService, AchievementService achievementService, QuizCompService qcs) {
+    public APImethode(UserRepository rep, AchievementRepository achievementRepository, UserService userService, AchievementService achievementService) {
         this.userRepository = rep;
         this.achievementRepository = achievementRepository;
         this.userService = userService;
         this.achievementService = achievementService;
-        this.quiz_completion_service = qcs;
-        this.quiz_master = new QuizMaster(this.quiz_completion_service, this.userRepository, this.achievementRepository);
+        this.quiz_master = new QuizMaster(this.userRepository, this.achievementRepository);
     }
 
 
@@ -123,7 +121,8 @@ public class APImethode {
                 throw new Exception("Original Filename may not be null!");
             }
             String normal_orig_path = file.getOriginalFilename().replace(" ", "_");     // replace all spaces " " with underscores "_" to avoid file system problems
-            Path dest_path = Path.of("shared-data", "public", normal_orig_path);
+            normal_orig_path = removeProblemCharacters(normal_orig_path);
+            Path dest_path = Path.of("shared-data", normal_orig_path);
 
             file.transferTo(dest_path);                                     // save the uploaded pdf in the designated pdf folder
             System.out.println("[uploadLesson] Upload successful.");
@@ -318,7 +317,6 @@ public class APImethode {
                 new_quiz.addQuestion(new_question);
             }
             LessonControl.setQuiz(lesson_id, new_quiz);
-            //this.quiz_completion_service.addQuizCompTracker(lesson_id);       // TODO QuizCompletion löschen?
         } catch(Exception e) {
             System.err.println("[APImethode - createQuiz] An error ocurred while executing and no Quiz has been created: ");
             System.err.println(e.getMessage());
@@ -353,7 +351,6 @@ public class APImethode {
             int target_id = Integer.parseInt(lesson_id[0]);
 
             LessonControl.removeQuiz(target_id);                                // remove the quiz from the entry of the given id
-            //this.quiz_completion_service.removeQuizCompTracker(target_id);      // delete the quiz completion tracker of this id TODO QuizCompletion löschen?
         } catch(Exception e) {
             System.err.println("[APImethode - removeQuiz] An error ocurred while executing and no quiz has been altered: ");
             System.err.println(e.getMessage());
@@ -405,23 +402,6 @@ public class APImethode {
             return -1;
         }
     }    
-
-    /**
-     * Function for the Frontend to get an overview of the quiz completion progression for a specific user.
-     * <p> The funtion only needs the email of the user as an argument and returns a JSON structure representing the progression of the user.
-     * <p> Inside the JSON structure are Key-Value-Pairs using the lesson/quiz ids as keys and containing either a -1, 0 or 1 as values.
-     * A negative value of -1 means the user hasn't interacted with this quiz as of yet, 0 means the user has tried but failed the quiz and a value of 1 means the user passed the quiz.
-     * <p>  Example: <code> {"1": 1, "2": 1, "3": 0, "4": -1, "5": -1} </code>
-     * @param mail String of the email address of the user to be checked
-     * @return JSON-formatted string of the progression of the user
-     */
-    @PostMapping("/GetQuizProg")                                // TODO QuizCompletion löschen?
-    public String getQuizProgression(@RequestBody String mail) {
-        String result = this.quiz_master.getProgressionOf(mail);    // QuizMaster prepares the json object depicting the progression of the user
-
-        return result;
-    }
-
 
     /**
      * This Function adds an Achievement to a User
