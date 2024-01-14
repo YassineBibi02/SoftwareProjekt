@@ -1,3 +1,10 @@
+/**
+ * Represents a single achievement component with buttons for editing and deleting.
+ * @param {Object} achievement - The achievement object.
+ * @param {Function} onDelete - The function to handle the delete action.
+ * @param {Function} onEdit - The function to handle the edit action.
+ * @returns {JSX.Element} The rendered Achievement component.
+ */
 import React from 'react';
 import { Button } from 'reactstrap';
 

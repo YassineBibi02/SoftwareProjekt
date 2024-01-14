@@ -7,6 +7,12 @@ import { Navigate } from 'react-router-dom';
 import AchievementList from './AchievementList';
 
 
+/**
+ * Component for adding an achievement popup.
+ * @param {string} lessonTitle - The title of the lesson.
+ * @param {function} setLessonAchievementID - The function to set the lesson achievement ID.
+ * @returns {JSX.Element} The add achievement popup component.
+ */
 const AddAchievementPopup = ({lessonTitle, setLessonAchievementID}) => {
     const [cookies] = useCookies(['XSRF-TOKEN']);
     const [show, setShow] = useState(false);
@@ -16,6 +22,7 @@ const AddAchievementPopup = ({lessonTitle, setLessonAchievementID}) => {
     
     const [selectedAchievementID, setSelectedAchievementID] = useState([]);
 
+    //Handles the selection of an achievement
     const handleSelection = (achievementID) => {
       console.log("Achievement ID: " + achievementID);
       setSelectedAchievementID(achievementID);
@@ -32,6 +39,7 @@ const AddAchievementPopup = ({lessonTitle, setLessonAchievementID}) => {
       }
     }
 
+    //Confirms the choice of an achievement
     const confirmChoice = () => {
       setLessonAchievementID(selectedAchievementID);
       handleClose(); 

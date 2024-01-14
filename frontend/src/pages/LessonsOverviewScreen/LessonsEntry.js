@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
@@ -5,10 +6,18 @@ import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from './ConfirmDeletionPopup';
-
+/**
+ * Represents a single entry in the lessons overview screen.
+ * @param {Object} lessonData - The data for the lesson entry.
+ * @param {boolean} admin - Indicates whether the user is an admin or not.
+ * @param {Array} completed - The list of completed lesson IDs.
+ * @returns {JSX.Element} The rendered lesson entry component.
+ */
 const LessonsEntry = ({lessonData, admin, completed}) => {    
         
         const navigate = useNavigate();
+
+        //Styling for the lesson entry
         const EntryStyle = {
             textAlign: 'center',
             fontSize: '2em',
@@ -18,6 +27,7 @@ const LessonsEntry = ({lessonData, admin, completed}) => {
             margin: '0px',
         };        
         
+        //Displays a checkmark if the lesson is completed, otherwise a cross
         const CompletionIndicator = () => {
             if (completed.includes(lessonData.achievement_id)) {
                 return (
@@ -32,20 +42,23 @@ const LessonsEntry = ({lessonData, admin, completed}) => {
             }
         }
         
+        //Navigates to the lesson page to view the lesson pdf
         const watchLesson = (lessonData) => {
             console.log("Navigating to lesson: " + lessonData.id)
             navigate(`/lessons/${lessonData.id}`, { state: { lesson: lessonData } })
         }
 
+        //Navigates to the lesson edit page
         const editLesson = (lessonData) => {
             navigate(`/lessonEdit/${lessonData.id}`, { state: { lesson: lessonData } })
         }
 
+        //Navigates to the quiz transition page to start the quiz
         function redirectToQuizTransition() {
             navigate(`/quizTransition?id=${lessonData.id}`);
         }
 
-        //Includes the edit and delete buttons
+        //Includes the edit and delete buttons, only visible to admins
         const admin_entry = () => {            
             return (
                 <Row>

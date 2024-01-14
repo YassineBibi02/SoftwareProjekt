@@ -156,7 +156,7 @@
 
 .achievement-actions .edit-button,
 .achievement-actions .delete-button {
-    width: 70px; /* Adjust width as needed */
+    width: 100px; /* Adjust width as needed */
     margin-top: 5px; /* Adds spacing between the buttons */
 
 }

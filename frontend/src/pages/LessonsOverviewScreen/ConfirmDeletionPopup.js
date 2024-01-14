@@ -1,9 +1,15 @@
+/**
+ * Component for rendering a delete button with a confirmation modal.
+ * 
+ * @component
+ * @param {Object} lessonData - The data of the lesson to be deleted.
+ * @returns {JSX.Element} - The delete button component.
+ */
 import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
-import React, { useEffect, useState, useContext } from 'react';
+import React, {useState} from 'react';
 import { MdDelete } from "react-icons/md";
 import { useCookies } from 'react-cookie';
-import { Navigate } from 'react-router-dom';
 
 const DeleteButton = ({lessonData}) => {
     const [cookies] = useCookies(['XSRF-TOKEN']);
@@ -12,6 +18,7 @@ const DeleteButton = ({lessonData}) => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     
+    //Deletes a lesson and reloads the page
     const deleteLesson = () => {
         console.log("Delete lesson pressed");
         console.log(lessonData.id);

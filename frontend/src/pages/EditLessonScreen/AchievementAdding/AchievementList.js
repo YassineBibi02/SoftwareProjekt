@@ -1,16 +1,20 @@
-import Modal from 'react-bootstrap/Modal';
-import { Button } from 'react-bootstrap';
 import React, { useEffect, useState, useContext } from 'react';
-import { MdDelete } from "react-icons/md";
 import { useCookies } from 'react-cookie';
-import { Navigate } from 'react-router-dom';
 import AchievementEntry from './AchievementEntry';
 import '../../AchievementsPage/AchievementDisplay.css';
 
+
+/**
+ * Renders a list of achievements.
+ *
+ * @param {Function} onSelection - The callback function for when an achievement is selected.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AchievementList = ({onSelection}) => {
     const [cookies] = useCookies(['XSRF-TOKEN']);
     const [achievements, setAchievements] = useState([]);
 
+    // Fetches the achievements from the server
     useEffect(() => {
         fetch('/api/methode/GetAllAchievements', { credentials: 'include' }) // <.>
             .then(response => response.text())
@@ -19,6 +23,7 @@ const AchievementList = ({onSelection}) => {
             });
     }, []);
 
+    // Renders the list of achievements
     return (
         <div style={{ display: 'flex' }}>
             {achievements.map(achievement => (

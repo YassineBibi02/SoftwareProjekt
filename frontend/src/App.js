@@ -2,7 +2,7 @@ import React from 'react';
 import SendMailScreenComponent from './pages/SendMailScreen/SendMailScreenComponent';
 import LoginScreen  from './pages/LoginScreen';
 import ReactDOM from 'react-dom';
-import MainMenuScreenComponent from './components/MainMenuScreen/MainMenuScreenComponent';
+import MainMenuScreenComponent from './pages/MainMenuScreen/MainMenuScreenComponent';
 import AchievementsOverviewScreenComponent from './pages/AchievementsOverviewScreen/AchievementsOverviewScreeenComponent';
 import LessonsScreenComponent from './pages/LessonsOverviewScreen/LessonsScreenComponent';
 import TemplateComponent from './pages/TemplateVerwaltungScreen/TemplateComponent';
@@ -21,6 +21,7 @@ import CreateQuizScreen from './pages/Quiz/createQuizScreen';
 import TemplateController from './pages/TemplateVerwaltungScreen/TemplateController';
 import EditMailComponent from './pages/EditMailScreen/EditMailComponent';
 import TransitionScreen from './pages/Quiz/transitionScreen';
+import AdminOverviewScreen from './pages/AdminOverviewScreen';
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
         <Route path="/createQuiz" element={<CreateQuizScreen/>}/>
         <Route path="/editTemplate" element={<EditMailComponent/>}/>
         <Route path="/quizTransition" element={<TransitionScreen/>}/>
+        <Route path="/adminOverview" element={<AdminOverviewScreen/>}/>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>       
     </Router>

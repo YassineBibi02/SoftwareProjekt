@@ -10,6 +10,12 @@ import { FaCheck } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
 import LoginContext from '../../globals/globalContext';
 
+/**
+ * EditLessonScreenComponent is a React component that allows users to edit a lesson.
+ * 
+ * @param {boolean} newLesson - Indicates whether it is a new lesson or an existing one.
+ * @returns {JSX.Element} - The rendered EditLessonScreenComponent.
+ */
 const EditLessonScreenComponent = ({newLesson}) => {
     
     const { isLoggedIn, setLoggedIn, userV , login, logout} = useContext(LoginContext);
@@ -21,6 +27,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
     const idRef = useRef('');
 
+    // Create wrong answers array from JSON
     function createWrongAnswers(wrongAnswers) {
         const wrongAnswersArray = [];
         for (let i = 0; i < wrongAnswers.length; i++) {
@@ -30,6 +37,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         return wrongAnswersArray;
     }
 
+    // Create questions array from JSON
     const getQuestionsFromJSON = (inputJSON) => {
         const result = [];
         const questionCount = inputJSON.question_count;
@@ -44,9 +52,12 @@ const EditLessonScreenComponent = ({newLesson}) => {
         return result;
     }
 
+    // Load id from lesson passed on state for lesson edit if it exists
     useEffect(() => {
         idRef.current = newLesson ? '' : lesson.id;
     },[]);
+
+    // Setup Variables with lesson data
 
     const [oldQuizData, setOldQuizData] = useState(() => {
         if (newLesson) {
@@ -141,16 +152,19 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
     const [errorMessageText, setErrorMessageText] = useState('');  
 
-    const isButtonDisabled = !difficulty || (!file && newLesson) || !questions || !achievementID || !title;
+    const isButtonDisabled = !difficulty || (!file && newLesson) || !questions || !achievementID || !title; // Disable button if any of the fields are empty
 
     const showErrorMessages = ({text}) => {
         setErrorMessageText(text);
     }
 
+    // Set quiz data from AddQuizPopup
     const setQuizData = (allQuestions) => {
         setQuestions(allQuestions);
     }
 
+
+    // Fetch achievement name from achievement ID
     useEffect(() => {
         const fetchAchievementName = async () => {
             try {
@@ -171,7 +185,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         fetchAchievementName();
     }, [achievementID]);
 
-
+    // Fetch user data and check for Admin_Access role
     useEffect(() => {
         fetch('/api/user', { credentials: 'include' }) // <.>
             .then(response => response.text())
@@ -196,7 +210,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
 
     
                     
-
+    // handleFileChange is called when the user selects a file to upload
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
         console.log("File changed")
@@ -209,12 +223,14 @@ const EditLessonScreenComponent = ({newLesson}) => {
         return result;
     }
 
+    // handleTitleChange is called when the user changes the title
     const handleTitleChange = (event) => {
         setTitle(removeProblemCharacters(event.target.value));
     };
 
-
+    // createLesson sends a POST request to the backend to create a new lesson
     const createLesson = async () => {
+        // Array is [title, difficulty, achievementID, fileName, questionCount, question1, wrongAnswerCount1, rightAnswer1, wrongAnswer1, wrongAnswer2,...]
         const lessonArray = [];
         lessonArray.push(title);
         lessonArray.push(getDifficulty());
@@ -242,13 +258,17 @@ const EditLessonScreenComponent = ({newLesson}) => {
         } catch (error) {
             console.error("Error2:", error);
             console.error("Error details:", error.message, error.response);
+            // Firefox sometimes throws an error even though the lesson was created successfully
             showErrorMessages({text: "Error creating Lesson. If using Firefox, this error is likely inconsequential. Please check the Lessons Overview to see if the lesson was created."});
             return false;
         }
     }
 
+    // editLesson sends a POST request to the backend to edit an existing lesson
     const editLesson = ({newName}) => {
         console.log("Quiz:" , questions)
+        // Array is [id, title, difficulty, achievementID, fileName, questionCount, question1, wrongAnswerCount1, rightAnswer1, wrongAnswer1, wrongAnswer2,...]
+        // File name is only included if the file was changed
         const lessonArray = [];
         lessonArray.push(lesson.id)
         lessonArray.push(title);
@@ -262,7 +282,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         const unitedArray = lessonArray.concat(convertedQuestions);
         if (newName) {
             try {
-                fetch('/api/methode//UpdateInRegistry', {
+                fetch('/api/methode//UpdateInRegistry', {   // If the name was changed, use UpdateInRegistry
                     method: 'POST', credentials: 'include',
                     headers: { 
                         'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
@@ -279,7 +299,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                 showErrorMessages({text: "Error editing Lesson"});
             }
 
-        } else {
+        } else { // If the name was not changed, use UpdateInRegistryNoNameChange
             try {
                 fetch('/api/methode//UpdateInRegistryNoNameChange', {
                     method: 'POST', credentials: 'include',
@@ -322,7 +342,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
         }
     }
     
-
+    // delay is used to wait for the file to be uploaded before creating the lesson
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
     const confirm = async () => {
@@ -357,13 +377,14 @@ const EditLessonScreenComponent = ({newLesson}) => {
         navigate('/lessonsOverview');
     };
 
+    // getQuizArray converts the quiz data into an array that can be sent to the backend when appended to the lesson data
     const getQuizArray = (inputArray) => {
         const result = [];
         result.push(inputArray.length);
 
         inputArray.forEach((item) => {
             const [question, rightAnswer, ...wrongAnswers] = item;
-            if (question !== "" && rightAnswer !== "" && wrongAnswers[0].length !== 0) {
+            if (question !== "" && rightAnswer !== "" && wrongAnswers[0].length !== 0) {    
                 result.push(question);
                 result.push(wrongAnswers[0].length);
                 result.push(rightAnswer);
@@ -371,6 +392,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                     result.push(wrongAnswer.value);
                 });
             } else {
+                // If the question is empty, decrease the question count by 1 and do not add the question to the array
                 result[0] = result[0] - 1;
             }
         });
@@ -386,12 +408,14 @@ const EditLessonScreenComponent = ({newLesson}) => {
         marginLeft: '50px',
     }
 
+    // getDifficulty returns the difficulty selected by the user
     const getDifficulty = () => {
         const difficultySelect = document.getElementById('difficulty-select');
         const selectedValue = difficultySelect.value;
         return selectedValue;
     }   
     
+    // QuizCheckmark displays a checkmark if the quiz is valid, otherwise a cross
     const QuizCheckmark = () => {
         if (questions.length > 0) {
             return <FaCheck color='green'/>
@@ -403,7 +427,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
     return (
         <div>            
             <Header/>
-            <div>
+            <div> 
                 <div style={containerStyle}>
                     <p>Titel:</p>
                     <input type="text" value={title} onChange={handleTitleChange}  style={{margin: '20px'}}/>

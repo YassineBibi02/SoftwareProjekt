@@ -10,7 +10,7 @@ function TransitionScreen() {
     const lessonID = searchParams.get('id'); // The ID of the lesson
 
     // The percentage at which the quiz is passed
-    const passBoundary = 50;
+    const passBoundary = 75;
 
     // Navigates to doQuiz screen
     function redirectToQuiz() {

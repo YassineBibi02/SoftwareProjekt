@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginContext from '../globals/globalContext';
-import logo from '../images/logo_weiß.png'; // Adjust the path as needed
-import userIcon from '../images/user_icon.png'; // Adjust the path as needed
+import logo from '../images/logo_weiß.png';
+import userIcon from '../images/user_icon.png';
 import logoutIcon from '../images/logout_icon.png';
 import settingsIcon from '../images/settings_icon.png';
 import { Container } from 'react-bootstrap';
@@ -18,7 +18,7 @@ const Header = () => {
         marginTop: '10px',
         padding: '10px',
         display: 'flex',
-        backgroundColor: '#555555', // Changed to light grey
+        backgroundColor: '#555555', // light grey
         alignItems: 'center',
         borderRadius: '10px',
         border: '1px solid black',
