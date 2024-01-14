@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta charset="UTF-8">
+</head>
 <body style="font-family: Arial, sans-serif;">
 
     <p>Hi EMPFAENGERVORNAME,</p>
 
-    <p>ich muss etwas wichtiges mit dir besprechen, wollen wir das bei einem Kaffee machen? KOLLEGE1VORNAME ist auch dabei. <br>
+    <p>ich muss etwas wichtiges mit dir besprechen, wollen wir das bei einem Kaffee machen? KOLLEGE2VORNAME ist auch dabei. <br>
 	Wir haben unsere Kalender abgeglichen, du kannst sie hier sehen: LINK. Hoffe wir können das heute noch klären.<br>
 	Danke schonmal,<br>
 	KOLLEGE1VORNAME KOLLEGE1NACHNAME</p>

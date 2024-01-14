@@ -69,8 +69,13 @@ function CreateMailComponent() {
                 .then(response => response.text())
                 .then(data => {
                     console.log("Response:", data);
-                    alert("Template erstellt");
-                    navigate('/'); // (*) Replace '/' with the desired path to navigate to
+                    
+                    if (data === false) {
+                        alert("Fehler, bitte stellen Sie sicher, dass der Text einen LINK enthält");
+                    } else {
+                        alert("Template erstellt");
+                        navigate('/'); // (*) Replace '/' with the desired path to navigate to
+                    }
                 });
         } catch (error) {
             console.error('Error', error);

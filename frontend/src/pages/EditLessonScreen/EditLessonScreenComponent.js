@@ -17,6 +17,19 @@ import LoginContext from '../../globals/globalContext';
  * @returns {JSX.Element} - The rendered EditLessonScreenComponent.
  */
 const EditLessonScreenComponent = ({newLesson}) => {
+
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+          // event.preventDefault();
+          // Custom logic to handle the refresh
+          // Display a confirmation message or perform necessary actions
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+          window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+      }, []);
+
     
     const { isLoggedIn, setLoggedIn, userV , login, logout} = useContext(LoginContext);
     const {state} = useLocation();
@@ -240,7 +253,6 @@ const EditLessonScreenComponent = ({newLesson}) => {
         console.log(JSON.stringify(convertedQuestions));
         const unitedArray = lessonArray.concat(convertedQuestions);
         console.log("United Array: ", unitedArray);
-        await delay(300);
         try {
             const response = await fetch('/api/methode/RegisterLesson', {
                 method: 'POST', credentials: 'include',
@@ -345,7 +357,8 @@ const EditLessonScreenComponent = ({newLesson}) => {
     // delay is used to wait for the file to be uploaded before creating the lesson
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
-    const confirm = async () => {
+    const confirm = async (event) => {
+        event.preventDefault();
         // Handle file upload logic here
         if (fileChanged) {
             const formData = new FormData();
@@ -365,6 +378,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
                     }
                 } else {
                     console.log("Error uploading file");
+                    alert("Error uploading file");
                 }
         } else {
             if (newLesson) {
@@ -374,7 +388,7 @@ const EditLessonScreenComponent = ({newLesson}) => {
             }
         }
         console.log("ID: ", idRef.current)
-        navigate('/lessonsOverview');
+        //navigate('/lessonsOverview');
     };
 
     // getQuizArray converts the quiz data into an array that can be sent to the backend when appended to the lesson data
