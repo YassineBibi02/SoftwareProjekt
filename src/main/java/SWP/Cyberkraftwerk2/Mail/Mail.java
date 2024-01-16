@@ -433,6 +433,23 @@ public class Mail {
         return count;
     }
 
+    /**
+     * internal method, fixes formatting problems
+     * @param mailtext the text of the mail
+     * @return the fixed mail text
+    */
+    public static String fixformat(String mailtext) {
+        String text = mailtext;
+        try {
+           text = text.replaceAll("%(?![0-9a-fA-F]{2})", "%25");
+           text = text.replaceAll("\\+", "%2B");
+           text = URLDecoder.decode(text, "utf-8");
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
+        return text;
+     }
+
 
     /**
      * internal method, formats the mail text by replacing variables with actual values
@@ -442,13 +459,7 @@ public class Mail {
     */
     private String format_mail(User recipient, String mailtext, int mailid) {
         String formatted_mail = mailtext;
-        try {
-            // Decode the URL-encoded string
-            formatted_mail = URLDecoder.decode(mailtext, "UTF-8");
-
-        } catch (UnsupportedEncodingException e) {
-            System.out.println(e);
-        }
+        formatted_mail = fixformat(formatted_mail);
         /*get 2 random User that are not the recipient*/
         User random1 = recipient;
         while(random1.get_ID() == recipient.get_ID()) {

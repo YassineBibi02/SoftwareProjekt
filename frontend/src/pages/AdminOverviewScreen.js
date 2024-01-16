@@ -11,7 +11,7 @@ function AdminOverviewScreen() {
     const nutzerVerwaltenText = "Nutzer verwalten";
     const achievementErstellenText = "Achievements verwalten";
     const mailErstellenText = "Template hinzufügen";
-    const templateVerwaltenText = "Templates Verwalten";
+    const templateVerwaltenText = "Templates verwalten";
 
     const Container = {
         display: 'flex',

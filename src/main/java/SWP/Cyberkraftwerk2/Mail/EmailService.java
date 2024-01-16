@@ -59,17 +59,6 @@ public class EmailService {
         this.mailSender.setPassword(this.password);
         this.mailSender.setUsername(this.username);
         this.mailSender.getJavaMailProperties().put("mail.smtp.starttls.enable", "true");   // activating TLS; some providers explicitly need this to accept connections
-
-        this.mailSender.getJavaMailProperties().put("mail.debug","true");       // TODO Debugging-Option: deaktivieren wenn nicht mehr benötigt!
-
-        /*
-        try {                                                   // TODO testConnection() behalten oder entfernen? (fuer debugging vllt noch hilfreich)
-            mailSender.testConnection();
-        }
-        catch (MessagingException m) {
-            System.out.println("MessagingException: " + m.toString());
-        }
-        */
     }
 
     /**

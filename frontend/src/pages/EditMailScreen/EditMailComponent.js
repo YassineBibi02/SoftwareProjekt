@@ -71,8 +71,14 @@ function EditMailComponent() {
                 .then(response => response.text())
                 .then(data => {
                     console.log("Response:", data);
+                    
+                    if (data === false || data === "false") {
+                        alert("Fehler, bitte stellen Sie sicher, dass der Text einen LINK enthält");
+                    } else {
+                        alert("Template bearbeitet");
+                        navigate('/'); // (*) Replace '/' with the desired path to navigate to
+                    }
                 })
-                .then(alert("Template bearbeitet"))
         } catch (error) {
             console.error('Error', error);
         }
