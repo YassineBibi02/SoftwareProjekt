@@ -18,25 +18,6 @@ function CreateQuizScreen({setQuizData, closePopup, oldQuizData, editing}) {
     const maxQuestions = 10;    // maximum number of questions
     const maxWrongAnswers = 6;  // maximum number of wrong answers
 
-    //console.log("This is the oldQuizData:", oldQuizData);
-    /*
-        {
-            "question_count":2,
-            "q1":
-            {
-                "wrong_answers":["In Schluesselloch stecken und drehen","Just use it 5head"],
-                "question":"Wie verwendet man einen FIDO2 Key?",
-                "right_answer":"An Rechner anschliessen und Treiber arbeiten lassen"
-            },
-            "id":1,
-            "q0":
-            {
-                "wrong_answers":["ein Weg um Hundehuetten abzuschliessen","ein hunde-foermiger Schluessel"],
-                "question":"Was ist ein FIDO2 Key?",
-                "right_answer":"ein physikalischer Schluessel um sich Authentifizieren zu koennen"
-            }
-    */
-
     const FormGroupStyle = {
         border: '1px solid grey',
     }
@@ -69,9 +50,6 @@ function CreateQuizScreen({setQuizData, closePopup, oldQuizData, editing}) {
                 const oldQuestionData = oldQuizData["q" + i];
                 const newQuestion = [oldQuestionData.question, oldQuestionData.right_answer, createWrongAnswers(oldQuestionData.wrong_answers)];
                 newArray.push(newQuestion);
-                //questions.push(newQuestion);
-                //setQuestions([...questions, newQuestion]);
-                //console.log("This is the new question:", newQuestion);
             }
             setCorrectAnswer(oldQuizData["q0"].right_answer)
             setWrongAnswers(createWrongAnswers(oldQuizData["q0"].wrong_answers));
