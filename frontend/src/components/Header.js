@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginContext from '../globals/globalContext';
 import logo from '../images/logo_weiß.png';
@@ -10,7 +10,7 @@ import { Container } from 'react-bootstrap';
 
 
 const Header = () => {
-    const { isLoggedIn, setLoggedIn, userV , login, logout} = useContext(LoginContext);
+    const { isLoggedIn, userV , login, logout} = useContext(LoginContext);
     const navigate = useNavigate();
 
     const HeaderStyle = {

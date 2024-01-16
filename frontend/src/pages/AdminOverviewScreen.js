@@ -8,9 +8,9 @@ function AdminOverviewScreen() {
     const navigate = useNavigate();
 
     const emailButtonText = "Mails verschicken";
-    const nutzerVerwaltenText = "Nutzer Verwalten";
-    const achievementErstellenText = "Achievement Erstellen";
-    const mailErstellenText = "Template Hinzufügen";
+    const nutzerVerwaltenText = "Nutzer verwalten";
+    const achievementErstellenText = "Achievements verwalten";
+    const mailErstellenText = "Template hinzufügen";
     const templateVerwaltenText = "Templates Verwalten";
 
     const Container = {

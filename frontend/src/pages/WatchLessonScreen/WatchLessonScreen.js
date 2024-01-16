@@ -86,9 +86,9 @@ const WatchLessonScreen = () => {
         }
     };
 
-    // redirect to the quiz screen of the lesson
-    function redirectToQuiz() {
-        navigate(`/doQuiz?id=${lessonID}`);
+    // redirect to the transition quiz screen
+    function redirectToQuizTransition() {
+        navigate(`/quizTransition?id=${lessonID}`);
     }
 
     return (
@@ -112,7 +112,7 @@ const WatchLessonScreen = () => {
                     <Button style={styles.button} disabled={pageNumber >= numPages} onClick={handleForward}>Vorwärts</Button>
                 </div>
                 <div style={{ position: 'fixed', bottom: '40px', right: '40px' }}>
-                    <Button style={{ fontSize: '40px' }} onClick={redirectToQuiz}>Quiz</Button>
+                    <Button style={{ fontSize: '40px' }} onClick={redirectToQuizTransition}>Quiz</Button>
                 </div>
             </div>
         </div>
